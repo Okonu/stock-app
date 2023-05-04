@@ -1,6 +1,4 @@
-@extends ('layout')
 
-@section('container')
 <div class="page-container">
 			
 			<!-- start page content -->
@@ -218,4 +216,3 @@
 			</div>
 			<!-- end page content -->
 		</div>
-@endsection

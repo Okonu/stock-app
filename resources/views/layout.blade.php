@@ -35,50 +35,11 @@
 </head>
 <!-- END HEAD -->
 
-<body
-	class="page-header-fixed sidemenu-closed-hidelogo page-content-white page-md header-white white-sidebar-color logo-indigo">
+<body class="page-header-fixed sidemenu-closed-hidelogo page-content-white page-md header-white white-sidebar-color logo-indigo">
 	<div class="page-wrapper">
-		<!-- start header -->
-		<div class="page-header navbar navbar-fixed-top">
-			<div class="page-header-inner ">
-				<!-- logo start -->
-				<div class="page-logo">
-					<a href="index-2.html">
-						<span class="logo-default">UEA</span> </a>
-				</div>
-				<!-- logo end -->
-				<ul class="nav navbar-nav navbar-left in">
-					<li><a href="#" class="menu-toggler sidebar-toggler"><i data-feather="menu"></i></a></li>
-				</ul>
-				<form class="search-form-opened" action="#" method="GET">
-					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search..." name="query">
-						<span class="input-group-btn">
-							<a href="javascript:;" class="btn submit">
-								<i class="icon-magnifier"></i>
-							</a>
-						</span>
-					</div>
-				</form>
-				<!-- start mobile menu -->
-				<a class="menu-toggler responsive-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
-					<span></span>
-				</a>
-				<!-- end mobile menu -->
-		@include('header')
-		@include('sidebar')
-		@section('container')
-		@show
-		<!-- start footer -->
-		<div class="page-footer">
-			<div class="page-footer-inner"> 2023 &copy; UEA Admin By
-				<a href="mailto:email@example.com" target="_top" class="makerCss">UEA</a>
-			</div>
-			<div class="scroll-to-top">
-				<i class="icon-arrow-up"></i>
-			</div>
-		</div>
-		<!-- end footer -->
+		
+		
+		
 	</div>
 	<!-- start js include path -->
 	<script src="{{asset('/front/plugins/jquery/jquery.min.js')}}"></script>
