@@ -19,141 +19,34 @@
 							</li>
 
 							<li class="nav-item">
-								<a href="#" class="nav-link nav-toggle"><i data-feather="users"></i>
+							<a href="{{url('warehouse')}}" class="nav-link "><i data-feather="users"></i>
 									<span class="title">Warehouses</span><span class="arrow"></span></a>
-								<ul class="sub-menu">
-									<li class="nav-item">
-										<a href="all_students.html" class="nav-link "> 
-                                            <span class="title">All Warehouses</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="add_student.html" class="nav-link "> 
-                                            <span class="title">Add Warehouses</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="edit_student.html" class="nav-link "> 
-                                            <span class="title">Edit Warehouses</span>
-										</a>
-									</li>
-								</ul>
 							</li>
  
 							<li class="nav-item">
 								<a href="#" class="nav-link nav-toggle"> <i data-feather="book"></i>
 									<span class="title">Owners</span> <span class="arrow"></span>
 								</a>
-								<ul class="sub-menu">
-									<li class="nav-item">
-										<a href="all_courses.html" class="nav-link "> 
-                                            <span class="title">All Owners</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="add_course.html" class="nav-link "> 
-                                            <span class="title">Add Owners</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="edit_course.html" class="nav-link "> 
-                                            <span class="title">Edit Owners</span>
-										</a>
-									</li>
-								</ul>
 							</li>
 							<li class="nav-item">
 								<a href="#" class="nav-link nav-toggle"> <i data-feather="book-open"></i>
 									<span class="title">Gardens</span> <span class="arrow"></span>
 								</a>
-								<ul class="sub-menu">
-									<li class="nav-item">
-										<a href="all_front.html" class="nav-link "> 
-                                            <span class="title">All Gardens</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="add_library.html" class="nav-link "> 
-                                            <span class="title">Add Gardens</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="edit_library.html" class="nav-link "> 
-                                            <span class="title">Edit Gardens</span>
-										</a>
-									</li>
-								</ul>
 							</li>
 							<li class="nav-item">
 								<a href="#" class="nav-link nav-toggle"> <i data-feather="briefcase"></i>
 									<span class="title">Bays</span> <span class="arrow"></span>
 								</a>
-								<ul class="sub-menu">
-									<li class="nav-item">
-										<a href="all_department.html" class="nav-link "> 
-                                            <span class="title">All Gardens</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="add_department.html" class="nav-link "> 
-                                            <span class="title">Add Gardens</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="edit_department.html" class="nav-link "> 
-                                            <span class="title">Edit Gardens</span>
-										</a>
-									</li>
-								</ul>
 							</li>
 							<li class="nav-item">
 								<a href="#" class="nav-link nav-toggle"> <i data-feather="smile"></i>
 									<span class="title">Clerks</span> <span class="arrow"></span>
 								</a>
-								<ul class="sub-menu">
-									<li class="nav-item">
-										<a href="all_staffs.html" class="nav-link "> 
-                                            <span class="title">All Clerks</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="add_staff.html" class="nav-link "> 
-                                            <span class="title">Add Clerk</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="edit_staff.html" class="nav-link "> 
-                                            <span class="title">Edit Clerk</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="staff_profile.html" class="nav-link "> 
-                                            <span class="title">Clerk Profile</span>
-										</a>
-									</li>
-								</ul>
 							</li>
 							<li class="nav-item">
 								<a href="#" class="nav-link nav-toggle"> <i data-feather="coffee"></i>
 									<span class="title">PKG Type</span> <span class="arrow"></span>
 								</a>
-								<ul class="sub-menu">
-									<li class="nav-item">
-										<a href="all_holidays.html" class="nav-link "> 
-                                            <span class="title">All PKG Types</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="add_holiday.html" class="nav-link "> 
-                                            <span class="title">Add PKG Type</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="edit_holiday.html" class="nav-link "> 
-                                            <span class="title">Edit PKG Type</span>
-										</a>
-									</li>
-								</ul>
 							</li>
 
 							<li class="nav-item">
