@@ -1,4 +1,4 @@
-<!-- start sidebar menu -->
+<!--  sidebar menu -->
 <div class="sidebar-container">
 				<div class="sidemenu-container navbar-collapse collapse fixed-menu">
 					<div id="remove-scroll" class="left-sidemenu">
@@ -155,7 +155,7 @@
 									</li>
 								</ul>
 							</li>
-                            
+
 							<li class="nav-item">
 								<a href="javascript:;" class="nav-link nav-toggle">
 									<i data-feather="grid"></i>
