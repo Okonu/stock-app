@@ -40,7 +40,7 @@
 														<div class="row">
 															<div class="col-md-6 col-sm-6 col-6">
 																<div class="btn-group">
-																	<a href="add_professor.html" id="addRow"
+																	<a href="{{route('addStaff')}}" id="addRow"
 																		class="btn btn-primary">
 																		Add New <i class="fa fa-plus"></i>
 																	</a>
