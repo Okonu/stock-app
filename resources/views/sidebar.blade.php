@@ -19,37 +19,37 @@
 							</li>
 
 							<li class="nav-item">
-							<a href="{{url('warehouse')}}" class="nav-link "><i data-feather="users"></i>
+							<a href="{{url('/dispplay/warehouse')}}" class="nav-link "><i data-feather="users"></i>
 									<span class="title">Warehouses</span><span class="arrow"></span></a>
 							</li>
  
 							<li class="nav-item">
-							<a href="{{url('owners')}}" class="nav-link "> <i data-feather="book"></i>
+							<a href="{{url('/dispplay/owners')}}" class="nav-link "> <i data-feather="book"></i>
 									<span class="title">Owners</span> <span class="arrow"></span>
 								</a>
 							</li>
 							<li class="nav-item">
-							<a href="{{url('garden')}}" class="nav-link "> <i data-feather="book-open"></i>
+							<a href="{{url('/dispplay/garden')}}" class="nav-link "> <i data-feather="book-open"></i>
 									<span class="title">Gardens</span> <span class="arrow"></span>
 								</a>
 							</li>
 							<li class="nav-item">
-							<a href="{{url('bays')}}" class="nav-link "> <i data-feather="briefcase"></i>
+							<a href="{{url('/display/bays')}}" class="nav-link "> <i data-feather="briefcase"></i>
 									<span class="title">Bays</span> <span class="arrow"></span>
 								</a>
 							</li>
 							<li class="nav-item">
-							<a href="{{url('grade')}}" class="nav-link "> <i data-feather="smile"></i>
+							<a href="{{url('/dispplay/grade')}}" class="nav-link "> <i data-feather="smile"></i>
 									<span class="title">Grade</span> <span class="arrow"></span>
 								</a>
 							</li>
 							<li class="nav-item">
-							<a href="{{url('package')}}" class="nav-link "> <i data-feather="coffee"></i>
+							<a href="{{url('/dispplay/package')}}" class="nav-link "> <i data-feather="coffee"></i>
 									<span class="title">PKG Type</span> <span class="arrow"></span>
 								</a>
 							</li>
 							<li class="nav-item">
-							<a href="{{url('staff')}}" class="nav-link "> <i data-feather="smile"></i>
+							<a href="{{url('/dispplay/staff')}}" class="nav-link "> <i data-feather="smile"></i>
 									<span class="title">Staff</span><span class="arrow"></span>
 								</a>
 							</li>

@@ -15,16 +15,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {return view('welcome'); });
 
-Route::get('/warehouse', function () {return view('warehouse'); })->name('warehouse');
+Route::get('/dispplay/warehouse', function () {return view('display.warehouse'); });
 
-Route::get('/owners', function () {return view('owners'); })->name('owners');
+Route::get('/dispplay/owners', function () {return view('display.owners'); });
 
-Route::get('/garden', function () {return view('garden'); })->name('garden');
+Route::get('/dispplay/garden', function () {return view('display.garden'); });
 
-Route::get('/bays', function () {return view('bays'); })->name('bays');
+Route::get('/display/bays', function () {return view('display.bays'); });
 
-Route::get('/grade', function () {return view('grade'); })->name('grade');
+Route::get('/dispplay/grade', function () {return view('display.grade'); });
 
-Route::get('package', function () {return view('package'); })->name('package');
+Route::get('/dispplaypackage', function () {return view('display.package'); });
 
-Route::get('staff', function () {return view('staff'); })->name('staff');
+Route::get('/dispplaystaff', function () {return view('display.staff'); });
