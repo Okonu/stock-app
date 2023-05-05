@@ -30,6 +30,10 @@
 	<link href="{{asset('/front/css/theme/light/style.css')}}" rel="stylesheet" type="text/css" />
 	<link href="{{asset('/front/css/responsive.css')}}" rel="stylesheet" type="text/css" />
 	<link href="{{asset('/front/css/theme/light/theme-color.css')}}" rel="stylesheet" type="text/css" />
+	<!-- dropzone -->
+	<link href="{{asset('/front/plugins/dropzone/dropzone.css')}}" rel="stylesheet" media="screen">
+	<!-- Date Time item CSS -->
+	<link rel="stylesheet" href="{{asset('/front/plugins/flatpicker/css/flatpickr.min.css')}}" />
 	<!-- favicon -->
 	<link rel="shortcut icon" href="../front/img/favicon.ico" />
 </head>
@@ -37,9 +41,7 @@
 
 <body class="page-header-fixed sidemenu-closed-hidelogo page-content-white page-md header-white white-sidebar-color logo-indigo">
 	<div class="page-wrapper">
-		
-		
-		
+	
 	</div>
 	<!-- start js include path -->
 	<script src="{{asset('/front/plugins/jquery/jquery.min.js')}}"></script>
@@ -64,6 +66,12 @@
 	<!-- summernote -->
 	<script src="{{asset('/front/plugins/summernote/summernote.js')}}"></script>
 	<script src="{{asset('/front/js/pages/summernote/summernote-data.js')}}"></script>
+	<script src="{{asset('/front/js/pages/material-select/getmdl-select.js')}}"></script>
+	<script src="{{asset('/front/plugins/flatpicker/js/flatpicker.min.js')}}"></script>
+	<script src="{{asset('/front/js/pages/date-time/date-time.init.js')}}"></script>
+	<!-- dropzone -->
+	<script src="{{asset('/front/plugins/dropzone/dropzone.js')}}"></script>
+	<script src="{{asset('/front/plugins/dropzone/dropzone-call.js')}}"></script>
 	<!-- end js include path -->
 </body>
 
