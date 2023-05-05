@@ -23,6 +23,8 @@ Route::get('/display/garden', function () {return view('display.garden'); });
 
 Route::get('/display/bays', function () {return view('display.bays'); });
 
+Route::get('/add-bay', function () {return view('display.addBay'); })->name('addBay');
+
 Route::get('/display/grade', function () {return view('display.grade'); });
 
 Route::get('/display/package', function () {return view('display.package'); });
