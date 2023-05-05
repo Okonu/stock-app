@@ -21,11 +21,15 @@ Route::get('/display/owners', function () {return view('display.owners'); });
 
 Route::get('/display/garden', function () {return view('display.garden'); });
 
+Route::get('/add-garden', function () {return view('display.addGarden'); })->name('addGarden');
+
 Route::get('/display/bays', function () {return view('display.bays'); });
 
 Route::get('/add-bay', function () {return view('display.addBay'); })->name('addBay');
 
 Route::get('/display/grade', function () {return view('display.grade'); });
+
+Route::get('/add-grade', function () {return view('display.addGrade'); })->name('addGrade');
 
 Route::get('/display/package', function () {return view('display.package'); });
 
