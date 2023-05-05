@@ -13,12 +13,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', function () {return view('welcome'); });
 
-// Route::view('/', 'welcome');
+Route::get('/warehouse', function () {return view('warehouse'); })->name('warehouse');
 
-Route::get('/warehouse', function () {
-    return view('warehouse');
-})->name('warehouse');
+Route::get('/owners', function () {return view('owners'); })->name('owners');
+
+Route::get('/garden', function () {return view('garden'); })->name('garden');
+
+Route::get('/bays', function () {return view('bays'); })->name('bays');
+
+Route::get('/grade', function () {return view('grade'); })->name('grade');
+
+Route::get('package', function () {return view('package'); })->name('package');
+
+Route::get('staff', function () {return view('staff'); })->name('staff');
