@@ -17,7 +17,11 @@ Route::get('/', function () {return view('welcome'); });
 
 Route::get('/display/warehouse', function () {return view('display.warehouse'); });
 
+Route::get('/add-warehouse', function () {return view('display.addWarehouse'); })->name('addWarehouse');
+
 Route::get('/display/owners', function () {return view('display.owners'); });
+
+Route::get('/add-owner', function () {return view('display.addOwners'); })->name('addOwners');
 
 Route::get('/display/garden', function () {return view('display.garden'); });
 
@@ -33,4 +37,8 @@ Route::get('/add-grade', function () {return view('display.addGrade'); })->name(
 
 Route::get('/display/package', function () {return view('display.package'); });
 
+Route::get('/add-package', function () {return view('display.addPackage'); })->name('addPackage');
+
 Route::get('/display/staff', function () {return view('display.staff'); });
+
+Route::get('/add-staff', function () {return view('display.addStaff'); })->name('addStaff');
