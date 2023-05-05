@@ -24,31 +24,35 @@
 							</li>
  
 							<li class="nav-item">
-								<a href="#" class="nav-link nav-toggle"> <i data-feather="book"></i>
+							<a href="{{url('owners')}}" class="nav-link "> <i data-feather="book"></i>
 									<span class="title">Owners</span> <span class="arrow"></span>
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="#" class="nav-link nav-toggle"> <i data-feather="book-open"></i>
+							<a href="{{url('garden')}}" class="nav-link "> <i data-feather="book-open"></i>
 									<span class="title">Gardens</span> <span class="arrow"></span>
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="#" class="nav-link nav-toggle"> <i data-feather="briefcase"></i>
+							<a href="{{url('bays')}}" class="nav-link "> <i data-feather="briefcase"></i>
 									<span class="title">Bays</span> <span class="arrow"></span>
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="#" class="nav-link nav-toggle"> <i data-feather="smile"></i>
-									<span class="title">Clerks</span> <span class="arrow"></span>
+							<a href="{{url('grade')}}" class="nav-link "> <i data-feather="smile"></i>
+									<span class="title">Grade</span> <span class="arrow"></span>
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="#" class="nav-link nav-toggle"> <i data-feather="coffee"></i>
+							<a href="{{url('package')}}" class="nav-link "> <i data-feather="coffee"></i>
 									<span class="title">PKG Type</span> <span class="arrow"></span>
 								</a>
 							</li>
-
+							<li class="nav-item">
+							<a href="{{url('staff')}}" class="nav-link "> <i data-feather="smile"></i>
+									<span class="title">Staff</span><span class="arrow"></span>
+								</a>
+							</li>
 							<li class="nav-item">
 								<a href="javascript:;" class="nav-link nav-toggle">
 									<i data-feather="grid"></i>
