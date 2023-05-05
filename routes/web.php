@@ -15,16 +15,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {return view('welcome'); });
 
-Route::get('/dispplay/warehouse', function () {return view('display.warehouse'); });
+Route::get('/display/warehouse', function () {return view('display.warehouse'); });
 
-Route::get('/dispplay/owners', function () {return view('display.owners'); });
+Route::get('/display/owners', function () {return view('display.owners'); });
 
-Route::get('/dispplay/garden', function () {return view('display.garden'); });
+Route::get('/display/garden', function () {return view('display.garden'); });
 
 Route::get('/display/bays', function () {return view('display.bays'); });
 
-Route::get('/dispplay/grade', function () {return view('display.grade'); });
+Route::get('/display/grade', function () {return view('display.grade'); });
 
-Route::get('/dispplaypackage', function () {return view('display.package'); });
+Route::get('/display/package', function () {return view('display.package'); });
 
-Route::get('/dispplaystaff', function () {return view('display.staff'); });
+Route::get('/display/staff', function () {return view('display.staff'); });
