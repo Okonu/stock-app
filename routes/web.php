@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,34 +9,44 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
-Route::get('/', function () {return view('welcome'); });
+Route::get('/', function () {
+    return view('auth.login');
+});
 
-Route::get('/display/warehouse', function () {return view('display.warehouse'); });
+Auth::routes();
 
-Route::get('/add-warehouse', function () {return view('display.addWarehouse'); })->name('addWarehouse');
+Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/display/owners', function () {return view('display.owners'); });
+Route::get('dashboard', function () {
+    return view('layouts.master');
+});
 
-Route::get('/add-owner', function () {return view('display.addOwners'); })->name('addOwners');
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('packages', 'PackageController');
+    Route::get('/apiPackages', 'PackageController@apiPackage')->name('api.packages');
 
-Route::get('/display/garden', function () {return view('display.garden'); });
+    Route::resource('customers', 'CustomerController');
+    Route::get('/apiCustomers', 'CustomerController@apiCustomers')->name('api.customers');
+    Route::post('/importCustomers', 'CustomerController@ImportExcel')->name('import.customers');
+    Route::get('/exportCustomersAll', 'CustomerController@exportCustomersAll')->name('exportPDF.customersAll');
+    Route::get('/exportCustomersAllExcel', 'CustomerController@exportExcel')->name('exportExcel.customersAll');
 
-Route::get('/add-garden', function () {return view('display.addGarden'); })->name('addGarden');
+    Route::resource('warehouses', 'WarehouseController');
+    Route::get('/apiWarehouses', 'WarehouseController@apiWarehouses')->name('api.warehouses');
+    Route::get('/exportWarehousesAll', 'WarehouseController@exportWarehousesAll')->name('exportPDF.warehousesAll');
+    Route::get('/exportWarehousesAllExcel', 'WarehouseController@exportExcel')->name('exportExcel.warehousesAll');
 
-Route::get('/display/bays', function () {return view('display.bays'); });
+    Route::resource('bays', 'BayController');
+    Route::get('/apiBays', 'BayController@apiBays')->name('api.bays');
 
-Route::get('/add-bay', function () {return view('display.addBay'); })->name('addBay');
+    Route::resource('owners', 'OwnerController');
+    Route::get('/apiOwners', 'OwnerController@apiOwners')->name('api.owners');
 
-Route::get('/display/grade', function () {return view('display.grade'); });
+    Route::resource('stock', 'StockController');
+    Route::get('apiStock', 'StockController@apiStock')->name('api.stock');
 
-Route::get('/add-grade', function () {return view('display.addGrade'); })->name('addGrade');
-
-Route::get('/display/package', function () {return view('display.package'); });
-
-Route::get('/add-package', function () {return view('display.addPackage'); })->name('addPackage');
-
-Route::get('/display/staff', function () {return view('display.staff'); });
-
-Route::get('/add-staff', function () {return view('display.addStaff'); })->name('addStaff');
+    Route::resource('user', 'UserController');
+    Route::get('/apiUser', 'UserController@apiUsers')->name('api.users');
+});
