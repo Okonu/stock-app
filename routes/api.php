@@ -13,6 +13,18 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/packages', 'ApiController@apiPackages');
+    Route::get('/categories', 'ApiController@apiCategories');
+    Route::get('/grades', 'ApiController@apiGrades');
+    Route::get('/customers', 'ApiController@apiCustomers');
+    Route::get('/warehouses', 'ApiController@apiWarehouses');
+    Route::get('/bays', 'ApiController@apiBays');
+    Route::get('/owners', 'ApiController@apiOwners');
+    Route::get('/stock', 'ApiController@apiStock');
+    Route::get('/users', 'ApiController@apiUsers');
 });

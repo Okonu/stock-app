@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ExportSuppliers;
-use App\Imports\SuppliersImport;
 use App\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -133,32 +132,6 @@ class UserController extends Controller
                 '<a onclick="deleteData('.$users->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
             })
             ->rawColumns(['action'])->make(true);
-    }
-
-    public function ImportExcel(Request $request)
-    {
-        // Validasi
-        $this->validate($request, [
-            'file' => 'required|mimes:xls,xlsx',
-        ]);
-
-        if ($request->hasFile('file')) {
-            // UPLOAD FILE
-            $file = $request->file('file'); // GET FILE
-            \Excel::import(new SuppliersImport(), $file); // IMPORT FILE
-
-            return redirect()->back()->with(['success' => 'Upload file data suppliers !']);
-        }
-
-        return redirect()->back()->with(['error' => 'Please choose file before!']);
-    }
-
-    public function exportSuppliersAll()
-    {
-        $suppliers = Supplier::all();
-        $pdf = \PDF::loadView('suppliers.SuppliersAllPDF', compact('suppliers'));
-
-        return $pdf->download('suppliers.pdf');
     }
 
     public function exportExcel()

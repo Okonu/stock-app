@@ -27,16 +27,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('packages', 'PackageController');
     Route::get('/apiPackages', 'PackageController@apiPackage')->name('api.packages');
 
+    Route::resource('categories', 'CategoryController');
+    Route::get('/apiCategories', 'CategoryController@apiCategories')->name('api.categories');
+
+    Route::resource('grades', 'GradeController');
+    Route::get('/apiGrades', 'GradeController@apiGrades')->name('api.grades');
+
     Route::resource('customers', 'CustomerController');
     Route::get('/apiCustomers', 'CustomerController@apiCustomers')->name('api.customers');
-    Route::post('/importCustomers', 'CustomerController@ImportExcel')->name('import.customers');
-    Route::get('/exportCustomersAll', 'CustomerController@exportCustomersAll')->name('exportPDF.customersAll');
-    Route::get('/exportCustomersAllExcel', 'CustomerController@exportExcel')->name('exportExcel.customersAll');
 
     Route::resource('warehouses', 'WarehouseController');
     Route::get('/apiWarehouses', 'WarehouseController@apiWarehouses')->name('api.warehouses');
-    Route::get('/exportWarehousesAll', 'WarehouseController@exportWarehousesAll')->name('exportPDF.warehousesAll');
-    Route::get('/exportWarehousesAllExcel', 'WarehouseController@exportExcel')->name('exportExcel.warehousesAll');
 
     Route::resource('bays', 'BayController');
     Route::get('/apiBays', 'BayController@apiBays')->name('api.bays');
