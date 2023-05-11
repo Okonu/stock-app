@@ -3,139 +3,150 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ExportSuppliers;
+use App\Imports\SuppliersImport;
 use App\User;
+use Excel;
 use Illuminate\Http\Request;
+use PDF;
 use Yajra\DataTables\DataTables;
 
-class UserController extends Controller
-{
-    public function __construct()
-    {
-        $this->middleware('role:admin,staff');
-    }
+class UserController extends Controller {
+	public function __construct() {
+		$this->middleware('role:admin,staff');
+	}
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index() {
+		$users = User::all();
+		return view('user.index');
+	}
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $users = User::all();
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create() {
+		//
+	}
 
-        return view('user.index');
-    }
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store(Request $request) {
+		$this->validate($request, [
+			'name' => 'required',
+			'email' => 'required|unique:suppliers',
+		]);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        // Create a new resource
-    }
+		User::create($request->all());
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|unique:suppliers',
-        ]);
+		return response()->json([
+			'success' => true,
+			'message' => 'Suppliers Created',
+		]);
 
-        User::create($request->all());
+	}
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Suppliers Created',
-        ]);
-    }
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function show($id) {
+		//
+	}
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-    }
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit($id) {
+		$users = User::find($id);
+		return $users;
+	}
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $users = User::find($id);
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function update(Request $request, $id) {
+		$this->validate($request, [
+			'name' => 'required|string|min:2',
+			'email' => 'required|string|email|max:255|unique:suppliers',
+		]);
 
-        return $users;
-    }
+		$users = User::findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $this->validate($request, [
-            'name' => 'required|string|min:2',
-            'email' => 'required|string|email|max:255|unique:suppliers',
-        ]);
+		$users->update($request->all());
 
-        $users = User::findOrFail($id);
+		return response()->json([
+			'success' => true,
+			'message' => 'users Updated',
+		]);
+	}
 
-        $users->update($request->all());
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function destroy($id) {
+		User::destroy($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'users Updated',
-        ]);
-    }
+		return response()->json([
+			'success' => true,
+			'message' => 'User Delete',
+		]);
+	}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        User::destroy($id);
+	public function apiUsers() {
+		$users = User::all();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'User Delete',
-        ]);
-    }
+		return Datatables::of($users)
+			->addColumn('action', function ($users) {
+				return '<a onclick="editForm(' . $users->id . ')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> ' .
+				'<a onclick="deleteData(' . $users->id . ')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+			})
+			->rawColumns(['action'])->make(true);
+	}
 
-    public function apiUsers()
-    {
-        $users = User::all();
+	public function ImportExcel(Request $request) {
+		//Validasi
+		$this->validate($request, [
+			'file' => 'required|mimes:xls,xlsx',
+		]);
 
-        return Datatables::of($users)
-            ->addColumn('action', function ($users) {
-                return '<a onclick="editForm('.$users->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> '.
-                '<a onclick="deleteData('.$users->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
-            })
-            ->rawColumns(['action'])->make(true);
-    }
+		if ($request->hasFile('file')) {
+			//UPLOAD FILE
+			$file = $request->file('file'); //GET FILE
+			Excel::import(new SuppliersImport, $file); //IMPORT FILE
+			return redirect()->back()->with(['success' => 'Upload file data suppliers !']);
+		}
 
-    public function exportExcel()
-    {
-        return (new ExportSuppliers())->download('suppliers.xlsx');
-    }
+		return redirect()->back()->with(['error' => 'Please choose file before!']);
+	}
+
+	public function exportSuppliersAll() {
+		$suppliers = Supplier::all();
+		$pdf = PDF::loadView('suppliers.SuppliersAllPDF', compact('suppliers'));
+		return $pdf->download('suppliers.pdf');
+	}
+
+	public function exportExcel() {
+		return (new ExportSuppliers)->download('suppliers.xlsx');
+	}
 }

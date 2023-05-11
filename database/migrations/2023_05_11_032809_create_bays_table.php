@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBaysTable extends Migration
 {
@@ -15,7 +15,12 @@ class CreateBaysTable extends Migration
     {
         Schema::create('bays', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('warehouse_id')->unsigned();
+
+            $table->string('name');
             $table->timestamps();
+
+            $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
         });
     }
 

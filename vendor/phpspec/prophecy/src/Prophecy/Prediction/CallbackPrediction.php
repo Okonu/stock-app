@@ -19,7 +19,7 @@ use Closure;
 use ReflectionFunction;
 
 /**
- * Executes preset callback.
+ * Callback prediction.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
  */
@@ -28,6 +28,8 @@ class CallbackPrediction implements PredictionInterface
     private $callback;
 
     /**
+     * Initializes callback prediction.
+     *
      * @param callable $callback Custom callback
      *
      * @throws \Prophecy\Exception\InvalidArgumentException
@@ -44,12 +46,19 @@ class CallbackPrediction implements PredictionInterface
         $this->callback = $callback;
     }
 
+    /**
+     * Executes preset callback.
+     *
+     * @param Call[]         $calls
+     * @param ObjectProphecy $object
+     * @param MethodProphecy $method
+     */
     public function check(array $calls, ObjectProphecy $object, MethodProphecy $method)
     {
         $callback = $this->callback;
 
         if ($callback instanceof Closure && method_exists('Closure', 'bind') && (new ReflectionFunction($callback))->getClosureThis() !== null) {
-            $callback = Closure::bind($callback, $object) ?? $this->callback;
+            $callback = Closure::bind($callback, $object);
         }
 
         call_user_func($callback, $calls, $object, $method);

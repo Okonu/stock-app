@@ -31,6 +31,9 @@ class SplFileInfoPatch implements ClassPatchInterface
      */
     public function supports(ClassNode $node)
     {
+        if (null === $node->getParentClass()) {
+            return false;
+        }
         return 'SplFileInfo' === $node->getParentClass()
             || is_subclass_of($node->getParentClass(), 'SplFileInfo')
         ;
@@ -45,7 +48,6 @@ class SplFileInfoPatch implements ClassPatchInterface
     {
         if ($node->hasMethod('__construct')) {
             $constructor = $node->getMethod('__construct');
-            \assert($constructor !== null);
         } else {
             $constructor = new MethodNode('__construct');
             $node->addMethod($constructor);

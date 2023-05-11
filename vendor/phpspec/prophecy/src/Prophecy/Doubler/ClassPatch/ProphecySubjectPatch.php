@@ -81,7 +81,6 @@ PHP
 
         if ($node->hasMethod('__call')) {
             $__call = $node->getMethod('__call');
-            \assert($__call !== null);
         } else {
             $__call = new MethodNode('__call');
             $__call->addArgument(new ArgumentNode('name'));

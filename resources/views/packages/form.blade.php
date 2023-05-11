@@ -17,7 +17,7 @@
 
                     <div class="box-body">
                         <div class="form-group">
-                            <label >Package Type</label>
+                            <label >Name</label>
                             <input type="text" class="form-control" id="name" name="name"  autofocus required>
                             <span class="help-block with-errors"></span>
                         </div>

@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>UEA</title>
-    <!-- responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('assets/bower_components/bootstrap/dist/css/bootstrap.min.css ')}}">
@@ -20,7 +19,9 @@
 
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('assets/dist/css/AdminLTE.min.css')}} ">
-  
+    <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+          page. However, you can choose any other skin. Make sure you
+          apply the skin class to the body tag so the changes take effect. -->
     <link rel="stylesheet" href="{{ asset('assets/dist/css/skins/skin-green.min.css')}} ">
 
 @yield('top')
@@ -51,6 +52,7 @@
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
+                    <!-- Messages-->
                     <!-- User Account Menu -->
                     <li class="dropdown user user-menu">
                         <!-- Menu Toggle Button -->
@@ -97,6 +99,7 @@
             </div>
         </nav>
     </header>
+    <!-- Left side column. contains the logo and sidebar -->
 @include('layouts.sidebar')
 
     <div class="content-wrapper">
@@ -114,22 +117,21 @@
     <footer class="main-footer">
         <!-- To the right -->
         <div class="pull-right hidden-xs">
-            UEA
+            Stock System
         </div>
         <!-- Default to the left -->
         <?php $date = date('Y'); ?>
-        <strong>&copy; {{$date}} - Stock Management System </strong>
+        <strong>&copy; {{$date}} - UEA</strong>
     </footer>
 
     <!-- Control Sidebar -->
 
     <!-- /.control-sidebar -->
-   
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
 
-<!--JS SCRIPTS -->
+<!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 3 -->
 <script src="{{  asset('assets/bower_components/jquery/dist/jquery.min.js') }} "></script>

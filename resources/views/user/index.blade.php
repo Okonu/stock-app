@@ -36,7 +36,7 @@
         <!-- /.box-body -->
     </div>
 
-    <!-- @include('warehouses.form') -->
+    @include('suppliers.form')
 @endsection
 
 @section('bot')
@@ -137,8 +137,8 @@
             $('#modal-form form').validator().on('submit', function (e) {
                 if (!e.isDefaultPrevented()){
                     var id = $('#id').val();
-                    // if (save_method == 'add') url = "{{ url('own') }}";
-                    // else url = "{{ url('suppliers') . '/' }}" + id;
+                    if (save_method == 'add') url = "{{ url('suppliers') }}";
+                    else url = "{{ url('suppliers') . '/' }}" + id;
 
                     $.ajax({
                         url : url,

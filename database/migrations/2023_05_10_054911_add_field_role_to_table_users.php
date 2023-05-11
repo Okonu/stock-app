@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddNameToWarehouses extends Migration
+class AddFieldRoleToTableUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddNameToWarehouses extends Migration
      */
     public function up()
     {
-        Schema::table('warehouses', function (Blueprint $table) {
-            $table->string('name');
+        Schema::table('users', function (Blueprint $table) {
+            $table->enum('role',['admin','staff'])->default('staff');
         });
     }
 
@@ -25,8 +25,8 @@ class AddNameToWarehouses extends Migration
      */
     public function down()
     {
-        Schema::table('warehouses', function (Blueprint $table) {
-            $table->dropColumn('name');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('role');
         });
     }
 }

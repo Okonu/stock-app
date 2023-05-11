@@ -17,8 +17,6 @@ use SebastianBergmann\Comparator\Factory as BaseFactory;
  * Prophecy comparator factory.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
- *
- * @deprecated Use "Prophecy\Comparator\FactoryProvider" instead to get a "SebastianBergmann\Comparator\Factory" instance.
  */
 final class Factory extends BaseFactory
 {

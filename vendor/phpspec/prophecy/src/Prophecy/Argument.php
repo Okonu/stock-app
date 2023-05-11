@@ -61,13 +61,12 @@ class Argument
      * Checks that argument matches provided callback.
      *
      * @param callable $callback
-     * @param string|null $customStringRepresentation Customize the __toString() representation of this token
      *
      * @return Token\CallbackToken
      */
-    public static function that($callback, ?string $customStringRepresentation = null)
+    public static function that($callback)
     {
-        return new Token\CallbackToken($callback, $customStringRepresentation);
+        return new Token\CallbackToken($callback);
     }
 
     /**
@@ -93,13 +92,13 @@ class Argument
     /**
      * Checks that argument matches all tokens
      *
-     * @param mixed ...$tokens a list of tokens
+     * @param mixed ... a list of tokens
      *
      * @return Token\LogicalAndToken
      */
-    public static function allOf(...$tokens)
+    public static function allOf()
     {
-        return new Token\LogicalAndToken($tokens);
+        return new Token\LogicalAndToken(func_get_args());
     }
 
     /**
@@ -202,7 +201,7 @@ class Argument
      * given precision.
      *
      * @param float $value
-     * @param int $precision
+     * @param float $precision
      *
      * @return Token\ApproximateValueToken
      */
@@ -214,7 +213,7 @@ class Argument
     /**
      * Checks that argument is in array.
      *
-     * @param array<mixed> $value
+     * @param array $value
      *
      * @return Token\InArrayToken
      */
@@ -227,7 +226,7 @@ class Argument
     /**
      * Checks that argument is not in array.
      *
-     * @param array<mixed> $value
+     * @param array $value
      *
      * @return Token\NotInArrayToken
      */

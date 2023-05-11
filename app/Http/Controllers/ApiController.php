@@ -3,35 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Bay;
-use App\Customer;
+use App\Garden;
 use App\Grade;
+use App\Owner;
 use App\Package;
-use App\Qty;
-use App\Stock;
 use App\User;
 use App\Warehouse;
-use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
-    public function apiPackages(Request $request)
-    {
-        return Package::all();
-    }
-
-    public function apiCategories()
-    {
-        return Qty::all();
-    }
-
     public function apiGrades()
     {
         return Grade::all();
     }
 
-    public function apiCustomers()
+    public function apiPackages()
     {
-        return Customer::all();
+        return Package::all();
+    }
+
+    public function apiGardens()
+    {
+        return Garden::all();
     }
 
     public function apiWarehouses()
@@ -44,9 +37,9 @@ class ApiController extends Controller
         return Bay::all();
     }
 
-    public function apiStock()
+    public function apiOwners()
     {
-        return Stock::all();
+        return Owner::all();
     }
 
     public function apiUsers()

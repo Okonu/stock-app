@@ -21,10 +21,20 @@
                             <input type="text" class="form-control" id="name" name="name"  autofocus required>
                             <span class="help-block with-errors"></span>
                         </div>
+                        
+                        <div class="form-group">
+                            <label >Farm Owners</label>
+                            {!! Form::select('owner_id', $owner, null, ['class' => 'form-control select', 'placeholder' => '-- Choose Farm Owner --', 'id' => 'owner_id', 'required']) !!}
+                            <span class="help-block with-errors"></span>
+                        </div>
+
+
+
+
                     </div>
                     <!-- /.box-body -->
 
-                </div><!-- Log on to codeastro.com for more projects! -->
+                </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Cancel</button>

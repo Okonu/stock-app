@@ -21,11 +21,11 @@ use ReflectionClass;
  */
 class CachedDoubler extends Doubler
 {
-    /**
-     * @var array<string, string>
-     */
     private static $classes = array();
 
+    /**
+     * {@inheritdoc}
+     */
     protected function createDoubleClass(ReflectionClass $class = null, array $interfaces)
     {
         $classId = $this->generateClassId($class, $interfaces);
@@ -37,8 +37,8 @@ class CachedDoubler extends Doubler
     }
 
     /**
-     * @param ReflectionClass<object> $class
-     * @param ReflectionClass<object>[] $interfaces
+     * @param ReflectionClass   $class
+     * @param ReflectionClass[] $interfaces
      *
      * @return string
      */
@@ -59,9 +59,6 @@ class CachedDoubler extends Doubler
         return md5(implode('', $parts));
     }
 
-    /**
-     * @return void
-     */
     public function resetCache()
     {
         self::$classes = array();

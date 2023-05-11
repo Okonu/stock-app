@@ -19,12 +19,10 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/packages', 'ApiController@apiPackages');
-    Route::get('/categories', 'ApiController@apiCategories');
+    Route::get('/gardens', 'ApiController@apiGardens');
     Route::get('/grades', 'ApiController@apiGrades');
-    Route::get('/customers', 'ApiController@apiCustomers');
     Route::get('/warehouses', 'ApiController@apiWarehouses');
     Route::get('/bays', 'ApiController@apiBays');
     Route::get('/owners', 'ApiController@apiOwners');
-    Route::get('/stock', 'ApiController@apiStock');
     Route::get('/users', 'ApiController@apiUsers');
 });

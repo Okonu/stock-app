@@ -97,7 +97,7 @@ class GradeController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Grade Update',
+            'message' => 'Grades Updated',
         ]);
     }
 
@@ -114,7 +114,7 @@ class GradeController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Grade Delete',
+            'message' => 'Grade Deleted',
         ]);
     }
 

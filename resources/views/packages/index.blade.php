@@ -14,8 +14,8 @@
         </div>
 
         <div class="box-header">
-            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add a Package Type</a>
-            </div>
+            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add a New Package TYpe</a>
+            <</div>
 
 
         <!-- /.box-header -->
@@ -24,7 +24,7 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Package Type</th>
+                    <th>Name</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -78,7 +78,7 @@
             $('input[name=_method]').val('POST');
             $('#modal-form').modal('show');
             $('#modal-form form')[0].reset();
-            $('.modal-title').text('Add packages');
+            $('.modal-title').text('Add Packages');
         }
 
         function editForm(id) {
@@ -91,13 +91,13 @@
                 dataType: "JSON",
                 success: function(data) {
                     $('#modal-form').modal('show');
-                    $('.modal-title').text('Edit packages');
+                    $('.modal-title').text('Edit PackageType');
 
                     $('#id').val(data.id);
                     $('#name').val(data.name);
                 },
                 error : function() {
-                    alert("Nothing Data");
+                    alert("No Data");
                 }
             });
         }
@@ -148,6 +148,7 @@
                     $.ajax({
                         url : url,
                         type : "POST",
+//                      data : $('#modal-form form').serialize(),
                         data: new FormData($("#modal-form form")[0]),
                         contentType: false,
                         processData: false,

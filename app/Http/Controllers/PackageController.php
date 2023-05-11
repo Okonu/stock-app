@@ -20,7 +20,7 @@ class PackageController extends Controller
      */
     public function index()
     {
-        $package = Package::all();
+        $packages = Package::all();
 
         return view('packages.index');
     }
@@ -49,7 +49,7 @@ class PackageController extends Controller
 
         return response()->json([
            'success' => true,
-           'message' => 'Package Type  Created',
+           'message' => 'Package Type Created',
         ]);
     }
 
@@ -97,7 +97,7 @@ class PackageController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Package Type Update',
+            'message' => 'Package Type Updated',
         ]);
     }
 
@@ -114,7 +114,7 @@ class PackageController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Package Types Delete',
+            'message' => 'Package Type Deleted',
         ]);
     }
 

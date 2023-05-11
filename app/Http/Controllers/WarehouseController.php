@@ -49,7 +49,7 @@ class WarehouseController extends Controller
 
         return response()->json([
            'success' => true,
-           'message' => 'Warehouse Created',
+           'message' => 'Warehouses Created',
         ]);
     }
 
@@ -97,7 +97,7 @@ class WarehouseController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Warehouse Update',
+            'message' => 'Warehouses Update',
         ]);
     }
 
@@ -114,18 +114,18 @@ class WarehouseController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Warehouse Delete',
+            'message' => 'Warehouses Delete',
         ]);
     }
 
-    public function Warehouses()
+    public function apiWarehouses()
     {
         $warehouses = Warehouse::all();
 
         return Datatables::of($warehouses)
             ->addColumn('action', function ($warehouses) {
                 return '<a onclick="editForm('.$warehouses->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> '.
-                    '<a onclick="deleteData('.$$warehouses->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+                    '<a onclick="deleteData('.$warehouses->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
             })
             ->rawColumns(['action'])->make(true);
     }

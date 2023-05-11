@@ -11,6 +11,10 @@
 |
  */
 
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
+
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -25,29 +29,41 @@ Route::get('dashboard', function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('packages', 'PackageController');
-    Route::get('/apiPackages', 'PackageController@apiPackage')->name('api.packages');
-
-    Route::resource('categories', 'CategoryController');
-    Route::get('/apiCategories', 'CategoryController@apiCategories')->name('api.categories');
-
     Route::resource('grades', 'GradeController');
-    Route::get('/apiGrades', 'GradeController@apiGrades')->name('api.grades');
-
-    Route::resource('customers', 'CustomerController');
-    Route::get('/apiCustomers', 'CustomerController@apiCustomers')->name('api.customers');
-
+    Route::resource('gardens', 'GardenController');
     Route::resource('warehouses', 'WarehouseController');
-    Route::get('/apiWarehouses', 'WarehouseController@apiWarehouses')->name('api.warehouses');
-
     Route::resource('bays', 'BayController');
-    Route::get('/apiBays', 'BayController@apiBays')->name('api.bays');
-
     Route::resource('owners', 'OwnerController');
-    Route::get('/apiOwners', 'OwnerController@apiOwners')->name('api.owners');
-
-    Route::resource('stock', 'StockController');
-    Route::get('apiStock', 'StockController@apiStock')->name('api.stock');
-
     Route::resource('user', 'UserController');
-    Route::get('/apiUser', 'UserController@apiUsers')->name('api.users');
 });
+
+// Auth::routes();
+
+// Route::get('/home', 'HomeController@index')->name('home');
+
+// Route::get('dashboard', function () {
+//     return view('layouts.master');
+// });
+
+// Route::group(['middleware' => 'auth'], function () {
+//     Route::resource('warehouses', 'WarehouseController');
+//     Route::get('/apiWarehouses', 'WarehouseController@apiWarehouses')->name('api.warehouses');
+
+//     Route::resource('owners', 'OwnerController');
+//     Route::get('/apiOwners', 'OwnerController@apiOwners')->name('api.owners');
+
+//     Route::resource('gardens', 'GardenController');
+//     Route::get('/apiGardens', 'GardenController@apiGardens')->name('api.gardens');
+
+//     Route::resource('packages', 'PackageController');
+//     Route::get('/apiPackages', 'PackageController@apiPackages')->name('api.packages');
+
+//     Route::resource('grades', 'GradeController');
+//     Route::get('/apiGrades', 'GradeController@apiGrades')->name('api.grades');
+
+//     Route::resource('bays', 'BayController');
+//     Route::get('/apiBays', 'BayController@apiBays')->name('api.bays');
+
+// Route::resource('user', 'UserController');
+// Route::get('/apiUser', 'UserController@apiUsers')->name('api.users');
+// });

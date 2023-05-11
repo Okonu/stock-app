@@ -11,6 +11,7 @@
 
 namespace Prophecy\PhpDocumentor;
 
+use phpDocumentor\Reflection\DocBlock\Tag\MethodTag as LegacyMethodTag;
 use phpDocumentor\Reflection\DocBlock\Tags\Method;
 
 /**
@@ -21,9 +22,9 @@ use phpDocumentor\Reflection\DocBlock\Tags\Method;
 interface MethodTagRetrieverInterface
 {
     /**
-     * @param \ReflectionClass<object> $reflectionClass
+     * @param \ReflectionClass $reflectionClass
      *
-     * @return list<Method>
+     * @return LegacyMethodTag[]|Method[]
      */
     public function getTagList(\ReflectionClass $reflectionClass);
 }

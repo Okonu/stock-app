@@ -22,8 +22,7 @@ use Prophecy\Doubler\Generator\Node\TypeNodeAbstract;
  */
 class ClassCodeGenerator
 {
-    // Used to accept an optional first argument with the deprecated Prophecy\Doubler\Generator\TypeHintReference so careful when adding a new argument in a minor version.
-    public function __construct()
+    public function __construct(TypeHintReference $typeHintReference = null)
     {
     }
 
@@ -63,7 +62,7 @@ class ClassCodeGenerator
         return sprintf("namespace %s {\n%s\n}", $namespace, $code);
     }
 
-    private function generateMethod(Node\MethodNode $method): string
+    private function generateMethod(Node\MethodNode $method)
     {
         $php = sprintf("%s %s function %s%s(%s)%s {\n",
             $method->getVisibility(),
@@ -92,12 +91,7 @@ class ClassCodeGenerator
         }
     }
 
-    /**
-     * @param list<Node\ArgumentNode> $arguments
-     *
-     * @return list<string>
-     */
-    private function generateArguments(array $arguments): array
+    private function generateArguments(array $arguments)
     {
         return array_map(function (Node\ArgumentNode $argument){
 

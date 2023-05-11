@@ -10,9 +10,9 @@
     <div class="box box-success">
 
         <div class="box-header">
-            <h3 class="box-title">List of bays</h3>
+            <h3 class="box-title">List of Bays</h3>
 
-            <a onclick="addForm()" class="btn btn-success pull-right" style="margin-top: -8px;"><i class="fa fa-plus"></i> Add bays</a>
+            <a onclick="addForm()" class="btn btn-success pull-right" style="margin-top: -8px;"><i class="fa fa-plus"></i> Add Bay</a>
         </div>
 
 
@@ -22,8 +22,8 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>warehouse</th>
-                    <th>Bay</th>
+                    <th>Name</th>
+                    <th>Warehouse</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -68,8 +68,7 @@
             ajax: "{{ route('api.bays') }}",
             columns: [
                 {data: 'id', name: 'id'},
-                {data: 'warehouse_name', name: 'warehouse_name'},
-                {data: 'name', name: 'name'},
+                {data: 'name', name: 'name'},{data: 'warehouse_name', name: 'warehouse_name'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });
@@ -79,7 +78,7 @@
             $('input[name=_method]').val('POST');
             $('#modal-form').modal('show');
             $('#modal-form form')[0].reset();
-            $('.modal-title').text('Add bays');
+            $('.modal-title').text('Add Bays');
         }
 
         function editForm(id) {
@@ -92,14 +91,14 @@
                 dataType: "JSON",
                 success: function(data) {
                     $('#modal-form').modal('show');
-                    $('.modal-title').text('Edit bays');
+                    $('.modal-title').text('Edit Bays');
 
                     $('#id').val(data.id);
-                    $('#name').val(data.name);
+                    $('#name').val(data.nama);
                     $('#warehouse_id').val(data.warehouse_id);
                 },
                 error : function() {
-                    alert("Nothing Data");
+                    alert("No Data");
                 }
             });
         }
@@ -150,6 +149,7 @@
                     $.ajax({
                         url : url,
                         type : "POST",
+//                      data : $('#modal-form form').serialize(),
                         data: new FormData($("#modal-form form")[0]),
                         contentType: false,
                         processData: false,

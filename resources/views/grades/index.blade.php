@@ -10,12 +10,12 @@
     <div class="box box-success">
 
         <div class="box-header">
-            <h3 class="box-title">List of Grades</h3>
+            <h3 class="box-title">List of Tea Grades</h3>
         </div>
 
         <div class="box-header">
-            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add a New Grade</a>
-        </div>
+            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add a New Tea Grade</a>
+          </div>
 
 
         <!-- /.box-header -->
@@ -78,7 +78,7 @@
             $('input[name=_method]').val('POST');
             $('#modal-form').modal('show');
             $('#modal-form form')[0].reset();
-            $('.modal-title').text('Add Grades');
+            $('.modal-title').text('Add Tea Grade');
         }
 
         function editForm(id) {
@@ -91,7 +91,7 @@
                 dataType: "JSON",
                 success: function(data) {
                     $('#modal-form').modal('show');
-                    $('.modal-title').text('Edit Grades');
+                    $('.modal-title').text('Edit Tea Grade');
 
                     $('#id').val(data.id);
                     $('#name').val(data.name);

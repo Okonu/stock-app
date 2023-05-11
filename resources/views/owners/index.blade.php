@@ -2,42 +2,45 @@
 
 
 @section('top')
-    <!-- Log on to codeastro.com for more projects! -->
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
+    {{--<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">--}}
+    @include('sweet::alert')
 @endsection
 
 @section('content')
     <div class="box box-success">
 
         <div class="box-header">
-            <h3 class="box-title">List of Categories</h3>
+            <h3 class="box-title">List of Farm Owners</h3>
         </div>
 
         <div class="box-header">
-            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add a New Category</a>
-            <a href="{{ route('exportPDF.categoriesAll') }}" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export PDF</a>
-            <a href="{{ route('exportExcel.categoriesAll') }}" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Export Excel</a>
-        </div>
+            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add Farm Owner</a>
+            </div>
 
 
         <!-- /.box-header -->
         <div class="box-body">
-            <table id="categories-table" class="table table-bordered table-hover table-striped">
+            <table id="owner-table" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Action</th>
+                    <th>Address</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
         <!-- /.box-body -->
-    </div><!-- Log on to codeastro.com for more projects! -->
+    </div>
 
-    @include('categories.form')
+
+    @include('owners.form')
 
 @endsection
 
@@ -49,6 +52,8 @@
 
     {{-- Validator --}}
     <script src="{{ asset('assets/validator/validator.min.js') }}"></script>
+
+    {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>--}}
 
     {{--<script>--}}
     {{--$(function () {--}}
@@ -65,13 +70,16 @@
     {{--</script>--}}
 
     <script type="text/javascript">
-        var table = $('#categories-table').DataTable({
+        var table = $('#owner-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('api.categories') }}",
+            ajax: "{{ route('api.owners') }}",
             columns: [
                 {data: 'id', name: 'id'},
                 {data: 'name', name: 'name'},
+                {data: 'address', name: 'address'},
+                {data: 'email', name: 'email'},
+                {data: 'telephone', name: 'telephone'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });
@@ -81,7 +89,7 @@
             $('input[name=_method]').val('POST');
             $('#modal-form').modal('show');
             $('#modal-form form')[0].reset();
-            $('.modal-title').text('Add Categories');
+            $('.modal-title').text('Add Owners');
         }
 
         function editForm(id) {
@@ -89,18 +97,21 @@
             $('input[name=_method]').val('PATCH');
             $('#modal-form form')[0].reset();
             $.ajax({
-                url: "{{ url('categories') }}" + '/' + id + "/edit",
+                url: "{{ url('owners') }}" + '/' + id + "/edit",
                 type: "GET",
                 dataType: "JSON",
                 success: function(data) {
                     $('#modal-form').modal('show');
-                    $('.modal-title').text('Edit Categories');
+                    $('.modal-title').text('Edit Owners');
 
                     $('#id').val(data.id);
                     $('#name').val(data.name);
+                    $('#address').val(data.address);
+                    $('#email').val(data.email);
+                    $('#telephone').val(data.telephone);
                 },
                 error : function() {
-                    alert("Nothing Data");
+                    alert("No Data");
                 }
             });
         }
@@ -117,7 +128,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then(function () {
                 $.ajax({
-                    url : "{{ url('categories') }}" + '/' + id,
+                    url : "{{ url('owners') }}" + '/' + id,
                     type : "POST",
                     data : {'_method' : 'DELETE', '_token' : csrf_token},
                     success : function(data) {
@@ -145,13 +156,12 @@
             $('#modal-form form').validator().on('submit', function (e) {
                 if (!e.isDefaultPrevented()){
                     var id = $('#id').val();
-                    if (save_method == 'add') url = "{{ url('categories') }}";
-                    else url = "{{ url('categories') . '/' }}" + id;
+                    if (save_method == 'add') url = "{{ url('owners') }}";
+                    else url = "{{ url('owners') . '/' }}" + id;
 
                     $.ajax({
                         url : url,
                         type : "POST",
-                        //hanya untuk input data tanpa dokumen
 //                      data : $('#modal-form form').serialize(),
                         data: new FormData($("#modal-form form")[0]),
                         contentType: false,

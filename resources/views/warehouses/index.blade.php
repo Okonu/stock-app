@@ -10,12 +10,12 @@
     <div class="box box-success">
 
         <div class="box-header">
-            <h3 class="box-title">List of Warehouse</h3>
+            <h3 class="box-title">List of Warehouses</h3>
         </div>
 
         <div class="box-header">
             <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add a New Warehouse</a>
-        </div>
+            </div>
 
 
         <!-- /.box-header -->
@@ -46,8 +46,6 @@
 
     {{-- Validator --}}
     <script src="{{ asset('assets/validator/validator.min.js') }}"></script>
-
-    {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>--}}
 
     {{--<script>--}}
     {{--$(function () {--}}
@@ -80,7 +78,7 @@
             $('input[name=_method]').val('POST');
             $('#modal-form').modal('show');
             $('#modal-form form')[0].reset();
-            $('.modal-title').text('Add Warehouse');
+            $('.modal-title').text('Add Warehouses');
         }
 
         function editForm(id) {
@@ -93,13 +91,13 @@
                 dataType: "JSON",
                 success: function(data) {
                     $('#modal-form').modal('show');
-                    $('.modal-title').text('Edit Warehouse');
+                    $('.modal-title').text('Edit Warehouses');
 
                     $('#id').val(data.id);
                     $('#name').val(data.name);
                 },
                 error : function() {
-                    alert("No Data");
+                    alert("Nothing Data");
                 }
             });
         }
@@ -150,6 +148,7 @@
                     $.ajax({
                         url : url,
                         type : "POST",
+//                      data : $('#modal-form form').serialize(),
                         data: new FormData($("#modal-form form")[0]),
                         contentType: false,
                         processData: false,

@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class Owner extends Model
 {
-    protected $fillable = ['nama', 'alamat', 'email', 'telepon'];
+    protected $fillable = ['name', 'address', 'email', 'telephone'];
 
     protected $hidden = ['created_at', 'updated_at'];
 }
