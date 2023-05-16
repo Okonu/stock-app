@@ -27,6 +27,13 @@ class DatabaseSeeder extends Seeder
                 'created_at' => date('Y-m-d H:i:s'),
                 'role' => 'staff',
             ],
+            [
+                'name' => 'Julius Ndegwa',
+                'phone' => '0711274875',
+                'password' => bcrypt('wanderlust'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'role' => 'staff',
+            ],
         ]);
     }
 }
