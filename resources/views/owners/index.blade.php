@@ -25,7 +25,7 @@
             <table id="owner-table" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
                     <th>Name</th>
                     <th>Address</th>
                     <th>Email</th>
@@ -75,7 +75,13 @@
             serverSide: true,
             ajax: "{{ route('api.owners') }}",
             columns: [
-                {data: 'id', name: 'id'},
+                {
+                    data: 'null', name: 'null', orderable: false, searchable: false,
+                    render: function (data, type, row, meta){
+                        var rowNumber = meta.row + 1;
+                        return rowNumber;
+                    }
+                },
                 {data: 'name', name: 'name'},
                 {data: 'address', name: 'address'},
                 {data: 'email', name: 'email'},

@@ -23,7 +23,7 @@
             <table id="user-table" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
                     <th>Name</th>
                     <th>Phone</th>
                     <th>Role</th>
@@ -68,7 +68,13 @@
             serverSide: true,
             ajax: "{{ route('api.users') }}",
             columns: [
-                {data: 'id', name: 'id'},
+                {
+                    data: 'null', name: 'null', orderable: false, searchable: false,
+                    render: function (data, type, row, meta){
+                        var rowNumber = meta.row + 1;
+                        return rowNumber;
+                    }
+                },
                 {data: 'name', name: 'name'},
                 {data: 'phone', name: 'phone'}, // Changed from 'email' to 'phone'
                 {data: 'role', name: 'role'},

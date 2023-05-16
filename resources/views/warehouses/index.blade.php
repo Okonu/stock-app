@@ -23,7 +23,7 @@
             <table id="warehouses-table" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
                     <th>Name</th>
                     <th>Action</th>
                 </tr>

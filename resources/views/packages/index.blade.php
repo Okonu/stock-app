@@ -23,7 +23,7 @@
             <table id="packages-table" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
                     <th>Name</th>
                     <th>Action</th>
                 </tr>
@@ -67,7 +67,13 @@
             serverSide: true,
             ajax: "{{ route('api.packages') }}",
             columns: [
-                {data: 'id', name: 'id'},
+                {
+                    data: 'null', name: 'null', orderable: false, searchable: false,
+                    render: function (data, type, row, meta){
+                        var rowNumber = meta.row + 1;
+                        return rowNumber;
+                    }
+                },
                 {data: 'name', name: 'name'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]

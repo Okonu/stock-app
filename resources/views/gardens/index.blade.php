@@ -21,7 +21,7 @@
             <table id="gardens-table" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
                     <th>Name</th>
                     <th>Farm Owners</th>
                     <th>Actions</th>
@@ -66,7 +66,13 @@
             serverSide: true,
             ajax: "{{ route('api.gardens') }}",
             columns: [
-                {data: 'id', name: 'id'},
+                {
+                    data: 'null', name: 'null', orderable: false, searchable: false,
+                    render: function (data, type, row, meta){
+                        var rowNumber = meta.row + 1;
+                        return rowNumber;
+                    }
+                },
                 {data: 'name', name: 'name'},
                 {data: 'owner_name', name: 'owner_name'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
