@@ -1,4 +1,5 @@
 @extends('layouts.master')
+
 @section('top')
 <style type="text/css">
     .row-centered
@@ -14,9 +15,9 @@
     }
 </style>
 @stop
+
 @section('content')
 <div class="box box-success">
-
     <div class="box-header">
         <h3 class="box-title">Add Users</h3>
     </div>
@@ -27,29 +28,29 @@
                     @csrf
                     <div class="form-group">
                         <label for="signup-email" class="control-label sr-only">Name</label>
-                        <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" id="signup-email"name="name" value="{{ old('name') }}" required autofocus placeholder="Name">
+                        <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" id="signup-email" name="name" value="{{ old('name') }}" required autofocus placeholder="Name">
                         @if ($errors->has('name'))
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $errors->first('name') }}</strong>
-                        </span>
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->first('name') }}</strong>
+                            </span>
                         @endif
                     </div>
                     <div class="form-group">
-                        <label for="signup-password" class="control-label sr-only">Email</label>
-                        <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required placeholder="Email">
-                        @if ($errors->has('email'))
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $errors->first('email') }}</strong>
-                        </span>
+                        <label for="signup-password" class="control-label sr-only">Phone</label>
+                        <input type="text" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }}" name="phone" value="{{ old('phone') }}" required placeholder="Phone">
+                        @if ($errors->has('phone'))
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->first('phone') }}</strong>
+                            </span>
                         @endif
                     </div>
                     <div class="form-group">
                         <label for="signup-password" class="control-label sr-only">Password</label>
                         <input type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required placeholder="Password">
                         @if ($errors->has('password'))
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $errors->first('password') }}</strong>
-                        </span>
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->first('password') }}</strong>
+                            </span>
                         @endif
                     </div>
                     <div class="form-group">
@@ -65,6 +66,5 @@
             <a href="/user" class="btn btn-danger">Back</a>
         </div>
     </div>
-</div>
 </div>
 @stop

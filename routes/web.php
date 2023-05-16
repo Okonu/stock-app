@@ -11,10 +11,6 @@
 |
  */
 
-// Route::get('/', function () {
-//     return view('auth.login');
-// });
-
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -28,14 +24,37 @@ Route::get('dashboard', function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::resource('packages', 'PackageController');
-    Route::resource('grades', 'GradeController');
-    Route::resource('gardens', 'GardenController');
     Route::resource('warehouses', 'WarehouseController');
-    Route::resource('bays', 'BayController');
+    Route::get('/apiWarehouses', 'WarehouseController@apiWarehouses')->name('api.warehouses');
+
     Route::resource('owners', 'OwnerController');
+    Route::get('/apiOwners', 'OwnerController@apiOwners')->name('api.owners');
+
+    Route::resource('gardens', 'GardenController');
+    Route::get('/apiGardens', 'GardenController@apiGardens')->name('api.gardens');
+
+    Route::resource('packages', 'PackageController');
+    Route::get('/apiPackages', 'PackageController@apiPackages')->name('api.packages');
+
+    Route::resource('grades', 'GradeController');
+    Route::get('/apiGrades', 'GradeController@apiGrades')->name('api.grades');
+
+    Route::resource('bays', 'BayController');
+    Route::get('/apiBays', 'BayController@apiBays')->name('api.bays');
+
+    Route::resource('stocks', 'StockController');
+    Route::get('/apiStocks', 'StockController@apiStocks')->name('api.stocks');
+    Route::get('/exportStockAll', 'StockController@exportStockAll')->name('exportPDF.stockAll');
+    Route::get('/exportStockAllExcel', 'StockController@exportExcel')->name('exportExcel.stockAll');
+    Route::get('/exportStock/{id}', 'StockController@exportStock')->name('exportPDF.stock');
+
     Route::resource('user', 'UserController');
+    Route::get('/apiUser', 'UserController@apiUsers')->name('api.users');
 });
+
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
 
 // Auth::routes();
 
@@ -46,24 +65,11 @@ Route::group(['middleware' => 'auth'], function () {
 // });
 
 // Route::group(['middleware' => 'auth'], function () {
-//     Route::resource('warehouses', 'WarehouseController');
-//     Route::get('/apiWarehouses', 'WarehouseController@apiWarehouses')->name('api.warehouses');
-
-//     Route::resource('owners', 'OwnerController');
-//     Route::get('/apiOwners', 'OwnerController@apiOwners')->name('api.owners');
-
-//     Route::resource('gardens', 'GardenController');
-//     Route::get('/apiGardens', 'GardenController@apiGardens')->name('api.gardens');
-
 //     Route::resource('packages', 'PackageController');
-//     Route::get('/apiPackages', 'PackageController@apiPackages')->name('api.packages');
-
 //     Route::resource('grades', 'GradeController');
-//     Route::get('/apiGrades', 'GradeController@apiGrades')->name('api.grades');
-
+//     Route::resource('gardens', 'GardenController');
+//     Route::resource('warehouses', 'WarehouseController');
 //     Route::resource('bays', 'BayController');
-//     Route::get('/apiBays', 'BayController@apiBays')->name('api.bays');
-
-// Route::resource('user', 'UserController');
-// Route::get('/apiUser', 'UserController@apiUsers')->name('api.users');
+//     Route::resource('owners', 'OwnerController');
+//     Route::resource('user', 'UserController');
 // });

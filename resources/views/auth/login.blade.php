@@ -24,58 +24,58 @@
 <body>
     <!-- WRAPPER -->
     <div id="wrapper">
-        <div class="vertical-align-wrap">
-            <div class="vertical-align-middle">
-                <div class="auth-box ">
-                    <div class="left">
-                        <div class="content">
-                            <div class="header">
-                                <p class="lead">Login to your account</p>
+    <div class="vertical-align-wrap">
+        <div class="vertical-align-middle">
+            <div class="auth-box ">
+                <div class="left">
+                    <div class="content">
+                        <div class="header">
+                            <p class="lead">Login to your account</p>
+                        </div>
+                        <form class="form-auth-small" method="POST" action="{{ route('login') }}">
+                            @csrf
+                            <div class="form-group">
+                                <label for="signin-email" class="control-label sr-only">Phone</label>
+                                <input type="text" name="phone" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }}" id="signin-email" value="{{ old('phone') }}" required placeholder="Phone">
+                                @if ($errors->has('phone'))
+                                <br>
+                                <div class="alert alert-danger alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <strong><i class="icon fa fa-ban"></i> Alert!</strong> &nbsp; {{ $errors->first('phone') }}
+                                </div>
+                                @endif
                             </div>
-                            <form class="form-auth-small" method="POST" action="{{ route('login') }}">
-                                @csrf
-                                <div class="form-group">
-                                    <label for="signin-email" class="control-label sr-only">Email</label>
-                                    <input type="email" name="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="signin-email" value="{{ old('email') }}" required placeholder="Email">
-                                    @if ($errors->has('email'))
-                                    <br>
-                                    <div class="alert alert-danger alert-dismissible">
-                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                        <strong><i class="icon fa fa-ban"></i> Alert!</strong> &nbsp; {{ $errors->first('email') }}
-                                    </div>
-                                    @endif
-                                </div>
-                                <div class="form-group">
-                                    <label for="signin-password" class="control-label sr-only">Password</label>
-                                    <input type="password" class="form-control" name="password" id="signin-password" value="{{ old('password') }}" placeholder="Password">
-                                    @if ($errors->has('password'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="fancy-checkbox element-left">
-                                        <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                        <span>Remember me</span>
-                                    </label>
-                                </div>
-                                <button type="submit" class="btn btn-success btn-lg btn-block">LOGIN</button>
-                            </form>
-                        </div>
+                            <div class="form-group">
+                                <label for="signin-password" class="control-label sr-only">Password</label>
+                                <input type="password" class="form-control" name="password" id="signin-password" value="{{ old('password') }}" placeholder="Password">
+                                @if ($errors->has('password'))
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $errors->first('password') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group clearfix">
+                                <label class="fancy-checkbox element-left">
+                                    <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                                    <span>Remember me</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-lg btn-block">LOGIN</button>
+                        </form>
                     </div>
-                    <div class="right">
-                        <div class="overlay"></div>
-                        <div class="content text">
-                            <h1 class="heading">Stock Management System</h1>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
                 </div>
+                <div class="right">
+                    <div class="overlay"></div>
+                    <div class="content text">
+                        <h1 class="heading">Stock Management System</h1>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
             </div>
         </div>
     </div>
-    <!-- END WRAPPER -->
+</div>
+<!-- END WRAPPER -->
 </body>
 <script type="text/javascript">
    $(function () {

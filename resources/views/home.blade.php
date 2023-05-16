@@ -6,18 +6,19 @@
 @section('content')
 <!--(Stat box) -->
 <div class="row">
+    <!-- ./col -->
     <div class="col-lg-3 col-xs-6">
         <!-- small box -->
-        <div class="small-box bg-aqua">
+        <div class="small-box bg-green">
             <div class="inner">
-                <h3>{{ \App\User::count() }}</h3>
+                <h3>{{ \App\Stock::count() }}<sup style="font-size: 20px"></sup></h3>
 
-                <p>System Users</p>
+                <p>Stock Taken</p>
             </div>
             <div class="icon">
-                <i class="fa fa-user-secret"></i>
+                <i class="fa fa-list"></i>
             </div>
-            <a href="/user" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{{ route('stocks.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
@@ -35,6 +36,7 @@
             <a href="{{ route('warehouses.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
+
     <!-- ./col -->
     <div class="col-lg-3 col-xs-6">
         <!-- small box -->
@@ -84,21 +86,6 @@
                 <i class="fa fa-list"></i>
             </div>
             <a href="{{ route('grades.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-    </div>
-    
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-purple">
-            <div class="inner">
-                <h3>{{ \App\Garden::count() }}<sup style="font-size: 20px"></sup></h3>
-
-                <p>Supplier</p>
-            </div>
-            <div class="icon">
-                <i class="fa fa-signal"></i>
-            </div>
-            <a href="{{ route('gardens.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
 

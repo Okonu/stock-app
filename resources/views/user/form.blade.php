@@ -27,13 +27,7 @@
                             <input type="text" class="form-control" id="alamat" name="alamat"   required>
                             <span class="help-block with-errors"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label >Email</label>
-                            <input type="email" class="form-control" id="email" name="email"   required>
-                            <span class="help-block with-errors"></span>
-                        </div>
-
+                        
                         <div class="form-group">
                             <label >Phone</label>
                             <input type="text" class="form-control" id="telepon" name="telepon"   required>

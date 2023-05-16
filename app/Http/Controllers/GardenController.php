@@ -132,10 +132,6 @@ class GardenController extends Controller
     {
         $garden = Garden::findOrFail($id);
 
-        if (!$garden->image == null) {
-            unlink(public_path($garden->image));
-        }
-
         Garden::destroy($id);
 
         return response()->json([
@@ -156,6 +152,6 @@ class GardenController extends Controller
                 return '<a onclick="editForm('.$garden->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> '.
                     '<a onclick="deleteData('.$garden->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
             })
-            ->rawColumns(['owner_name', 'show_photo', 'action'])->make(true);
+            ->rawColumns(['owner_name', 'action'])->make(true);
     }
 }

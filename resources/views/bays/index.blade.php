@@ -68,7 +68,8 @@
             ajax: "{{ route('api.bays') }}",
             columns: [
                 {data: 'id', name: 'id'},
-                {data: 'name', name: 'name'},{data: 'warehouse_name', name: 'warehouse_name'},
+                {data: 'name', name: 'name'},
+                {data: 'warehouse_name', name: 'warehouse_name'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });
