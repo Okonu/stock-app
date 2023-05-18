@@ -67,6 +67,7 @@
                 <div class="right">
                     <div class="overlay"></div>
                     <div class="content text">
+                    <img src="https://uea.brancetech.com/uea-logo.png" alt="UEA Logo" width="200px" height="200px" >
                         <h1 class="heading">Stock Management System</h1>
                     </div>
                 </div>

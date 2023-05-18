@@ -15,7 +15,7 @@ class CreateStocksTable extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('warehouse_id')->unsigned();
+            // $table->integer('warehouse_id')->unsigned();
             $table->integer('bay_id')->unsigned();
             $table->integer('owner_id')->unsigned();
             $table->integer('garden_id')->unsigned();
@@ -27,7 +27,7 @@ class CreateStocksTable extends Migration
             $table->text('remark');
             $table->timestamps();
 
-            $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
+            // $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
             $table->foreign('bay_id')->references('id')->on('bays')->onDelete('cascade');
             $table->foreign('owner_id')->references('id')->on('owners')->onDelete('cascade');
             $table->foreign('garden_id')->references('id')->on('gardens')->onDelete('cascade');

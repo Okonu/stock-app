@@ -644,6 +644,7 @@ class ComposerStaticInite6f0875c354eff21aa6b7cea1b8cfe2b
         'App\\Stock' => __DIR__ . '/../..' . '/app/Stock.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'App\\Warehouse' => __DIR__ . '/../..' . '/app/Warehouse.php',
+        'App\\WarehouseBay' => __DIR__ . '/../..' . '/app/WarehouseBay.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Barryvdh\\DomPDF\\Facade' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade.php',
         'Barryvdh\\DomPDF\\PDF' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/PDF.php',

@@ -17,15 +17,17 @@
 
                     <div class="box-body">
                         <div class="form-group">
-                            <label >Name</label>
-                            <input type="text" class="form-control" id="name" name="name"  autofocus required>
-                            <span class="help-block with-errors"></span>
-                        </div>
-                        <div class="form-group">
                             <label >Warehouse</label>
                             {!! Form::select('warehouse_id', $warehouse, null, ['class' => 'form-control select', 'placeholder' => '-- Choose Warehouse --', 'id' => 'warehouse_id', 'required']) !!}
                             <span class="help-block with-errors"></span>
                         </div>
+
+                        <div class="form-group">
+                            <label >Bay</label>
+                            <input type="text" class="form-control" id="name" name="name"  autofocus required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                        
                     </div>
                     <!-- /.box-body -->
 

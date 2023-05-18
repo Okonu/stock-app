@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Warehouse;
+use App\WarehouseBay;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Datatables;
 
@@ -32,6 +33,7 @@ class WarehouseController extends Controller
      */
     public function create()
     {
+        return view('warehouses.create');
     }
 
     /**
@@ -43,13 +45,26 @@ class WarehouseController extends Controller
     {
         $this->validate($request, [
            'name' => 'required|string|min:2',
+           'bays' => 'array',
+           'bays.*' => 'string|min:2'
         ]);
 
-        Warehouse::create($request->all());
+        $warehouse = Warehouse::create(['name' => $request->input('name')]);
+
+        // $bays = [];
+        foreach ($request->input('bays') as $bayName) {
+            WarehouseBay::create([
+                'name' => $bayName,
+                'warehouse_id' => $warehouse->id,
+            ]);
+            // $bays[] = ['name' => $bayName, 'warehouse_d' => $warehouse->id];
+        }
+
+        // WarehouseBay::insert($bays);
 
         return response()->json([
            'success' => true,
-           'message' => 'Warehouses Created',
+           'message' => 'Warehouses and Bays have been created successfully',
         ]);
     }
 
@@ -120,13 +135,51 @@ class WarehouseController extends Controller
 
     public function apiWarehouses()
     {
-        $warehouses = Warehouse::all();
+        $warehouses = Warehouse::with('bays')->get();
 
         return Datatables::of($warehouses)
-            ->addColumn('action', function ($warehouses) {
-                return '<a onclick="editForm('.$warehouses->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> '.
-                    '<a onclick="deleteData('.$warehouses->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+            ->addColumn('bays', function ($warehouse) {
+                $bays = $warehouse->bays->pluck('name')->implode(', ');
+                return $bays;
             })
-            ->rawColumns(['action'])->make(true);
+            ->addColumn('action', function ($warehouse) {
+                return '<a onclick="editForm('.$warehouse->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> '.
+                    '<a onclick="deleteData('.$warehouse->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
+    // public function apiWarehouses()
+    // {
+    //     $warehouses = Warehouse::all();
+        
+    //     return Datatables::of($warehouses)
+    //         ->addColumn('action', function ($warehouses) {
+    //             return '<a onclick="editForm('.$warehouses->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> '.
+    //                 '<a onclick="deleteData('.$warehouses->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+    //         })
+    //         ->rawColumns(['action'])->make(true);
+    // }
+
+    // public function apiWarehouses()
+    // {
+    //     $warehouses = Warehouse::with('bays')->get();
+
+    //     dd($warehouses); // This will stop the execution and display the retrieved data
+    //     // or
+    //     Log::info($warehouses); // This will log the retrieved data to the Laravel log file    
+
+    //     return Datatables::of($warehouses)
+    //         ->addColumn('bays', function ($warehouses) {
+    //             $bays = $warehouses->bays->pluck('name')->implode(', ');
+    //             return $bays;
+    //         })
+    //         ->addColumn('action', function ($warehouses) {
+    //             return '<a onclick="editForm('.$warehouses->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> '.
+    //                 '<a onclick="deleteData('.$warehouses->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+    //         })
+            
+    //         ->rawColumns(['action'])
+    //         ->make(true);
+    // }
 }

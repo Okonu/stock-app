@@ -15,7 +15,7 @@
     <div class="box box-success">
 
         <div class="box-header">
-            <h3 class="box-title">Stock Taken</h3>
+            <h3 class="box-title"><strong>Stock Taken</strong></h3>
 
 
         </div>
@@ -44,7 +44,7 @@
                     <th>Invoice</th>
                     <th>Package No.</th>
                     <th>Production Year</th>
-                    <th>Remarks</th>
+                    <!-- <th>Remarks</th> -->
                     <!-- <th>Actions</th> -->
                 </tr>
                 </thead>
@@ -102,9 +102,32 @@
                 {data: 'invoice', name: 'invoice'},
                 {data: 'qty', name: 'qty'},
                 {data: 'year', name: 'year'},
-                {data: 'remark', name: 'remark'},
+                // {data: 'remark', name: 'remark'}
                 // {data: 'action', name: 'action', orderable: false, searchable: false}
-            ]
+            ],
+
+            // Click event to each Row
+            createdRow: function (row, data, dataIndex) {
+                $(row).on('click', function () {
+                    // populating modal with stock details
+                    var modal = $('#stock-modal');
+                    modal.find('.modal-body').html('Stock details: ' + data.stock_taken);
+                    modal.modal('show');
+                });
+            }
+        });
+
+        // export PDF button click in the mb_encoding_aliases
+        $('#export-pdf-btn').on('click', function () {
+            //export pdf logic
+
+            var selectedStock = table.row('.selected').data();
+            if (selectedStock) {
+                var stockId = selectedStock.id;
+                // Replace 'id' with the appropriate property name for the stock ID
+        // Perform the export PDF operation using the stock ID
+        // Example: window.location.href = '/export-pdf/' + stockId;
+            }
         });
 
     </script>

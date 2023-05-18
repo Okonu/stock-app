@@ -26,6 +26,9 @@ Route::get('dashboard', function () {
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('warehouses', 'WarehouseController');
     Route::get('/apiWarehouses', 'WarehouseController@apiWarehouses')->name('api.warehouses');
+    Route::get('/warehouses/create', 'WarehouseController@create')->name('warehouses.create');
+    Route::post('/warehouses', 'WarehouseController@store')->name('warehouses.store');
+
 
     Route::resource('owners', 'OwnerController');
     Route::get('/apiOwners', 'OwnerController@apiOwners')->name('api.owners');
@@ -41,6 +44,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('bays', 'BayController');
     Route::get('/apiBays', 'BayController@apiBays')->name('api.bays');
+    Route::get('/bays/create/{warehouse}', 'BayController@create')->name('bays.create');
+
 
     Route::resource('stocks', 'StockController');
     Route::get('/apiStocks', 'StockController@apiStocks')->name('api.stocks');

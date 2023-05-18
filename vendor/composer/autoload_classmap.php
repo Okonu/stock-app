@@ -48,6 +48,7 @@ return array(
     'App\\Stock' => $baseDir . '/app/Stock.php',
     'App\\User' => $baseDir . '/app/User.php',
     'App\\Warehouse' => $baseDir . '/app/Warehouse.php',
+    'App\\WarehouseBay' => $baseDir . '/app/WarehouseBay.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Barryvdh\\DomPDF\\Facade' => $vendorDir . '/barryvdh/laravel-dompdf/src/Facade.php',
     'Barryvdh\\DomPDF\\PDF' => $vendorDir . '/barryvdh/laravel-dompdf/src/PDF.php',

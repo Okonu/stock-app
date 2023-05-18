@@ -10,17 +10,17 @@
     <div class="box box-success">
 
         <div class="box-header">
-            <h3 class="box-title"><strong>List of Package Types</strong></h3>
+            <h3 class="box-title">List of Warehouses</h3>
         </div>
 
         <div class="box-header">
-            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add a New Package TYpe</a>
-            <</div>
+            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add a New Warehouse</a>
+            </div>
 
 
         <!-- /.box-header -->
         <div class="box-body">
-            <table id="packages-table" class="table table-bordered table-hover table-striped">
+            <table id="warehouses-table" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
                     <th>#</th>
@@ -34,7 +34,7 @@
         <!-- /.box-body -->
     </div>
 
-    @include('packages.form')
+    @include('warehouses.create')
 
 @endsection
 
@@ -62,18 +62,12 @@
     {{--</script>--}}
 
     <script type="text/javascript">
-        var table = $('#packages-table').DataTable({
+        var table = $('#warehouses-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('api.packages') }}",
+            ajax: "{{ route('api.warehouses') }}",
             columns: [
-                {
-                    data: 'null', name: 'null', orderable: false, searchable: false,
-                    render: function (data, type, row, meta){
-                        var rowNumber = meta.row + 1;
-                        return rowNumber;
-                    }
-                },
+                {data: 'id', name: 'id'},
                 {data: 'name', name: 'name'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
@@ -84,7 +78,7 @@
             $('input[name=_method]').val('POST');
             $('#modal-form').modal('show');
             $('#modal-form form')[0].reset();
-            $('.modal-title').text('Add Packages');
+            $('.modal-title').text('Add Warehouses');
         }
 
         function editForm(id) {
@@ -92,18 +86,18 @@
             $('input[name=_method]').val('PATCH');
             $('#modal-form form')[0].reset();
             $.ajax({
-                url: "{{ url('packages') }}" + '/' + id + "/edit",
+                url: "{{ url('warehouses') }}" + '/' + id + "/edit",
                 type: "GET",
                 dataType: "JSON",
                 success: function(data) {
                     $('#modal-form').modal('show');
-                    $('.modal-title').text('Edit PackageType');
+                    $('.modal-title').text('Edit Warehouses');
 
                     $('#id').val(data.id);
                     $('#name').val(data.name);
                 },
                 error : function() {
-                    alert("No Data");
+                    alert("Nothing Data");
                 }
             });
         }
@@ -120,7 +114,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then(function () {
                 $.ajax({
-                    url : "{{ url('packages') }}" + '/' + id,
+                    url : "{{ url('warehouses') }}" + '/' + id,
                     type : "POST",
                     data : {'_method' : 'DELETE', '_token' : csrf_token},
                     success : function(data) {
@@ -148,8 +142,8 @@
             $('#modal-form form').validator().on('submit', function (e) {
                 if (!e.isDefaultPrevented()){
                     var id = $('#id').val();
-                    if (save_method == 'add') url = "{{ url('packages') }}";
-                    else url = "{{ url('packages') . '/' }}" + id;
+                    if (save_method == 'add') url = "{{ url('warehouses') }}";
+                    else url = "{{ url('warehouses') . '/' }}" + id;
 
                     $.ajax({
                         url : url,

@@ -22,8 +22,8 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Name</th>
                     <th>Warehouse</th>
+                    <th>Name</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -74,8 +74,8 @@
                         return rowNumber;
                     }
                 },
-                {data: 'name', name: 'name'},
                 {data: 'warehouse_name', name: 'warehouse_name'},
+                {data: 'name', name: 'name'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });
@@ -101,8 +101,8 @@
                     $('.modal-title').text('Edit Bays');
 
                     $('#id').val(data.id);
-                    $('#name').val(data.nama);
                     $('#warehouse_id').val(data.warehouse_id);
+                    $('#name').val(data.nama);
                 },
                 error : function() {
                     alert("No Data");

@@ -18,6 +18,14 @@ class CreateWarehousesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
+
+        Schema::create('warehouse_bays', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('warehouse_id');
+            $table->string('name');
+            $table->timestamps();
+            $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
+        });
     }
 
     /**
@@ -27,6 +35,7 @@ class CreateWarehousesTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('warehouse_bays');
         Schema::dropIfExists('warehouses');
     }
 }

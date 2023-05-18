@@ -12,7 +12,7 @@
     <div class="box box-success">
 
         <div class="box-header">
-            <h3 class="box-title">List of Farm Owners</h3>
+            <h3 class="box-title"><strong>List of Farm Owners</strong></h3>
         </div>
 
         <div class="box-header">

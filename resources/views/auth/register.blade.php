@@ -46,7 +46,7 @@
                     </div>
                     <div class="form-group">
                         <label for="signup-password" class="control-label sr-only">Password</label>
-                        <input type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required placeholder="Password">
+                        <input type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required placeholder="Enter ID Number">
                         @if ($errors->has('password'))
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $errors->first('password') }}</strong>
@@ -55,7 +55,7 @@
                     </div>
                     <div class="form-group">
                         <label for="signup-password" class="control-label sr-only">Confirm Password</label>
-                        <input id="password-confirm" type="password" class="form-control" placeholder="Confirm Password" name="password_confirmation" required>
+                        <input id="password-confirm" type="password" class="form-control" placeholder="Confirm ID Number" name="password_confirmation" required>
                     </div>
                     <br>
                     <button type="submit" class="btn btn-primary btn-md btn-block">REGISTER</button>
