@@ -69,45 +69,7 @@
     <!-- ./col -->
 </div>
 
-
-<div class="row">
-   
-    <!-- ./col -->
-
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-green">
-            <div class="inner">
-                <h3>{{ \App\Grade::count() }}<sup style="font-size: 20px"></sup></h3>
-
-                <p>Tae Grades</p>
-            </div>
-            <div class="icon">
-                <i class="fa fa-list"></i>
-            </div>
-            <a href="{{ route('grades.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-    </div>
-
-    <!-- ./col -->
-    
-    <!-- ./col -->
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-primary">
-            <div class="inner">
-                <h3>{{ \App\Package::count()  }}</h3>
-
-                <p>Package Types</p>
-            </div>
-            <div class="icon">
-                <i class="fa fa-minus"></i>
-            </div>
-            <a href="{{ route('packages.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-    </div>
-    <div id="container" class=" col-xs-6"></div>
-</div>
+@include('stocks.tableu')
 
 @endsection
 
