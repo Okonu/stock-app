@@ -33,6 +33,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('gardens', 'GardenController');
     Route::get('/apiGardens', 'GardenController@apiGardens')->name('api.gardens');
 
+    Route::resource('legacies', 'LegacyController');
+    Route::get('/apiLegacies', 'LegacyController@apiLegacies')->name('api.legacies');
+    Route::post('/importLegacies', 'LegacyController@ImportExcel')->name('import.legacies');
+
     Route::resource('packages', 'PackageController');
     Route::get('/apiPackages', 'PackageController@apiPackages')->name('api.packages');
 
@@ -41,6 +45,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('bays', 'BayController');
     Route::get('/apiBays', 'BayController@apiBays')->name('api.bays');
+    Route::get('/bays/create/{warehouse}', 'BayController@create')->name('bays.create');
+
 
     Route::resource('stocks', 'StockController');
     Route::get('/apiStocks', 'StockController@apiStocks')->name('api.stocks');
