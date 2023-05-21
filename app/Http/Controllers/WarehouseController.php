@@ -6,6 +6,7 @@ use App\Warehouse;
 use App\WarehouseBay;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Datatables;
+use Illuminate\Support\Facades\Validator;
 
 class WarehouseController extends Controller
 {
@@ -41,6 +42,70 @@ class WarehouseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    //  public function store(Request $request)
+    // {
+    //     $this->validate($request, [
+    //         'name' => 'required|string|min:2',
+    //         'bays' => 'nullable|string',
+    //     ]);
+
+    //     $warehouse = Warehouse::create(['name' => $request->input('name')]);
+
+    //     // if ($request->has('bays')) {
+    //     //     $bayNames = $request->input('bays');
+    //     //     $bays = collect($bayNames)->map(function ($name) {
+    //     //         return new WarehouseBay(['name' => trim($name)]);
+    //     //     });
+    //     //     $warehouse->bays()->saveMany($bays);
+    //     // }
+        
+    //     if ($request->has('bays')) {
+    //         $bayNames = explode(',', $request->input('bays'));
+    //         $bays = collect($bayNames)->map(function ($name) {
+    //             return new WarehouseBay(['name' => trim($name)]);
+    //         });
+    //         $warehouse->bays()->saveMany($bays);
+    //     }
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Warehouse and Bays have been created successfully',
+    //     ]);
+    // }
+
+    // public function store(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'name' => 'required|string|min:2',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Validation error',
+    //             'errors' => $validator->errors(),
+    //         ], 422);
+    //     }
+
+    //     $warehouse = Warehouse::create(['name' => $request->input('name')]);
+
+    //     if ($request->has('bays')) {
+    //         $bays = preg_split('/,\s*/', $request->input('bays'));
+    //         $bays = array_map('trim', $bays);
+    //         $warehouse->bays = array_values($bays);
+    //         $warehouse->save();
+    //     }
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Warehouse and Bays have been created successfully',
+    //     ]);
+    // }
+
+
+
+         
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -67,6 +132,30 @@ class WarehouseController extends Controller
            'message' => 'Warehouses and Bays have been created successfully',
         ]);
     }
+
+    // public function store(Request $request)
+    // {
+    //     $this->validate($request, [
+    //         'name' => 'required|string|min:2',
+    //         'bays' => 'nullable|string',
+    //     ]);
+    
+    //     $warehouse = Warehouse::create(['name' => $request->input('name')]);
+    
+    //     if ($request->has('bays')) {
+    //         $bayNames = explode(',', $request->input('bays'));
+    //         $bays = collect($bayNames)->map(function ($name) {
+    //             return new WarehouseBay(['name' => trim($name)]);
+    //         });
+    //         $warehouse->bays()->saveMany($bays);
+    //     }
+    
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Warehouse and Bays have been created successfully',
+    //     ]);
+    // }
+    
 
     /**
      * Display the specified resource.

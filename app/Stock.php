@@ -9,7 +9,7 @@ class Stock extends Model
     //
     protected $table = 'stocks';
 
-    protected $fillable = ['warehouse_id','bay_id', 'owner_id', 'grade_id','package_id', 'invoice', 'qty', 'year', 'remark'];
+    protected $fillable = ['warehouse_id','bay_id', 'owner_id', 'grade_id','package_id', 'invoice', 'qty', 'year', 'remark', 'mismatch'];
 
     protected $hidden = ['created_at','updated_at'];
 
@@ -41,5 +41,10 @@ class Stock extends Model
     public function package()
     {
         return $this->belongsTo(Package::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

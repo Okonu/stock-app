@@ -54,6 +54,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/exportStockAll', 'StockController@exportStockAll')->name('exportPDF.stockAll');
     Route::get('/exportStockAllExcel', 'StockController@exportExcel')->name('exportExcel.stockAll');
     Route::get('/exportStock/{id}', 'StockController@exportStock')->name('exportPDF.stock');
+    Route::post('/stocks/import', 'StockController@import')->name('stocks.import');
+
+    Route::get('stocks/total-bags', 'StockController@countTotalBags');
 
     Route::resource('user', 'UserController');
     Route::get('/apiUser', 'UserController@apiUsers')->name('api.users');

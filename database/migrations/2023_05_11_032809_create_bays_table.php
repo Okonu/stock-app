@@ -15,11 +15,11 @@ class CreateBaysTable extends Migration
     {
         Schema::create('bays', function (Blueprint $table) {
             $table->increments('id');
-            // $table->unsignedInteger('warehouse_id');
+            $table->unsignedInteger('warehouse_id');
            $table->string('name');
             $table->timestamps();
 
-            // $table->foreign('warehouse_id')->references('id')->on('warehouses');
+            $table->foreign('warehouse_id')->references('id')->on('warehouses');
         });
     }
 

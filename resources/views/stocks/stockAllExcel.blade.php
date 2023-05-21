@@ -42,7 +42,7 @@
     <table id="stock" width="100%">
         <thead>
         <tr>
-            <th>ID</th>
+            <!-- <th>ID</th> -->
             <th>Warehouse</th>
             <th>Bays</th>
             <th>Farm Owner</th>
@@ -58,7 +58,7 @@
         @foreach($stock as $p)
             <tbody>
             <tr>
-            <td>{{$p->id}}</td>
+            <!-- <td>{{$p->id}}</td> -->
             <td>{{$p->warehouse->name}}</td>
             <td>{{$p->bay->name}}</td>
             <td>{{$p->owner->name}}</td>

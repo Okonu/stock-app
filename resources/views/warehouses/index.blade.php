@@ -7,35 +7,34 @@
 
 @section('content')
 <div class="box box-success">
-        <div class="box-header">
-            <h3 class="box-title">List of Warehouses</h3>
-        </div>
-
-        <div class="box-header">
-            <a href="#" onclick="addForm()" class="btn btn-success"><i class="fa fa-plus"></i> Add a New Warehouse</a>
-        </div>
-
-        <!-- /.box-header -->
-        <div class="box-body">
-            <table id="warehouses-table" class="table table-bordered table-hover table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Bays</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <!-- /.box-body -->
+    <div class="box-header">
+        <h3 class="box-title">List of Warehouses</h3>
     </div>
 
-    @include('warehouses.create')
+    <div class="box-header">
+        <a href="#" onclick="addForm()" class="btn btn-success"><i class="fa fa-plus"></i> Add a New Warehouse</a>
+    </div>
+
+    <!-- /.box-header -->
+    <div class="box-body">
+        <table id="warehouses-table" class="table table-bordered table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Bays</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <!-- /.box-body -->
+</div>
+
+@include('warehouses.create')
 
 @endsection
-<!-- ... -->
 
 @section('bot')
     <!-- DataTables -->
@@ -53,28 +52,43 @@
             columns: [
                 {
                     data: 'null', name: 'null', orderable: false, searchable: false,
-                    render: function (data, type, row, meta){
+                    render: function (data, type, row, meta) {
                         var rowNumber = meta.row + 1;
                         return rowNumber;
                     }
                 },
-                {data: 'name', name: 'name'},
-                {data: 'bays', name: 'bays', orderable: false, searchable: false},
-                {data: 'action', name: 'action', orderable: false, searchable: false}
+                { data: 'name', name: 'name' },
+                { data: 'bays', name: 'bays', orderable: false, searchable: false },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
 
-        // var save_method; // Variable to save the request method for the form
-        // var warehouseID; // Variable to store the ID of the selected warehouse
+        // function formatBays(bays) {
+        //     console.log(bays); // Log the bays array to the console
+        //     var html = '<ul>';
+        //     $data = (bays, function (index, bay) {
+        //         console.log(bay); // Log each individual bay to the console
+        //         console.log(typeof bay); // Log the type of bay
+        //         if (bay && bay.name) {
+        //             html += '<li>' + bay.name + '</li>';
+        //         }
+        //     });
+        //     html += '</ul>';
+        //     return html;
+        // }
 
         function formatBays(bays) {
+            var bayArray = bays.split(","); // Split the bays string into an array
             var html = '<ul>';
-            $.each(bays, function(index, bay) {
-                html += '<li>' + bay.name + '</li>';
+            bayArray.forEach(function (bay) {
+                if (bay.trim() !== "") { // Ignore empty bays
+                    html += '<li>' + bay.trim() + '</li>'; // Create <li> element for each bay
+                }
             });
             html += '</ul>';
             return html;
         }
+
 
         function addForm() {
             save_method = "add";
@@ -93,13 +107,14 @@
             $.ajax({
                 url: "{{ url('warehouses') }}" + '/' + id + "/edit",
                 type: "GET",
-                dataType: "JSON",
-                success: function(data) {
+                dataType: "json",
+                success: function (data) {
                     $('#modal-form').modal('show');
                     $('.modal-title').text('Edit Warehouse');
                     $('#name').val(data.name);
+                    $('#bays').val(data.bays);
                 },
-                error: function() {
+                error: function () {
                     alert("No Data Found");
                 }
             });
@@ -115,12 +130,12 @@
                 cancelButtonColor: '#d33',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Yes, delete it!'
-            }).then(function() {
+            }).then(function () {
                 $.ajax({
                     url: "{{ url('warehouses') }}" + '/' + id,
                     type: "POST",
-                    data: {'_method': 'DELETE', '_token': csrf_token},
-                    success: function(data) {
+                    data: { '_method': 'DELETE', '_token': csrf_token },
+                    success: function (data) {
                         table.ajax.reload();
                         swal({
                             title: 'Success!',
@@ -129,7 +144,7 @@
                             timer: '1500'
                         });
                     },
-                    error: function(data) {
+                    error: function (data) {
                         swal({
                             title: 'Oops...',
                             text: data.message,
@@ -141,8 +156,8 @@
             });
         }
 
-        $(function() {
-            $('#modal-form form').validator().on('submit', function(e) {
+        $(function () {
+            $('#modal-form form').validator().on('submit', function (e) {
                 if (!e.isDefaultPrevented()) {
                     var url;
                     if (save_method === 'add') {
@@ -157,7 +172,7 @@
                         data: new FormData($("#modal-form form")[0]),
                         contentType: false,
                         processData: false,
-                        success: function(data) {
+                        success: function (data) {
                             $('#modal-form').modal('hide');
                             table.ajax.reload();
                             swal({
@@ -167,7 +182,7 @@
                                 timer: '1500'
                             });
                         },
-                        error: function(data) {
+                        error: function (data) {
                             swal({
                                 title: 'Oops...',
                                 text: data.message,
@@ -179,8 +194,9 @@
                     return false;
                 }
             });
-            table.on('draw.dt', function() {
-                table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+
+            table.on('draw.dt', function () {
+                table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                     var data = this.data();
                     var bays = data.bays;
                     var baysHtml = formatBays(bays);
@@ -190,4 +206,3 @@
         });
     </script>
 @endsection
-
