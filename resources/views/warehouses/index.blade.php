@@ -77,18 +77,49 @@
         //     return html;
         // }
 
+        // function formatBays(bays) {
+        //     var bayArray = bays.split(","); // Split the bays string into an array
+        //     var html = '<ul>';
+        //     bayArray.forEach(function (bay) {
+        //         if (bay.trim() !== "") { // Ignore empty bays
+        //             html += '<li>' + bay.trim() + '</li>'; // Create <li> element for each bay
+        //         }
+        //     });
+        //     html += '</ul>';
+        //     return html;
+        // }
         function formatBays(bays) {
-            var bayArray = bays.split(","); // Split the bays string into an array
+            var bayArray = bays;//.split(","); // Split the bays string into an array
             var html = '<ul>';
-            bayArray.forEach(function (bay) {
+            var bayArray = bays.split(","); // Split the bays string into an array
+            // Save each bay name in the database individually
+           // bayArray.forEach(function (bay) {
+
+           /// alert("HELLO");
                 if (bay.trim() !== "") { // Ignore empty bays
-                    html += '<li>' + bay.trim() + '</li>'; // Create <li> element for each bay
+                    $.ajax({
+                        url: "{{ route('api.bays') }}", 
+                        type: "POST",
+                        data: { name:name ,bays: bayArray },
+                        async: false,
+                        success: function (response) {
+
+
+                            //alert(JSON.stringify(response));
+                            var bayId = response.data.id;
+                            html += '<li>' + bay.trim() + ' (ID: ' + bayId + ')</li>'; // Create <li> element for each bay with ID
+                        },
+                        error: function (error) {
+                            //alert(JSON.stringify(response));
+                            console.log(error);
+                        }
+                    });
                 }
-            });
+           // });
+            
             html += '</ul>';
             return html;
         }
-
 
         function addForm() {
             save_method = "add";
@@ -136,6 +167,7 @@
                     type: "POST",
                     data: { '_method': 'DELETE', '_token': csrf_token },
                     success: function (data) {
+
                         table.ajax.reload();
                         swal({
                             title: 'Success!',
@@ -165,7 +197,7 @@
                     } else {
                         url = "{{ url('warehouses') }}" + '/' + warehouseID;
                     }
-
+                
                     $.ajax({
                         url: url,
                         type: "POST",
@@ -174,6 +206,7 @@
                         processData: false,
                         success: function (data) {
                             $('#modal-form').modal('hide');
+                            //alert(JSON.stringify(data));
                             table.ajax.reload();
                             swal({
                                 title: 'Success!',
@@ -183,6 +216,7 @@
                             });
                         },
                         error: function (data) {
+                            //alert(JSON.stringify(data));
                             swal({
                                 title: 'Oops...',
                                 text: data.message,
@@ -195,14 +229,14 @@
                 }
             });
 
-            table.on('draw.dt', function () {
-                table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                    var data = this.data();
-                    var bays = data.bays;
-                    var baysHtml = formatBays(bays);
-                    $('td', this.node()).eq(2).html(baysHtml);
-                });
-            });
+            // table.on('draw.dt', function () {
+            //     table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            //         var data = this.data();
+            //         var bays = data.bays;
+            //         //var baysHtml = formatBays(bays);
+            //         $('td', this.node()).eq(2).html(baysHtml);
+            //     });
+            // });
         });
     </script>
 @endsection

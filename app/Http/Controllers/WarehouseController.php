@@ -6,7 +6,7 @@ use App\Warehouse;
 use App\WarehouseBay;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Datatables;
-use Illuminate\Support\Facades\Validator;
+
 
 class WarehouseController extends Controller
 {
@@ -42,119 +42,32 @@ class WarehouseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
-    //  public function store(Request $request)
-    // {
-    //     $this->validate($request, [
-    //         'name' => 'required|string|min:2',
-    //         'bays' => 'nullable|string',
-    //     ]);
-
-    //     $warehouse = Warehouse::create(['name' => $request->input('name')]);
-
-    //     // if ($request->has('bays')) {
-    //     //     $bayNames = $request->input('bays');
-    //     //     $bays = collect($bayNames)->map(function ($name) {
-    //     //         return new WarehouseBay(['name' => trim($name)]);
-    //     //     });
-    //     //     $warehouse->bays()->saveMany($bays);
-    //     // }
-        
-    //     if ($request->has('bays')) {
-    //         $bayNames = explode(',', $request->input('bays'));
-    //         $bays = collect($bayNames)->map(function ($name) {
-    //             return new WarehouseBay(['name' => trim($name)]);
-    //         });
-    //         $warehouse->bays()->saveMany($bays);
-    //     }
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Warehouse and Bays have been created successfully',
-    //     ]);
-    // }
-
-    // public function store(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'name' => 'required|string|min:2',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Validation error',
-    //             'errors' => $validator->errors(),
-    //         ], 422);
-    //     }
-
-    //     $warehouse = Warehouse::create(['name' => $request->input('name')]);
-
-    //     if ($request->has('bays')) {
-    //         $bays = preg_split('/,\s*/', $request->input('bays'));
-    //         $bays = array_map('trim', $bays);
-    //         $warehouse->bays = array_values($bays);
-    //         $warehouse->save();
-    //     }
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Warehouse and Bays have been created successfully',
-    //     ]);
-    // }
-
-
-
-         
+       
     public function store(Request $request)
     {
-        $this->validate($request, [
-           'name' => 'required|string|min:2',
-           'bays' => 'array',
-           'bays.*' => 'string|min:2'
+        $request->validate([
+            'name' => 'required',
+            'bays' => 'required',
         ]);
-
-        $warehouse = Warehouse::create(['name' => $request->input('name')]);
-
-        // $bays = [];
-        foreach ($request->input('bays') as $bayName) {
+    
+        $name = $request->input('name');
+        $bays = $request->input('bays')[0];
+    
+        $baysArray = explode(", ", $bays);
+    
+        $warehouse = Warehouse::create([
+            'name' => $name,
+        ]);
+    
+        foreach ($baysArray as $bayName) {
             WarehouseBay::create([
                 'name' => $bayName,
                 'warehouse_id' => $warehouse->id,
             ]);
-            // $bays[] = ['name' => $bayName, 'warehouse_d' => $warehouse->id];
         }
-
-        // WarehouseBay::insert($bays);
-
-        return response()->json([
-           'success' => true,
-           'message' => 'Warehouses and Bays have been created successfully',
-        ]);
+    
+        return redirect()->route('warehouses.index')->with('success', 'Warehouse created successfully.');
     }
-
-    // public function store(Request $request)
-    // {
-    //     $this->validate($request, [
-    //         'name' => 'required|string|min:2',
-    //         'bays' => 'nullable|string',
-    //     ]);
-    
-    //     $warehouse = Warehouse::create(['name' => $request->input('name')]);
-    
-    //     if ($request->has('bays')) {
-    //         $bayNames = explode(',', $request->input('bays'));
-    //         $bays = collect($bayNames)->map(function ($name) {
-    //             return new WarehouseBay(['name' => trim($name)]);
-    //         });
-    //         $warehouse->bays()->saveMany($bays);
-    //     }
-    
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Warehouse and Bays have been created successfully',
-    //     ]);
-    // }
     
 
     /**
@@ -175,11 +88,17 @@ class WarehouseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $warehouse = Warehouse::find($id);
+    // public function edit($id)
+    // {
+    //     $warehouse = Warehouse::find($id);
 
-        return $warehouse;
+    //     return $warehouse;
+    // }
+    public function edit(Warehouse $warehouse)
+    {
+        $warehouse->load('bays');
+
+        return response()->json($warehouse);
     }
 
     /**
@@ -189,21 +108,7 @@ class WarehouseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        $this->validate($request, [
-            'name' => 'required|string|min:2',
-        ]);
-
-        $warehouse = Warehouse::findOrFail($id);
-
-        $warehouse->update($request->all());
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Warehouses Update',
-        ]);
-    }
+   
 
     /**
      * Remove the specified resource from storage.
@@ -227,48 +132,16 @@ class WarehouseController extends Controller
         $warehouses = Warehouse::with('bays')->get();
 
         return Datatables::of($warehouses)
-            ->addColumn('bays', function ($warehouse) {
-                $bays = $warehouse->bays->pluck('name')->implode(', ');
+            ->addColumn('bays', function ($warehouses) {
+                $bays = $warehouses->bays->pluck('warehouse_bay_name')->implode(', ');
                 return $bays;
             })
             ->addColumn('action', function ($warehouse) {
                 return '<a onclick="editForm('.$warehouse->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> '.
                     '<a onclick="deleteData('.$warehouse->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['warehouse_bay_name', 'action'])
             ->make(true);
     }
-    // public function apiWarehouses()
-    // {
-    //     $warehouses = Warehouse::all();
-        
-    //     return Datatables::of($warehouses)
-    //         ->addColumn('action', function ($warehouses) {
-    //             return '<a onclick="editForm('.$warehouses->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> '.
-    //                 '<a onclick="deleteData('.$warehouses->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
-    //         })
-    //         ->rawColumns(['action'])->make(true);
-    // }
-
-    // public function apiWarehouses()
-    // {
-    //     $warehouses = Warehouse::with('bays')->get();
-
-    //     dd($warehouses); // This will stop the execution and display the retrieved data
-    //     // or
-    //     Log::info($warehouses); // This will log the retrieved data to the Laravel log file    
-
-    //     return Datatables::of($warehouses)
-    //         ->addColumn('bays', function ($warehouses) {
-    //             $bays = $warehouses->bays->pluck('name')->implode(', ');
-    //             return $bays;
-    //         })
-    //         ->addColumn('action', function ($warehouses) {
-    //             return '<a onclick="editForm('.$warehouses->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> '.
-    //                 '<a onclick="deleteData('.$warehouses->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
-    //         })
-            
-    //         ->rawColumns(['action'])
-    //         ->make(true);
-    // }
+    
 }

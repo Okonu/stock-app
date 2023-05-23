@@ -52,7 +52,7 @@
             <h3 class="panel-title">Import Stock Data</h3>
         </div>
         <div class="panel-body">
-            <form id="import-form" method="POST" action="{{ route('stocks.import') }}" enctype="multipart/form-data">
+            <form id="import-form" method="POST" action="{{ route('api.import') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
                     <label for="import-file">Select Excel File:</label>
@@ -110,7 +110,7 @@
                         }
                     },
                     { data: 'warehouse_name', name: 'warehouse_name' },
-                    { data: 'bay_name', name: 'bay_name' },
+                    { data: 'warehouse_bay_name', name: 'warehouse_bay_name' },
                     { data: 'owner_name', name: 'owner_name' },
                     { data: 'garden_name', name: 'garden_name' },
                     { data: 'grade_name', name: 'grade_name' },

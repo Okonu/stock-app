@@ -1,5 +1,7 @@
 <?php
 
+
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -10,6 +12,9 @@
 | contains the "web" middleware group. Now create something great!
 |
  */
+
+
+ //uncomment from here
 
 Route::get('/', function () {
     return view('auth.login');
@@ -29,9 +34,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/warehouses/create', 'WarehouseController@create')->name('warehouses.create');
     Route::post('/warehouses', 'WarehouseController@store')->name('warehouses.store');
 
-    Route::resource('legacies', 'LegacyController');
-    Route::get('/apiLegacies', 'LegacyController@apiLegacies')->name('api.legacies');
-    Route::post('/importLegacies', 'LegacyController@ImportExcel')->name('import.legacies');
+    // Route::resource('legacies', 'LegacyController');
+    // Route::get('/apiLegacies', 'LegacyController@apiLegacies')->name('api.legacies');
+    // Route::post('/importLegacies', 'LegacyController@ImportExcel')->name('import.legacies');
 
     Route::resource('owners', 'OwnerController');
     Route::get('/apiOwners', 'OwnerController@apiOwners')->name('api.owners');
@@ -47,6 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('bays', 'BayController');
     Route::get('/apiBays', 'BayController@apiBays')->name('api.bays');
+    Route::post('/apiBays', 'BayController@apiBays')->name('api.bays');
     Route::get('/bays/create/{warehouse}', 'BayController@create')->name('bays.create');
 
     Route::resource('stocks', 'StockController');
@@ -54,6 +60,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/exportStockAll', 'StockController@exportStockAll')->name('exportPDF.stockAll');
     Route::get('/exportStockAllExcel', 'StockController@exportExcel')->name('exportExcel.stockAll');
     Route::get('/exportStock/{id}', 'StockController@exportStock')->name('exportPDF.stock');
+    Route::post('/apiImport', 'StockController@apiStocks')->name('api.import');
     Route::post('/stocks/import', 'StockController@import')->name('stocks.import');
 
     Route::get('stocks/total-bags', 'StockController@countTotalBags');
@@ -61,6 +68,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('user', 'UserController');
     Route::get('/apiUser', 'UserController@apiUsers')->name('api.users');
 });
+
+
+
+
 
 // Route::get('/', function () {
 //     return view('auth.login');
@@ -74,12 +85,3 @@ Route::group(['middleware' => 'auth'], function () {
 //     return view('layouts.master');
 // });
 
-// Route::group(['middleware' => 'auth'], function () {
-//     Route::resource('packages', 'PackageController');
-//     Route::resource('grades', 'GradeController');
-//     Route::resource('gardens', 'GardenController');
-//     Route::resource('warehouses', 'WarehouseController');
-//     Route::resource('bays', 'BayController');
-//     Route::resource('owners', 'OwnerController');
-//     Route::resource('user', 'UserController');
-// });

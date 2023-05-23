@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Bay;
-use App\Http\Controllers\UserController;
 use App\Exports\ExportStock;
 use App\Garden;
 use App\Grade;
+use App\Imports\StockImport;
 use App\Owner;
 use App\Package;
 use App\Stock;
 use App\Warehouse;
+use App\WarehouseBay;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
-use App\Imports\StockImport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\DB; // Add this line to import the DB facade
+use Yajra\DataTables\DataTables;
 
 class StockController extends Controller
 {
@@ -27,6 +27,11 @@ class StockController extends Controller
     public function countTotalBags()
     {
         $totalBags = Stock::sum('qty');
+
+        // return response()->json([
+        //     'success' => true,
+        //     'total_bags' => $totalBags,
+        // ]);
     }
 
     public function calculateBagsPerWarehouse()
@@ -34,7 +39,7 @@ class StockController extends Controller
         $bagsPerWarehouse = Stock::select('warehouse_id', DB::raw('SUM(qty) as total_qty'))
             ->groupBy('warehouse_id')
             ->pluck('total_qty', 'warehouse_id');
-        
+
         return $bagsPerWarehouse;
     }
 
@@ -48,7 +53,7 @@ class StockController extends Controller
             ->get()
             ->pluck('name', 'id');
 
-        $bay = Bay::orderBy('name', 'ASC')
+        $bay = WarehouseBay::orderBy('name', 'ASC')
             ->get()
             ->pluck('name', 'id');
 
@@ -64,14 +69,12 @@ class StockController extends Controller
             ->get()
             ->pluck('name', 'id');
 
-        $package = Package::orderBy('name', 'ASC');
+        $package = Package::orderBy('name', 'ASC')
+            ->get()
+            ->pluck('name', 'id');
+        $stock = Stock::all();
 
-        $user = auth()->id();
-
-        $stocks = Stock::where('user_id')
-            ->get();
-
-        return view('stocks.index', compact(['stocks' => $stocks], 'warehouse', 'bay', 'owner', 'garden', 'grade', 'package', 'stocks',  'totalBags', 'bagsPerWarehouse'));
+        return view('stocks.index', compact('warehouse', 'bay', 'owner', 'garden', 'grade', 'package', 'totalBags', 'bagsPerWarehouse'));
     }
 
     public function create()
@@ -85,7 +88,7 @@ class StockController extends Controller
             ->get()
             ->pluck('name', 'id');
 
-        $bay = Bay::orderBy('name', 'ASC')
+        $bay = WarehouseBay::orderBy('name', 'ASC')
             ->get()
             ->pluck('name', 'id');
 
@@ -107,192 +110,254 @@ class StockController extends Controller
 
         $this->validate($request, [
             'warehouse_id' => 'required',
-            'bay_id' => 'required',
+            'warehouse_bay_id' => 'required',
             'owner_id' => 'required',
             'garden_id' => 'required',
             'grade_id' => 'required',
             'package_id' => 'required',
             'invoice' => 'required|string',
-            'qty' => 'required|string',
+            'qty' => 'required|integer',
             'year' => 'required|string',
             'remark' => 'required|string',
             'file' => 'required|mimes:xlsx,xls',
         ]);
 
-        // $stock = new Stock();
-        // $stock->user_id = auth()->id();
-        // $stock->warehouse_id = $request->warehouse_id;
-        // $stock->bay_id = $request->bay_id;
-        // $stock->owner_id = $request->owner_id;
-        // $stock->garden_id = $request->garden_id;
-        // $stock->grade_id = $request->grade_id;
-        // $stock->package_id = $request->package_id;
-        // $stock->qty = $request->qty;
-        // $stock->bag_no = $request->bag_no;
-        // $stock->date = $request->date;
-        // $stock->save();
-
-        // Save the uploaded file
-        $file = $request->file('file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('uploads'), $fileName);
-        $filePath = public_path('uploads/' . $fileName);
-
-        // Import and process the data
-        $import = new StockImport;
-
-        $import->import($filePath);
-
-        $rows = $import->getRowCount();
-        $failedRows = $import->getFailedRowCount();
-
-        // Check if any rows failed during import
-        if ($failedRows > 0) {
-            // Delete the uploaded file if there were failed rows
-            unlink($filePath);
-
-            return redirect()->back()->with('error', 'Failed to import ' . $failedRows . ' rows. Please check your file and try again.');
-        }
-
-        // Process the imported data
-        $data = $import->getData();
-
-        foreach ($data as $row) {
-            // Create a new stock record
-            $stock = new Stock();
-            $stock->warehouse_id = $request->warehouse_id;
-            $stock->bay_id = $request->bay_id;
-            $stock->owner_id = $request->owner_id;
-            $stock->garden_id = $request->garden_id;
-            $stock->grade_id = $request->grade_id;
-            $stock->package_id = $request->package_id;
-            $stock->invoice = $row['invoice'];
-            $stock->qty = $row['qty'];
-            $stock->year = $row['year'];
-            $stock->remark = $row['remark'];
-            $stock->save();
-        }
-
-        // Delete the uploaded file after successful import
-        unlink($filePath);
-
-        return redirect()->back()->with('success', 'Stock data imported successfully.');
-    }
-
-    public function import(Request $request)
-    {
         $this->validate($request, [
             'file' => 'required|mimes:xlsx,xls',
         ]);
 
         $file = $request->file('file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('uploads'), $fileName);
-        $filePath = public_path('uploads/' . $fileName);
+        $fileName = time().'_'.$file->getClientOriginalName();
 
-        try {
-            Excel::import(new StockImport, $filePath);
+        // Save the uploaded file to the 'uploads' disk
+        Storage::disk('uploads')->put($fileName, file_get_contents($file));
 
-            unlink($filePath);
+        // Get the full path of the saved file
+        $filePath = Storage::disk('uploads')->path($fileName);
 
-            return redirect()->back()->with('success', 'Stock data imported successfully.');
-        } catch (\Exception $e) {
-            unlink($filePath);
+        // Read the Excel file
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filePath);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $highestRow = $worksheet->getHighestRow();
 
-            return redirect()->back()->with('error', 'Failed to import stock data. Please check your file and try again.');
+        // Initialize arrays for storing mismatched data
+        $mismatches = [];
+        $totalMismatchQty = 0;
+
+        // Iterate through each row in the Excel file
+        for ($row = 2; $row <= $highestRow; ++$row) {
+            $gardenName = $worksheet->getCell('A'.$row)->getValue();
+            $invoice = $worksheet->getCell('B'.$row)->getValue();
+            $qty = $worksheet->getCell('C'.$row)->getValue();
+            $gradeName = $worksheet->getCell('D'.$row)->getValue();
+            $packageType = $worksheet->getCell('E'.$row)->getValue();
+
+            // Get the garden, grade, and package by their names
+            $garden = Garden::where('name', $gardenName)->first();
+            $grade = Grade::where('name', $gradeName)->first();
+            $package = Package::where('type', $packageType)->first();
+
+            // If any of the required data is missing, skip the row
+            if (!$garden || !$grade || !$package) {
+                continue;
+            }
+
+            // Compare the imported data with the invoiced stock
+            $invoicedQty = Stock::where('garden_id', $garden->id)
+                ->where('invoice', $invoice)
+                ->where('grade_id', $grade->id)
+                ->where('package_id', $package->id)
+                ->sum('qty');
+
+            if ($qty != $invoicedQty) {
+                $mismatches[] = [
+                    'garden' => $gardenName,
+                    'invoice' => $invoice,
+                    'qty' => $qty,
+                    'grade' => $gradeName,
+                    'package' => $packageType,
+                    // 'invoiced_qty' => $invoicedQty,
+                ];
+                $totalMismatchQty += abs($qty - $invoicedQty);
+            }
         }
+
+        // Return the response with the mismatched data
+        return response()->json([
+            'success' => true,
+            'message' => 'Stock validation complete',
+            'mismatches' => $mismatches,
+            'total_mismatch_qty' => $totalMismatchQty,
+        ]);
     }
 
-    public function export()
+    // public function store(Request $request)
+    // {
+    //     // Retrieve necessary data (warehouses, bays, owners, gardens, grades, packages)
+    //     $warehouse = Warehouse::orderBy('name', 'ASC')->get()->pluck('name', 'id');
+    //     $bay = Bay::orderBy('name', 'ASC')->get()->pluck('name', 'id');
+    //     $owner = Owner::orderBy('name', 'ASC')->get()->pluck('name', 'id');
+    //     $garden = Garden::orderBy('name', 'ASC')->get()->pluck('name', 'id');
+    //     $grade = Grade::orderBy('name', 'ASC')->get()->pluck('name', 'id');
+    //     $package = Package::orderBy('name', 'ASC')->get()->pluck('name', 'id');
+
+    //     // Validate the incoming request data
+    //     $this->validate($request, [
+    //         'warehouse_id' => 'required',
+    //         'bay_id' => 'required',
+    //         'owner_id' => 'required',
+    //         'garden_id' => 'required',
+    //         'grade_id' => 'required',
+    //         'package_id' => 'required',
+    //         'invoice' => 'required|string',
+    //         'qty' => 'required|string',
+    //         'year' => 'required|string',
+    //         'remark' => 'required|string',
+    //     ]);
+
+    //     // Read and process the uploaded Excel file
+    //     $import = new StockImport();
+    //     $import->import($request->file('file'));
+
+    //     // Get the imported data
+    //     $importedData = $import->getData();
+
+    //     // Perform stock comparison and store mismatches
+    //     $mismatches = [];
+
+    //     foreach ($importedData as $rowNumber => $data) {
+    //         // Compare the imported data with the invoiced stock
+    //         $invoicedQty = DB::table('stocks')
+    //             ->where('invoice', $data->invoice)
+    //             ->where('year', $data->year)
+    //             ->where('package_id', $data->package_id)
+    //             ->where('garden_id', $data->garden_id)
+    //             ->where('grade_id', $data->grade_id)
+    //             ->sum('qty');
+
+    //         if ($data->qty != $invoicedQty) {
+    //             $mismatch = [
+    //                 'row_number' => $rowNumber + 1, // Add 1 to match Excel row numbers
+    //                 'invoice' => $data->invoice,
+    //                 'year' => $data->year,
+    //                 'package_id' => $data->package_id,
+    //                 'garden_id' => $data->garden_id,
+    //                 'grade_id' => $data->grade_id,
+    //                 'imported_qty' => $data->qty,
+    //                 'invoiced_qty' => $invoicedQty,
+    //             ];
+
+    //             $mismatches[] = $mismatch;
+    //         }
+    //     }
+
+    //     // Return the mismatches or highlight them in your desired way
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Stock created successfully',
+    //         'mismatches' => $mismatches,
+    //     ]);
+    // }
+
+    public function show($id)
     {
-        return Excel::download(new ExportStock(), 'stock.xlsx');
     }
-
-    
 
     public function edit($id)
     {
-        $stock = Stock::findOrFail($id);
-        $warehouse = Warehouse::orderBy('name', 'ASC')->pluck('name', 'id');
-        $bay = Bay::orderBy('name', 'ASC')->pluck('name', 'id');
-        $owner = Owner::orderBy('name', 'ASC')->pluck('name', 'id');
-        $garden = Garden::orderBy('name', 'ASC')->pluck('name', 'id');
-        $grade = Grade::orderBy('name', 'ASC')->pluck('name', 'id');
-        $package = Package::orderBy('name', 'ASC')->pluck('name', 'id');
+        $stock = Stock::find($id);
 
-        return view('stocks.edit', compact('stock', 'warehouse', 'bay', 'owner', 'garden', 'grade', 'package'));
-
+        return $stock;
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
             'warehouse_id' => 'required',
-            'bay_id' => 'required',
+            'warehouse_bay_id' => 'required',
             'owner_id' => 'required',
             'garden_id' => 'required',
             'grade_id' => 'required',
             'package_id' => 'required',
             'invoice' => 'required|string',
-            'qty' => 'required|string',
+            'qty' => 'required|integer',
             'year' => 'required|string',
             'remark' => 'required|string',
         ]);
 
         $stock = Stock::findOrFail($id);
-        $stock->warehouse_id = $request->warehouse_id;
-        $stock->bay_id = $request->bay_id;
-        $stock->owner_id = $request->owner_id;
-        $stock->garden_id = $request->garden_id;
-        $stock->grade_id = $request->grade_id;
-        $stock->package_id = $request->package_id;
-        $stock->invoice = $request->invoice;
-        $stock->qty = $request->qty;
-        $stock->year = $request->year;
-        $stock->remark = $request->remark;
-        $stock->save();
+        $stock->update($request->all());
 
-        return redirect()->route('stocks.index')->with('success', 'Stock updated successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Stock Updated Successfully',
+        ]);
     }
 
-    public function destroy($id)
+    public function apiStocks()
+    {
+        $stock = Stock::all();
+
+        return Datatables::of($stock)
+            ->addColumn('warehouse_name', function ($stock) {
+                return $stock->warehouse->name;
+            })
+            ->addColumn('warehouse_bay_name', function ($stock) {
+                return $stock->bay->name;
+            })
+            ->addColumn('owner_name', function ($stock) {
+                return $stock->owner->name;
+            })
+            ->addColumn('garden_name', function ($stock) {
+                return $stock->garden->name;
+            })
+            ->addColumn('grade_name', function ($stock) {
+                return $stock->grade->name;
+            })
+            ->addColumn('package_name', function ($stock) {
+                return $stock->package->name;
+            })
+            ->addColumn('action', function ($stock) {
+                return '<a onclick="editForm('.$stock->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>Edit</a>'.
+                    '<a onclick="deleteData('.$stock->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
+            })
+            ->rawColumns(['warehouse_name', 'warehouse_bay_name', 'owner_name', 'garden_name', 'grade_name', 'package_name', 'action'])->make(true);
+    }
+
+    public function ImportExcel(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|mimes:xls,xlsx',
+        ]);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            Excel::import(new StockImport(), $file);
+
+            return redirect()->back()->with(['success' => 'Uploaded file successfully !']);
+        }
+
+        return redirect()->back()->with(['error' => 'Please choose file to upload.']);
+    }
+
+    public function exportStockAll()
+    {
+        $stock = Stock::all();
+        $pdf = \PDF::loadView('stocks.stockAllPDF', compact('stock'));
+
+        return $pdf->download('stock.pdf');
+    }
+
+    public function exportStock($id)
     {
         $stock = Stock::findOrFail($id);
-        $stock->delete();
+        $pdf = \PDF::loadView('stocks.exportStockPDF', compact('stock'));
 
-        return redirect()->route('stocks.index')->with('success', 'Stock deleted successfully.');
+        return $pdf->download($stock->id.'_stock.pdf');
     }
 
-    public function apiStocks(Request $request)
+    public function exportExcel()
     {
-        if ($request->ajax()) {
-            $data = DB::table('stocks')
-                ->join('warehouses', 'stocks.warehouse_id', '=', 'warehouses.id')
-                ->join('bays', 'stocks.bay_id', '=', 'bays.id')
-                ->join('owners', 'stocks.owner_id', '=', 'owners.id')
-                ->join('gardens', 'stocks.garden_id', '=', 'gardens.id')
-                ->join('grades', 'stocks.grade_id', '=', 'grades.id')
-                ->join('packages', 'stocks.package_id', '=', 'packages.id')
-                ->select('stocks.id', 'warehouses.name as warehouse', 'bays.name as bay', 'owners.name as owner', 'gardens.name as garden', 'grades.name as grade', 'packages.name as package', 'stocks.invoice', 'stocks.qty', 'stocks.year', 'stocks.remark', 'stocks.mismatch')
-                ->orderBy('stocks.id', 'DESC')
-                ->get();
-
-            return datatables()->of($data)
-                ->addIndexColumn()
-                ->addColumn('status', function ($row) {
-                    if ($row->mismatch) {
-                        return '<span class="text-danger">Mismatched</span>';
-                    } else {
-                        return '<span class="text-success">Matched</span>';
-                    }
-                })
-                ->addColumn('action', function ($row) {
-                    $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">Edit</a>';
-                    $btn .= ' <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
-                    return $btn;
-                })
-                ->rawColumns(['status', 'action'])
-                ->make(true);
-        }
+        return (new ExportStock())->download('stock.xlsx');
     }
 }
