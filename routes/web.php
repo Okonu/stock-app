@@ -1,7 +1,7 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,8 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-
- //uncomment from here
+// uncomment from here
 
 Route::get('/', function () {
     return view('auth.login');
@@ -50,16 +49,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('grades', 'GradeController');
     Route::get('/apiGrades', 'GradeController@apiGrades')->name('api.grades');
 
-    Route::resource('bays', 'BayController');
-    Route::get('/apiBays', 'BayController@apiBays')->name('api.bays');
-    Route::post('/apiBays', 'BayController@apiBays')->name('api.bays');
-    Route::get('/bays/create/{warehouse}', 'BayController@create')->name('bays.create');
+    Route::resource('bays', 'WarehouseController');
+    Route::get('/apiBays', 'WarehouseController@apiBays')->name('api.bays');
+    Route::post('/apiBays', 'WarehouseController@apiBays')->name('api.bays');
 
     Route::resource('stocks', 'StockController');
     Route::get('/apiStocks', 'StockController@apiStocks')->name('api.stocks');
-    Route::get('/exportStockAll', 'StockController@exportStockAll')->name('exportPDF.stockAll');
     Route::get('/exportStockAllExcel', 'StockController@exportExcel')->name('exportExcel.stockAll');
-    Route::get('/exportStock/{id}', 'StockController@exportStock')->name('exportPDF.stock');
     Route::post('/apiImport', 'StockController@apiStocks')->name('api.import');
     Route::post('/stocks/import', 'StockController@import')->name('stocks.import');
 
@@ -68,10 +64,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('user', 'UserController');
     Route::get('/apiUser', 'UserController@apiUsers')->name('api.users');
 });
-
-
-
-
 
 // Route::get('/', function () {
 //     return view('auth.login');
@@ -84,4 +76,3 @@ Route::group(['middleware' => 'auth'], function () {
 // Route::get('dashboard', function () {
 //     return view('layouts.master');
 // });
-

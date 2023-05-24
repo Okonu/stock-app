@@ -8,9 +8,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($bagsPerWarehouse as $warehouseId => $totalBags)
+                        @foreach ($bagsPerWarehouse as $warehouse_id => $totalBags)
                             <tr>
-                                <td>{{ $warehouse[$warehouseId] }}</td>
+                                <td>{{ $warehouse[$warehouse_id] }}</td>
                                 <td>{{ $totalBags }}</td>
                             </tr>
                         @endforeach

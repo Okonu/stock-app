@@ -9,6 +9,7 @@ use App\Imports\StockImport;
 use App\Owner;
 use App\Package;
 use App\Stock;
+use App\User;
 use App\Warehouse;
 use App\WarehouseBay;
 use Illuminate\Http\Request;
@@ -28,10 +29,7 @@ class StockController extends Controller
     {
         $totalBags = Stock::sum('qty');
 
-        // return response()->json([
-        //     'success' => true,
-        //     'total_bags' => $totalBags,
-        // ]);
+        return $totalBags;
     }
 
     public function calculateBagsPerWarehouse()
@@ -48,6 +46,10 @@ class StockController extends Controller
         $totalBags = $this->countTotalBags();
 
         $bagsPerWarehouse = $this->calculateBagsPerWarehouse();
+
+        $user = User::orderBy('name', 'ASC')
+            ->get()
+            ->pluck('name', 'id');
 
         $warehouse = Warehouse::orderBy('name', 'ASC')
             ->get()
@@ -74,7 +76,7 @@ class StockController extends Controller
             ->pluck('name', 'id');
         $stock = Stock::all();
 
-        return view('stocks.index', compact('warehouse', 'bay', 'owner', 'garden', 'grade', 'package', 'totalBags', 'bagsPerWarehouse'));
+        return view('stocks.index', compact('user', 'warehouse', 'bay', 'owner', 'garden', 'grade', 'package', 'totalBags', 'bagsPerWarehouse'));
     }
 
     public function create()
@@ -270,39 +272,42 @@ class StockController extends Controller
         return $stock;
     }
 
-    public function update(Request $request, $id)
-    {
-        $this->validate($request, [
-            'warehouse_id' => 'required',
-            'warehouse_bay_id' => 'required',
-            'owner_id' => 'required',
-            'garden_id' => 'required',
-            'grade_id' => 'required',
-            'package_id' => 'required',
-            'invoice' => 'required|string',
-            'qty' => 'required|integer',
-            'year' => 'required|string',
-            'remark' => 'required|string',
-        ]);
+    // public function update(Request $request, $id)
+    // {
+    //     $this->validate($request, [
+    //         'warehouse_id' => 'required',
+    //         'warehouse_bay_id' => 'required',
+    //         'owner_id' => 'required',
+    //         'garden_id' => 'required',
+    //         'grade_id' => 'required',
+    //         'package_id' => 'required',
+    //         'invoice' => 'required|string',
+    //         'qty' => 'required|integer',
+    //         'year' => 'required|string',
+    //         'remark' => 'required|string',
+    //     ]);
 
-        $stock = Stock::findOrFail($id);
-        $stock->update($request->all());
+    //     $stock = Stock::findOrFail($id);
+    //     $stock->update($request->all());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Stock Updated Successfully',
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Stock Updated Successfully',
+    //     ]);
+    // }
 
     public function apiStocks()
     {
         $stock = Stock::all();
 
         return Datatables::of($stock)
+            ->addColumn('user_name', function ($stock) {
+                return $stock->user->name;
+            })
             ->addColumn('warehouse_name', function ($stock) {
                 return $stock->warehouse->name;
             })
-            ->addColumn('warehouse_bay_name', function ($stock) {
+            ->addColumn('bay_name', function ($stock) {
                 return $stock->bay->name;
             })
             ->addColumn('owner_name', function ($stock) {
@@ -321,7 +326,7 @@ class StockController extends Controller
                 return '<a onclick="editForm('.$stock->id.')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>Edit</a>'.
                     '<a onclick="deleteData('.$stock->id.')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
             })
-            ->rawColumns(['warehouse_name', 'warehouse_bay_name', 'owner_name', 'garden_name', 'grade_name', 'package_name', 'action'])->make(true);
+            ->rawColumns(['user_name', 'warehouse_name', 'bay_name', 'owner_name', 'garden_name', 'grade_name', 'package_name', 'action'])->make(true);
     }
 
     public function ImportExcel(Request $request)
@@ -340,21 +345,21 @@ class StockController extends Controller
         return redirect()->back()->with(['error' => 'Please choose file to upload.']);
     }
 
-    public function exportStockAll()
-    {
-        $stock = Stock::all();
-        $pdf = \PDF::loadView('stocks.stockAllPDF', compact('stock'));
+    // public function exportStockAll()
+    // {
+    //     $stock = Stock::all();
+    //     $pdf = \PDF::loadView('stocks.stockAllPDF', compact('stock'));
 
-        return $pdf->download('stock.pdf');
-    }
+    //     return $pdf->download('stock.pdf');
+    // }
 
-    public function exportStock($id)
-    {
-        $stock = Stock::findOrFail($id);
-        $pdf = \PDF::loadView('stocks.exportStockPDF', compact('stock'));
+    // public function exportStock($id)
+    // {
+    //     $stock = Stock::findOrFail($id);
+    //     $pdf = \PDF::loadView('stocks.exportStockPDF', compact('stock'));
 
-        return $pdf->download($stock->id.'_stock.pdf');
-    }
+    //     return $pdf->download($stock->id.'_stock.pdf');
+    // }
 
     public function exportExcel()
     {

@@ -97,7 +97,9 @@
             var table = $('#stocks-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('api.stocks') }}",
+                ajax: {
+                    url: "{{ route('api.stocks') }}"
+                },
                 columns: [
                     {
                         data: null,
@@ -109,12 +111,12 @@
                             return rowNumber;
                         }
                     },
-                    { data: 'warehouse_name', name: 'warehouse_name' },
-                    { data: 'warehouse_bay_name', name: 'warehouse_bay_name' },
-                    { data: 'owner_name', name: 'owner_name' },
-                    { data: 'garden_name', name: 'garden_name' },
-                    { data: 'grade_name', name: 'grade_name' },
-                    { data: 'package_name', name: 'package_name' },
+                    { data: 'warehouse.name', name: 'warehouse.name' },
+                    { data: 'bay.name', name: 'bay.name' },
+                    { data: 'owner.name', name: 'owner.name' },
+                    { data: 'garden.name', name: 'garden.name' },
+                    { data: 'grade.name', name: 'grade.name' },
+                    { data: 'package.name', name: 'package.name' },
                     { data: 'invoice', name: 'invoice' },
                     { data: 'qty', name: 'qty' },
                     { data: 'year', name: 'year' },

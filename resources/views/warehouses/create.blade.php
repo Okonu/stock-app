@@ -24,8 +24,8 @@
 
                         <div class="form-group">
                             <label for="bays">Bays</label>
-                            <input type="text" class="form-control" id="bays" name="bays[]" placeholder="Enter bay name">
-                            <button type="button" class="btn btn-default" id="add-bay-btn">Add Bay</button>
+                            <input type="text" class="form-control" id="bays" name="bays[]" placeholder="Enter bay name, Separated by a comma, i.e A1, A2, A3...">
+                            
                         </div>
 
                         <div id="bay-container"></div>

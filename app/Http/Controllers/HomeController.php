@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Warehouse;
 
 class HomeController extends Controller
 {
@@ -23,6 +23,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $stockController = new StockController();
+
+        $totalBags = $stockController->countTotalBags();
+        $bagsPerWarehouse = $stockController->calculateBagsPerWarehouse();
+        $warehouse = Warehouse::pluck('name', 'id');
+
+        return view('home', compact('totalBags', 'bagsPerWarehouse', 'warehouse'));
     }
 }

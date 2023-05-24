@@ -2,12 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Http\Controllers\StockController;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
-use App\Stock;
-use App\Warehouse;
-use App\Http\Controllers\StockController;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,19 +14,18 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    public function boot()
+    {
+        Schema::defaultStringLength(191);
 
-     public function boot()
-     {
-         Schema::defaultStringLength(191);
-     
-         View::composer(['home', 'bags', 'layouts', 'sidebar', 'stocks'], function ($view) {
-             $stockController = new StockController();
-             $totalBags = $stockController->countTotalBags();
-             $bagsPerWarehouse = $stockController->calculateBagsPerWarehouse();
-     
-             $view->with('totalBags', $totalBags)->with('bagsPerWarehouse', $bagsPerWarehouse);
-         });
-     }
+        View::composer(['home', 'warehouse', 'bags', 'layouts', 'sidebar', 'stocks'], function ($view) {
+            $stockController = app(StockController::class);
+            $totalBags = $stockController->countTotalBags();
+            $bagsPerWarehouse = $stockController->calculateBagsPerWarehouse();
+
+            $view->with('totalBags', $totalBags)->with('bagsPerWarehouse', $bagsPerWarehouse);
+        });
+    }
 
     /**
      * Register any application services.
@@ -37,6 +34,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 }

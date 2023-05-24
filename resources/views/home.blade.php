@@ -39,20 +39,6 @@
             </div>
 
             <!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-                <!-- small box -->
-                <div class="small-box bg-yellow">
-                    <div class="inner">
-                        <h3>{{ \App\Bay::count() }}</h3>
-                        <p>Bays</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fa fa-cubes"></i>
-                    </div>
-                    <a href="{{ route('bays.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-            <!-- ./col -->
             <div class="col-md-3">
                 <div class="box box-primary">
                     <div class="box-header with-border">
@@ -67,8 +53,12 @@
                 </div>
             </div>
 </div>
-@include('stocks.bags')
+
 @include('stocks.tableu')
+
+@include('stocks.bags', ['warehouse' => $warehouse, 'bagsPerWarehouse' => $bagsPerWarehouse])
+
+
 
 
 @endsection
