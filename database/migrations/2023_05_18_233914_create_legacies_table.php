@@ -16,9 +16,10 @@ class CreateLegaciesTable extends Migration
         Schema::create('legacies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('garden');
-            $table->string('grade');
             $table->string('invoice');
             $table->integer('qty');
+            $table->string('grade');
+            $table->string('package');
             $table->timestamps();
         });
     }

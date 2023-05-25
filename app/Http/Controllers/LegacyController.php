@@ -48,9 +48,10 @@ class LegacyController extends Controller
     {
         $this->validate($request, [
             'garden' => 'required',
-            'grade' => 'required',
             'invoice' => 'required',
             'qty' => 'required',
+            'grade' => 'required',
+            'package' => 'required',
         ]);
 
         Legacy::create($request->all());

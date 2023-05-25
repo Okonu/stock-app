@@ -33,9 +33,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/warehouses/create', 'WarehouseController@create')->name('warehouses.create');
     Route::post('/warehouses', 'WarehouseController@store')->name('warehouses.store');
 
-    // Route::resource('legacies', 'LegacyController');
-    // Route::get('/apiLegacies', 'LegacyController@apiLegacies')->name('api.legacies');
-    // Route::post('/importLegacies', 'LegacyController@ImportExcel')->name('import.legacies');
+    Route::resource('legacies', 'LegacyController');
+    Route::get('/apiLegacies', 'LegacyController@apiLegacies')->name('api.legacies');
+    Route::post('/importLegacies', 'LegacyController@ImportExcel')->name('import.legacies');
 
     Route::resource('owners', 'OwnerController');
     Route::get('/apiOwners', 'OwnerController@apiOwners')->name('api.owners');
