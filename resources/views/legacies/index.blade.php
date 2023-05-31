@@ -9,9 +9,73 @@
 @endsection
 
 @section('content')
-    @include('legacies.tableu')
+<div class="box box-success">
 
-    @include('legacies.form_import')
+<div class="box-header">
+    <h3 class="box-title">Imported Stock</h3>
+</div>
+
+<!-- <div class="box-header">
+    <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add Customers</a>
+</div> -->
+
+
+<!-- /.box-header -->
+<div class="box-body">
+    <table id="legacy-table" class="table table-bordered table-hover table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Garden</th>
+            <th>Invoice</th>
+            <th>Package Number</th>
+            <th>Grade</th>
+            <th>Package Type</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<!-- /.box-body -->
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+
+                <h3 class="box-title">Import Current Stock</h3>
+                <br><br>
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <i class="icon fa fa-check"></i>Success!&nbsp;
+                        {{session('success')}}
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <i class="icon fa fa-ban"></i>Error!&nbsp;
+                        {{session('error')}}
+                    </div>
+                @endif
+            </div>
+
+            <form role="form" action="{{ route('api.imports') }}" method="post" enctype="multipart/form-data">
+    @csrf
+    <div class="form-group">
+        <label for="file">Select File:</label>
+        <input type="file" name="file" id="file" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+        </div>
+    </div>
+</div>
 
 @endsection
 
@@ -82,7 +146,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then(function () {
                 $.ajax({
-                    url : "{{ url('customers') }}" + '/' + id,
+                    url : "{{ url('legacies') }}" + '/' + id,
                     type : "POST",
                     data : {'_method' : 'DELETE', '_token' : csrf_token},
                     success : function(data) {
@@ -110,8 +174,8 @@
             $('#modal-form form').validator().on('submit', function (e) {
                 if (!e.isDefaultPrevented()){
                     var id = $('#id').val();
-                    if (save_method == 'add') url = "{{ url('legacies') }}";
-                    else url = "{{ url('legacies') . '/' }}" + id;
+                    if (save_method == 'add') url = "{{ route('api.imports') }}";
+                    else url = "{{ url('imports') . '/' }}" + id;
 
                     $.ajax({
                         url : url,
@@ -146,3 +210,4 @@
     </script>
 
 @endsection
+

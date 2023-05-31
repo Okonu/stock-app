@@ -45,7 +45,7 @@
             <th>ID</th>
             <th>Warehouse</th>
             <th>Bays</th>
-            <th>Farm Owner</th>
+            <th>Producer</th>
             <th>Garden</th>
             <th>Grade</th>
             <th>Package Type</th>

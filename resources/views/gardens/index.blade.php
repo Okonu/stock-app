@@ -154,8 +154,7 @@
 
                     $.ajax({
                         url : url,
-                        type : "POST",
-                        //hanya untuk input data tanpa dokumen
+                        type : "POST",+
 //                      data : $('#modal-form form').serialize(),
                         data: new FormData($("#modal-form form")[0]),
                         contentType: false,

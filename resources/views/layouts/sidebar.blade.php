@@ -33,7 +33,7 @@
             <li><a href="{{ route('stocks.index') }}"><i class="fa fa-list"></i> <span>Stock Taken</span></a></li>
             <li><a href="{{ route('warehouses.index') }}"><i class="fa fa-list"></i> <span>Warehouse</span></a></li>
             <li><a href="{{ route('legacies.index') }}"><i class="fa fa-cubes"></i> <span>Current Stock</span></a></li>
-            <li><a href="{{ route('owners.index') }}"><i class="fa fa-users"></i> <span>Farm Owners</span></a></li>
+            <li><a href="{{ route('owners.index') }}"><i class="fa fa-users"></i> <span>Producers</span></a></li>
             <li><a href="{{ route('grades.index') }}"><i class="fa fa-list"></i> <span>Tea Grades</span></a></li>
             <li><a href="{{ route('gardens.index') }}"><i class="fa fa-list"></i> <span>Gardens</span></a></li>
             <li><a href="{{ route('packages.index') }}"><i class="fa fa-cubes"></i> <span>Package Types</span></a></li>

@@ -42,10 +42,10 @@
     <table id="stock" width="100%">
         <thead>
         <tr>
-            <!-- <th>ID</th> -->
+            <th>Taken By</th>
             <th>Warehouse</th>
             <th>Bays</th>
-            <th>Farm Owner</th>
+            <th>Producer</th>
             <th>Garden</th>
             <th>Grade</th>
             <th>Package Type</th>
@@ -59,8 +59,9 @@
             <tbody>
             <tr>
             <!-- <td>{{$p->id}}</td> -->
+            <td>{{$p->user->name}}</td>
             <td>{{$p->warehouse->name}}</td>
-            <td>{{$p->bay->name}}</td>
+            <td>{{$p->bays->name}}</td>
             <td>{{$p->owner->name}}</td>
             <td>{{$p->garden->name}}</td>
             <td>{{$p->grade->name}}</td>

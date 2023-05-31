@@ -6,66 +6,54 @@ use App\Http\Controllers\Controller;
 use App\Rules\PhoneValidationRule;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    /*
-            |--------------------------------------------------------------------------
-            | Register Controller
-            |--------------------------------------------------------------------------
-            |
-            | This controller handles the registration of new users as well as their
-            | validation and creation. By default this controller uses a trait to
-            | provide this functionality without requiring any additional code.
-            |
-    */
-
     use RegistersUsers;
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
     protected $redirectTo = '/user';
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
-        $this->middleware('role:admin,staff');
+        $this->middleware('role:admin');
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', new PhoneValidationRule(), 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'role' => ['required', 'in:admin,staff,clerk'],
         ]);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @return \App\User
-     */
     protected function create(array $data)
     {
-        return User::create([
+        $request = request();
+
+        $user = User::create([
             'name' => $data['name'],
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
+            'role' => $data['role'],
         ]);
+
+        if ($user->isClerk()) {
+            // Generate token for clerk user
+            $user->generateToken();
+        }
+
+        return $this->registered($request, $user)
+            ?: redirect($this->redirectPath())->with('success', 'User created successfully.');
+    }
+
+
+    protected function registered(Request $request, $user)
+    {
+        // Custom logic after user registration, if needed
     }
 }

@@ -22,9 +22,9 @@ class Stock extends Model
         return $this->belongsTo(Warehouse::class);
     }
 
-    public function bay()
+    public function bays()
     {
-        return $this->belongsTo(WarehouseBay::class);
+        return $this->belongsTo(WarehouseBay::class, 'warehouse_bay_id');
     }
 
     public function owner()

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use App\Http\Controllers\Auth\LoginController;
 
 class UserController extends Controller
 {
@@ -112,11 +113,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        User::destroy($id);
+        $user = User::findOrFail($id);
+        $user->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'User Deleted',
+            'message' => 'User deleted successfully.',
         ]);
     }
 

@@ -9,22 +9,22 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class LegaciesImport implements ToModel, WithHeadingRow
 {
     /**
-     * @param array $row
      * @return Legacy|null
      */
     public function model(array $row)
     {
+        // dd($row);
         // Check if all the required columns have values
-        if (empty($row['garden']) || empty($row['grade']) || empty($row['invoice']) || empty($row['qty'])) {
+        if (empty($row[0]) || empty($row[1]) || empty($row[2]) || empty($row[3]) || empty($row[4])) {
             return null;
         }
 
         return new Legacy([
-            'garden' => $row['garden'],
-            'invoice' => $row['invoice'],
-            'qty' => $row['balance_qty'],
-            'grade' => $row['grade'],
-            'package' => $row['package_type'],
+            'garden' => $row[0],
+            'invoice' => $row[1],
+            'qty' => $row[2],
+            'grade' => $row[3],
+            'package' => $row[4],
         ]);
     }
 }

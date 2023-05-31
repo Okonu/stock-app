@@ -12,11 +12,11 @@
     <div class="box box-success">
 
         <div class="box-header">
-            <h3 class="box-title"><strong>List of Farm Owners</strong></h3>
+            <h3 class="box-title"><strong>List of Producers</strong></h3>
         </div>
 
         <div class="box-header">
-            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add Farm Owner</a>
+            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add Producer</a>
             </div>
 
 
