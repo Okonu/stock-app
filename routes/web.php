@@ -11,34 +11,72 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
-Route::get('/', function () {return view('welcome'); });
+// uncomment from here
 
-Route::get('/display/warehouse', function () {return view('display.warehouse'); });
+Route::get('/', function () {
+    return view('auth.login');
+});
 
-Route::get('/add-warehouse', function () {return view('display.addWarehouse'); })->name('addWarehouse');
+Auth::routes();
 
-Route::get('/display/owners', function () {return view('display.owners'); });
+Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/add-owner', function () {return view('display.addOwners'); })->name('addOwners');
+Route::get('dashboard', function () {
+    return view('layouts.master');
+});
 
-Route::get('/display/garden', function () {return view('display.garden'); });
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('warehouses', 'WarehouseController');
+    Route::get('/apiWarehouses', 'WarehouseController@apiWarehouses')->name('api.warehouses');
+    Route::get('/warehouses/create', 'WarehouseController@create')->name('warehouses.create');
+    Route::post('/warehouses', 'WarehouseController@store')->name('warehouses.store');
 
-Route::get('/add-garden', function () {return view('display.addGarden'); })->name('addGarden');
+    Route::post('/toggleTokenActivation', 'Auth\LoginController@toggleTokenActivation')->name('admin.toggleTokenActivation');
 
-Route::get('/display/bays', function () {return view('display.bays'); });
+    Route::post('/generateTokens', 'Auth\LoginController@generateTokens')->name('admin.generateTokens');
 
-Route::get('/add-bay', function () {return view('display.addBay'); })->name('addBay');
+    Route::resource('legacies', 'LegacyController');
+    Route::get('/apiLegacies', 'LegacyController@apiLegacies')->name('api.legacies');
 
-Route::get('/display/grade', function () {return view('display.grade'); });
+    // Import route for legacies
+    Route::post('/apiImports', 'LegacyController@apiImports')->name('api.imports');
 
-Route::get('/add-grade', function () {return view('display.addGrade'); })->name('addGrade');
+    Route::resource('owners', 'OwnerController');
+    Route::get('/apiOwners', 'OwnerController@apiOwners')->name('api.owners');
 
-Route::get('/display/package', function () {return view('display.package'); });
+    Route::resource('gardens', 'GardenController');
+    Route::get('/apiGardens', 'GardenController@apiGardens')->name('api.gardens');
 
-Route::get('/add-package', function () {return view('display.addPackage'); })->name('addPackage');
+    Route::resource('packages', 'PackageController');
+    Route::get('/apiPackages', 'PackageController@apiPackages')->name('api.packages');
 
-Route::get('/display/staff', function () {return view('display.staff'); });
+    Route::resource('grades', 'GradeController');
+    Route::get('/apiGrades', 'GradeController@apiGrades')->name('api.grades');
 
-Route::get('/add-staff', function () {return view('display.addStaff'); })->name('addStaff');
+    Route::resource('bays', 'WarehouseController');
+    Route::get('/apiBays', 'WarehouseController@apiBays')->name('api.bays');
+    Route::post('/apiBays', 'WarehouseController@apiBays')->name('api.bays');
+
+    Route::resource('stocks', 'StockController');
+    Route::get('/apiStocks', 'StockController@apiStocks')->name('api.stocks');
+    Route::get('/exportStockAllExcel', 'StockController@exportExcel')->name('exportExcel.stockAll');
+    Route::post('/apiImport', 'StockController@apiImport')->name('api.import');
+    Route::post('/stocks/import', 'StockController@import')->name('stocks.import');
+
+    Route::get('/stock/reports', 'StockController@generateMonthlyReports')->name('stocks.reports');
+
+    Route::get('/stock/export/{warehouse_id}', [StockController::class, 'exportToExcel'])->name('stock.export');
+
+    Route::get('stocks/total-bags', 'StockController@countTotalBags');
+
+    // Route::get('reports', [StockController::class, 'index'])->name('stocks.reports');
+    // // Route::get('reports/api', [StockController::class, 'apiReports'])->name('api.reports');
+    // // Route::resource('reports', 'StockController');
+    // Route::get('reports/api', 'StockController@apiReports')->name('api.reports');
+
+    Route::resource('user', 'UserController');
+    Route::get('/apiUser', 'UserController@apiUsers')->name('api.users');
+    Route::delete('/user/{id}', 'UserController@destroy')->name('user.destroy');
+});
