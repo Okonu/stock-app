@@ -12,7 +12,7 @@
 <div class="box box-success">
 
 <div class="box-header">
-    <h3 class="box-title">Imported Stock</h3>
+    <h3 class="box-title">System Stock</h3>
 </div>
 
 <!-- <div class="box-header">
@@ -31,7 +31,7 @@
             <th>Package Number</th>
             <th>Grade</th>
             <th>Package Type</th>
-            <th>Actions</th>
+            <!--<th>Actions</th>-->
         </tr>
         </thead>
         <tbody></tbody>
@@ -122,7 +122,7 @@
                 {data: 'qty', name: 'qty'},
                 {data: 'grade', name: 'grade'},
                 {data: 'package', name: 'package'},
-                {data: 'action', name: 'action', orderable: false, searchable: false}
+                // {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });
 

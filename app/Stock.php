@@ -8,7 +8,7 @@ class Stock extends Model
 {
     protected $table = 'stocks';
 
-    protected $fillable = ['user_id', 'warehouse_id', 'warehouse_bay_id', 'owner_id', 'grade_id', 'package_id', 'invoice', 'qty', 'year', 'remark', 'mismatch'];
+    protected $fillable = ['user_id', 'warehouse_id', 'warehouse_bay_id', 'owner_id', 'grade_id', 'package_id', 'invoice', 'qty', 'year', 'remark', 'mismatch', 'comment'];
 
     protected $hidden = ['created_at', 'updated_at'];
 

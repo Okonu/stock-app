@@ -13,28 +13,12 @@
 @section('content')
 <div class="box box-success">
 <div class="box-header">
-    <h3 class="box-title"><strong>Stock Taken</strong></h3>
+    <h3 class="box-title"><strong>Physical Stock</strong></h3>
 </div>
 
-<div class="box-header">
-    <!-- <div class="form-group">
-        <label for="month">Select Month:</label>
-        <select id="month" name="month" class="form-control">
-            <option value="1">January</option>
-            <option value="2">February</option>
-            <option value="2">March</option>
-            <option value="2">April</option>
-            <option value="2">May</option>
-            <option value="2">June</option>
-            <option value="2">July</option>
-            <option value="2">August</option>
-            <option value="2">September</option>
-            <option value="2">October</option>
-            <option value="2">November</option>
-            <option value="2">December</option>
-        </select>
-    </div> -->
-    <a href="{{route('stocks.reports')}}" id="generate-report-btn" class="btn btn-primary"><i class="fa fa-file"></i> Monthly Stock Report</a>
+    <div class="box-header" style="display:none">
+    <a href="" id="generate-report-btn" class="btn btn-primary"><i class="fa fa-file"></i> Monthly Stock Report</a>
+      @include('stocks.reports')
     <input type="hidden" id="csrf-token" value="{{ csrf_token() }}">
     </div>
 
@@ -42,7 +26,7 @@
             <a href="{{ route('exportExcel.stockAll') }}" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Export Excel</a>
         </div>
 
-        <div class="box-body">
+        <div class="box-body table-responsive">
             <table id="stocks-table" class="table table-bordered table-hover table-striped">
                 <thead>
                     <tr>
@@ -53,12 +37,12 @@
                         <th>Producer</th>
                         <th>Garden</th>
                         <th>Grade</th>
-                        <th>Package Type</th>
+                        <th>Pkg Type</th>
                         <th>Invoice</th>
-                        <th>Package No.</th>
-                        <th>Production Year</th>
+                        <th>Pkg No.</th>
+                        <th>Year</th>
+                        <th>Status</th> <!-- 'mismatch' column --> 
                         <th>Remarks</th>
-                        <th>Status</th> <!-- 'mismatch' column -->
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -67,54 +51,6 @@
         </div>
     </div>
 
-    <!-- Import Form -->
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Import Stock Data</h3>
-        </div>
-        <div class="panel-body">
-            <form id="import-form" method="POST" action="{{ route('api.import') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="form-group">
-                    <label for="import-file">Select Excel File:</label>
-                    <input type="file" id="import-file" name="file">
-                </div>
-                <button type="submit" class="btn btn-primary">Import</button>
-            </form>
-        </div>
-    </div>
-    <div class="box box-danger">
-        <div class="box-header">
-            <h3 class="box-title"><strong>Mismatched Data</strong></h3>
-        </div>
-        <div class="box-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Garden</th>
-                        <th>Invoice</th>
-                        <th>Qty</th>
-                        <th>Grade</th>
-                        <th>Package</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($mismatches as $mismatch)
-                        <tr>
-                            <td>{{ $mismatch['garden'] }}</td>
-                            <td>{{ $mismatch['invoice'] }}</td>
-                            <td>{{ $mismatch['qty'] }}</td>
-                            <td>{{ $mismatch['grade'] }}</td>
-                            <td>{{ $mismatch['package'] }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <p>Total Mismatched Quantity: {{ $totalMismatchQty }}</p>
-        </div>
-    </div>
-    @include('stocks.reports')
-@include('stocks.owners')
     <!-- Stock Modal -->
     <div class="modal fade" id="stock-modal" tabindex="-1" role="dialog" aria-labelledby="stock-modal-label">
         <div class="modal-dialog" role="document">
@@ -127,41 +63,6 @@
                 </div>
                 <div class="modal-body">
                     <!-- Stock details will be populated here -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mismatch Modal -->
-    <div class="modal fade" id="mismatch-modal" tabindex="-1" role="dialog" aria-labelledby="mismatch-modal-label">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="mismatch-modal-label">Mismatched Data</h4>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Garden</th>
-                                <th>Invoice</th>
-                                <th>Qty</th>
-                                <th>Grade</th>
-                                <th>Package</th>
-                            </tr>
-                        </thead>
-                        <tbody id="mismatch-table-body">
-                            <!-- Mismatched data rows will be added dynamically -->
-                        </tbody>
-                    </table>
-                    <p id="no-mismatch-msg" style="display: none;">No mismatches found.</p>
-                    <p id="total-mismatch-qty"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -198,7 +99,14 @@
     <script src="{{ asset('assets/validator/validator.min.js') }}"></script>
 
     <script type="text/javascript">
+    
+        function initializeTooltips() {
+          $('[data-toggle="tooltip"]').tooltip();
+        }
+        
+        
         $(document).ready(function () {
+            
             var table = $('#stocks-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -287,23 +195,35 @@
                         }
                     },
                     { 
+                        data: 'mismatch',
+                        name: 'mismatch',
+                        render: function (data) {
+                            if (data) {
+                                return '<span class="label label-danger" data-toggle="tooltip"  data-placement="top" title="some comment here...">Mismatch</span>';
+                            } else {
+                                return '<span class="label label-success" data-toggle="tooltip"  data-placement="top" title="All good!">Match</span>';
+                            }
+                        }
+                    },
+                    { 
                         data: 'remark',
                         name: 'remark',
                         render: function (data) {
                             return data ? data : '-';
                         }
                     },
-                    { 
-                        data: 'mismatch',
-                        name: 'mismatch',
-                        render: function (data) {
-                            if (data) {
-                                return '<span class="label label-danger">Mismatch</span>';
-                            } else {
-                                return '<span class="label label-success">Match</span>';
-                            }
-                        }
-                    },
+                    
+                    // { 
+                    //     data: 'comment',
+                    //     name: 'comment',
+                    //     render: function (data) {
+                    //         if (data) {
+                    //             return '<span class="label label-danger">Comment</span>';
+                    //         } else {
+                    //             return '<span class="label label-success">Comment Here</span>';
+                    //         }
+                    //     }
+                    // },
                     {
                         data: 'actions',
                         name: 'actions',
@@ -316,6 +236,10 @@
                     }
                 ]
             });
+            
+            
+            
+            
 
             // $('#generate-report-btn').on('click', function () {
             //     var month = $('#month').val();
@@ -409,60 +333,8 @@
                     }
                 });
             });
-
-            // Display mismatched data in modal
-            $('#mismatch-modal').on('show.bs.modal', function () {
-                var mismatches = @json($mismatches);
-                if (mismatches.length > 0) {
-                    var mismatchTableBody = '';
-                    mismatches.forEach(function (mismatch) {
-                        mismatchTableBody += '<tr>' +
-                            '<td>' + mismatch.garden + '</td>' +
-                            '<td>' + mismatch.invoice + '</td>' +
-                            '<td>' + mismatch.qty + '</td>' +
-                            '<td>' + mismatch.grade + '</td>' +
-                            '<td>' + mismatch.package + '</td>' +
-                            '</tr>';
-                    });
-                    $('#mismatch-table-body').html(mismatchTableBody);
-                    $('#no-mismatch-msg').hide();
-                    $('#total-mismatch-qty').text('Total Mismatched Quantity: ' + @json($totalMismatchQty));
-                } else {
-                    $('#mismatch-table-body').empty();
-                    $('#no-mismatch-msg').show();
-                    $('#total-mismatch-qty').empty();
-                }
-            });       
-
-            // Submit import form
-            $('#import-form').validator().on('submit', function (e) {
-                if (e.isDefaultPrevented()) {
-                    // Form validation failed
-                    alert('Please fill in all the required fields.');
-                } else {
-                    // Form validation succeeded
-                    e.preventDefault();
-                    var formData = new FormData($(this)[0]);
-                    $.ajax({
-                        url: $(this).attr('action'),
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            if (response.success) {
-                                alert('Stock data imported successfully.');
-                                location.reload();
-                            } else {
-                                alert('Failed to import stock data. Please try again.');
-                            }
-                        },
-                        error: function () {
-                            alert('An error occurred while importing stock data. Please try again.');
-                        }
-                    });
-                }
-            });
+        
+            // initializeTooltips();
         });
     </script>
 @endsection

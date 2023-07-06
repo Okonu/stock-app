@@ -1,7 +1,7 @@
 <div class="box box-success">
 
         <div class="box-header">
-            <h3 class="box-title"><strong>Stock Taken</strong></h3>
+            <h3 class="box-title"><strong>Physical Stock Taken</strong></h3>
 
 
         </div>

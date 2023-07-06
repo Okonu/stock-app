@@ -12,9 +12,9 @@
                 <!-- small box -->
                 <div class="small-box bg-green">
                     <div class="inner">
-                        <h3>{{ \App\Legacy::count() }}<sup style="font-size: 20px"></sup></h3>
+                        <h3>{{ \App\Stock::count() }}<sup style="font-size: 20px"></sup></h3>
 
-                        <p>Current Stock</p>
+                        <p>Physical Entries</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-list"></i>
@@ -27,9 +27,9 @@
                 <!-- small box -->
                 <div class="small-box bg-green">
                     <div class="inner">
-                        <h3>{{ $totalMismatchQty }}<sup style="font-size: 20px"></sup></h3>
+                        <h3>{{ \App\Legacy::count() }}<sup style="font-size: 20px"></sup></h3>
 
-                        <p>Inconsistencies</p>
+                        <p>System Entries</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-list"></i>
@@ -70,7 +70,7 @@
             </div>
             <!-- ./col -->
 </div>
-<a href="{{ route('stocks.reports') }}" class="btn btn-primary">View Stock Reports</a>
+
 
 @include('stocks.tableu')
 

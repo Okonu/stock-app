@@ -43,59 +43,24 @@ class LegacyController extends Controller
       *
       * @return \Illuminate\Http\Response
       */
-     public function apiImports(Request $request)
-     {
-         $this->validate($request, [
-             'file' => 'required|mimes:xls,xlsx',
-         ]);
 
-         if ($request->hasFile('file')) {
-             try {
-                 $file = $request->file('file');
-                 $rows = Excel::toArray(new LegaciesImport(), $file);
+    public function apiImports(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx',
+            
+        ]);
+    
+        $file = $request->file('file');
+    
+        $import = new LegaciesImport(); // Create an instance of the import class
+        // dd($file); 
+        Excel::import($import, $file); // Pass the import instance to the import method
+    
+        return redirect()->back()->with('success', 'Import successful.');
+    }
 
-                 // Iterate over each chunk of rows
-
-                 foreach ($rows[0] as $row) {
-                     // Validate and process each row individually
-
-                     $validator = Validator::make($row, [
-                         'Garden' => 'required',
-                         'Invoice' => 'required',
-                         'Balance Qty' => 'required',
-                         'Grade' => 'required',
-                         'Package Type' => 'required',
-                     ]);
-
-                     if ($validator->fails()) {
-                         // Log or handle the validation errors
-                         Log::error($validator->errors());
-                         continue; // Skip to the next row
-                     }
-                     
-                     // Create a new Legacy instance and assign the data from the row
-
-                     $legacy = new Legacy([
-                         'garden' => $row['Garden'],
-                         'invoice' => $row['Invoice'],
-                         'qty' => $row['Balance Qty'],
-                         'grade' => $row['Grade'],
-                         'package' => $row['Package Type'],
-                     ]);
-
-                     // Save the legacy to the database
-                     $legacy->save();
-                 }
-
-                 return redirect()->back()->with(['success' => 'Uploaded file successfully!']);
-             } catch (\Exception $e) {
-                 return redirect()->back()->with(['error' => 'An error occurred while importing the file: '.$e->getMessage()]);
-             }
-         }
-
-         return redirect()->back()->with(['error' => 'Please choose a file to upload.']);
-     }
-
+//////
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

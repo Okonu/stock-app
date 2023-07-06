@@ -20,7 +20,9 @@ class CreateStocksTable extends Migration
             $table->integer('qty');
             $table->string('year');
             $table->text('remark');
-            $table->tinyInteger('mismatch')->default(0);
+            // $table->tinyInteger('mismatch')->default(0);
+            $table->string('mismatch')->nullable(); //for matching
+            $table->string('comment')->nullable(); //for matching
             $table->timestamps();
 
             $table->foreign('warehouse_id')->references('id')->on('warehouses');

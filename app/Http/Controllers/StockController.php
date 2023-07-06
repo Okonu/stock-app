@@ -8,7 +8,6 @@ use App\Garden;
 use App\Grade;
 use App\Owner;
 use App\Package;
-use App\Imports\StockImport;
 use App\Stock;
 use App\Warehouse;
 use App\WarehouseBay;
@@ -20,6 +19,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+
 class StockController extends Controller
 {
     public function __construct()
@@ -35,35 +35,27 @@ class StockController extends Controller
     }
 
     public function calculateBagsPerWarehouse()
-{
-    $bagsPerWarehouse = Stock::select('warehouse_id', DB::raw('SUM(qty) as total_qty'))
-        ->groupBy('warehouse_id')
-        ->pluck('total_qty', 'warehouse_id');
-
-    return $bagsPerWarehouse;
-}
-
-private function calculateBagsPerBay()
-{
-    $bagsPerBay = [];
-
-    $bays = WarehouseBay::all();
-
-    foreach ($bays as $bay) {
-        $bagsCount = Stock::where('warehouse_bay_id', $bay->id)->sum('qty');
-        $bagsPerBay[$bay->id] = $bagsCount;
+    {
+        $bagsPerWarehouse = Stock::select('warehouse_id', DB::raw('SUM(qty) as total_qty'))
+            ->groupBy('warehouse_id')
+            ->pluck('total_qty', 'warehouse_id');
+    
+        return $bagsPerWarehouse;
     }
 
-    // Initialize default values for all possible indexes
-    $warehouseIds = Stock::distinct('warehouse_id')->pluck('warehouse_id');
-    foreach ($warehouseIds as $warehouseId) {
-        if (!isset($bagsPerBay[$warehouseId])) {
-            $bagsPerBay[$warehouseId] = 0;
+    private function calculateBagsPerBay()
+    {
+        $bagsPerBay = [];
+    
+        $bays = WarehouseBay::all();
+    
+        foreach ($bays as $bay) {
+            $bagsCount = Stock::where('warehouse_bay_id', $bay->id)->sum('qty');
+            $bagsPerBay[$bay->id] = $bagsCount;
         }
+        // dd($bagsPerBay);
+        return $bagsPerBay;
     }
-
-    return $bagsPerBay;
-}
 
     public function getFarmOwnersCountPerWarehouse()
     {
@@ -75,15 +67,15 @@ private function calculateBagsPerBay()
             ->leftJoin('owners', 'stocks.owner_id', '=', 'owners.id')
             ->leftJoin('gardens', 'stocks.garden_id', '=', 'gardens.id')
             ->get();
-
+    
         $bagsPerBay = $this->calculateBagsPerBay();
-
+    
         $stockDates = Stock::select('warehouse_id')
             ->selectRaw('GROUP_CONCAT(DISTINCT DATE_FORMAT(created_at, "%Y-%m-%d")) as stock_dates')
             ->groupBy('warehouse_id')
             ->pluck('stock_dates', 'warehouse_id')
             ->toArray();
-
+    
         return $ownersCountPerWarehouse;
     }
 
@@ -122,80 +114,144 @@ private function calculateBagsPerBay()
         return $monthlyReports;
     }
     
+// public function reconcileStock()
+// {
+//     // Find missing invoices
+//     $missingInvoices = DB::select("
+//         SELECT id, invoice, 'legacies' AS missing_from_table
+//         FROM legacies
+//         WHERE invoice NOT IN (
+//             SELECT invoice
+//             FROM stocks
+//         )
+//         UNION
+//         SELECT id, invoice, 'stocks' AS missing_from_table
+//         FROM stocks
+//         WHERE invoice NOT IN (
+//             SELECT invoice
+//             FROM legacies
+//         )
+//     ");
 
+//     // Update mismatch and comment columns for missing invoices
+//     foreach ($missingInvoices as $missingInvoice) {
+//         $tableToUpdate = ($missingInvoice->missing_from_table === 'legacies') ? 'legacies' : 'stocks';
+
+//         DB::table($tableToUpdate)
+//             ->where('id', $missingInvoice->id)
+//             ->update([
+//                 'mismatch' => true,
+//                 'comment' => 'Invoice not in ' . $missingInvoice->missing_from_table . ' stock records',
+//             ]);
+//     }
+
+//     // Find quantity mismatches
+//     $quantityMismatches = DB::select("
+//         SELECT l.id, l.invoice, l.qty AS current_qty, s.qty AS physical_qty
+//         FROM legacies AS l
+//         INNER JOIN stocks AS s ON l.invoice = s.invoice
+//         WHERE l.qty != s.qty
+//     ");
+
+//     // Update mismatch and comment columns for quantity mismatches
+//     foreach ($quantityMismatches as $mismatch) {
+//         DB::table('legacies')
+//             ->where('id', $mismatch->id)
+//             ->update([
+//                 'mismatch' => true,
+//                 'comment' => 'Mismatch: Current quantity is ' . $mismatch->current_qty . ', Physical quantity is ' . $mismatch->physical_qty,
+//             ]);
+
+//         DB::table('stocks')
+//             ->where('id', $mismatch->id)
+//             ->update([
+//                 'mismatch' => true,
+//                 'comment' => 'Mismatch: Current quantity is ' . $mismatch->physical_qty . ', Legacy quantity is ' . $mismatch->current_qty,
+//             ]);
+//     }
+
+//     // Retrieve the data for the view
+//     $missingInvoices = DB::select("SELECT id, invoice, 'legacies' AS missing_from_table FROM legacies WHERE invoice NOT IN (SELECT invoice FROM stocks) UNION SELECT id, invoice, 'stocks' AS missing_from_table FROM stocks WHERE invoice NOT IN (SELECT invoice FROM legacies)");
+
+//     $quantityMismatches = DB::select("SELECT l.id, l.invoice, l.qty AS current_qty, s.qty AS physical_qty FROM legacies AS l INNER JOIN stocks AS s ON l.invoice = s.invoice WHERE l.qty != s.qty");
     
-    
-    public function calculateTotalMismatchQty($importedData)
-    {
-        $rows = $importedData->rows;
+//     // Return the reconciliation view with the data
+//     return view('reconciliation.index', compact('missingInvoices', 'quantityMismatches'));
+// }
 
-        if (!is_iterable($rows)) {
-            return 0;
-        }
+public function reconcileStock()
+{
+    // Find missing invoices
+    $missingInvoices = DB::select("
+        SELECT id, invoice, 'legacies' AS missing_from_table, comment
+        FROM legacies
+        WHERE MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())
+        AND invoice NOT IN (
+            SELECT invoice
+            FROM stocks
+            WHERE MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())
+        )
+        UNION
+        SELECT id, invoice, 'stocks' AS missing_from_table, comment
+        FROM stocks
+        WHERE MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())
+        AND invoice NOT IN (
+            SELECT invoice
+            FROM legacies
+            WHERE MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())
+        )
+    ");
 
-        $totalMismatchQty = 0;
+    // Update mismatch and comment columns for missing invoices
+    foreach ($missingInvoices as $missingInvoice) {
+        $tableToUpdate = ($missingInvoice->missing_from_table === 'legacies') ? 'legacies' : 'stocks';
 
-        foreach ($rows as $row) {
-            $qty = $row->qty;
-            $gardenName = $row->garden;
-            $invoice = $row->invoice;
-            $gradeName = $row->grade;
-            $packageType = $row->package;
-
-            $garden = Garden::where('name', $gardenName)->first();
-            $grade = Grade::where('name', $gradeName)->first();
-            $package = Package::where('name', $packageType)->first();
-
-            if (!$garden || !$grade || !$package) {
-                continue;
-            }
-
-            $invoicedQty = Stock::where('garden_id', $garden->id)
-                ->where('invoice', $invoice)
-                ->where('grade_id', $grade->id)
-                ->where('package_id', $package->id)
-                ->sum('qty');
-
-            if ($qty != $invoicedQty) {
-                $totalMismatchQty += abs($qty - $invoicedQty);
-            }
-        }
-
-        return $totalMismatchQty;
+        DB::table($tableToUpdate)
+            ->where('id', $missingInvoice->id)
+            ->update([
+                'mismatch' => true,
+                'comment' => 'Invoice not in ' . $missingInvoice->missing_from_table . ' stock records',
+            ]);
     }
 
-    public function apiImport(Request $request)
-    {
-        $this->validate($request, [
-            'file' => 'required|mimes:xlsx,xls',
-        ]);
+    // Find quantity mismatches
+    $quantityMismatches = DB::select("
+        SELECT l.id, l.invoice, l.qty AS current_qty, s.qty AS physical_qty, l.comment
+        FROM legacies AS l
+        INNER JOIN stocks AS s ON l.invoice = s.invoice
+        WHERE MONTH(l.created_at) = MONTH(NOW()) AND YEAR(l.created_at) = YEAR(NOW())
+        AND l.qty != s.qty
+    ");
 
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $fileName = $file->getClientOriginalName();
-            Excel::import(new StockImport(), $file);
+    // Update mismatch and comment columns for quantity mismatches
+    foreach ($quantityMismatches as $mismatch) {
+        DB::table('legacies')
+            ->where('id', $mismatch->id)
+            ->update([
+                'mismatch' => true,
+                'comment' => 'System Stock quantity is ' . $mismatch->current_qty . ', Physical Stock quantity is ' . $mismatch->physical_qty,
+            ]);
 
-            $importedData = new ImportedData();
-            $importedData->file_name = $fileName;
-            $importedData->save();
-
-            $totalMismatchQty = $this->calculateTotalMismatchQty($importedData);
-
-            return $this->index($totalMismatchQty);
-        }
-
-        return redirect()->back()->with(['error' => 'No file uploaded.']);
+        DB::table('stocks')
+            ->where('id', $mismatch->id)
+            ->update([
+                'mismatch' => true,
+                'comment' => 'System Stock quantity is ' . $mismatch->physical_qty . ', Physical Stock quantity is ' . $mismatch->current_qty,
+            ]);
     }
+    
+    return view('reconciliation.index', compact('missingInvoices', 'quantityMismatches'));
+}
 
+
+
+    
     public function index()
     {
         $totalBags = $this->countTotalBags();
         $bagsPerWarehouse = $this->calculateBagsPerWarehouse();
         $bagsPerBay = $this->calculateBagsPerBay();
         $ownersCountPerWarehouse = $this->getFarmOwnersCountPerWarehouse();
-
-        $importedData = new ImportedData();
-        [$mismatches, $totalMismatchQty] = $this->fetchMismatches($importedData);
 
         $warehouse_id = 'warehouse_id';
         // $monthlyReports = $this->generateMonthlyReports($warehouse_id);
@@ -228,63 +284,10 @@ private function calculateBagsPerBay()
             'ownersCountPerWarehouse',
             'bagsPerBay',
             'stockDates',
-            'mismatches',
-            'totalMismatchQty',
             'monthlyReports',
             'filter'
         ));
     }
-
-    private function fetchMismatches($importedData)
-    {
-        $rows = $importedData->rows;
-
-        if (!is_iterable($rows)) {
-            return [[], 0]; // Return empty arrays if $rows is not iterable
-        }
-
-        $mismatches = [];
-        $totalMismatchQty = 0;
-
-        foreach ($rows as $row) {
-            $gardenName = $row->garden;
-            $invoice = $row->invoice;
-            $qty = $row->qty;
-            $gradeName = $row->grade;
-            $packageType = $row->package;
-
-            // Get the garden, grade, and package by their names
-            $garden = Garden::where('name', $gardenName)->first();
-            $grade = Grade::where('name', $gradeName)->first();
-            $package = Package::where('name', $packageType)->first();
-
-            // If any of the required data is missing, skip the row
-            if (!$garden || !$grade || !$package) {
-                continue;
-            }
-
-            // Compare the imported data with the invoiced stock
-            $invoicedQty = Stock::where('garden_id', $garden->id)
-                ->where('invoice', $invoice)
-                ->where('grade_id', $grade->id)
-                ->where('package_id', $package->id)
-                ->sum('qty');
-
-            if ($qty != $invoicedQty) {
-                $mismatches[] = [
-                    'garden' => $gardenName,
-                    'invoice' => $invoice,
-                    'qty' => $qty,
-                    'grade' => $gradeName,
-                    'package' => $packageType,
-                ];
-                $totalMismatchQty += abs($qty - $invoicedQty);
-            }
-        }
-
-        return [$mismatches, $totalMismatchQty];
-    }
-
 
     public function create()
     {

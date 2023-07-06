@@ -10,7 +10,7 @@ storage/app/public/csv/
 storage/app/public/files/
 storage/app/public/tiles/
 storage/logs/laravel.log
-vendor/
+/vendor
 .phpunit.result.cache
 /public/js
 /public/css

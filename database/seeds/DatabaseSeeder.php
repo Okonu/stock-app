@@ -15,22 +15,15 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             [
                 'name' => 'Admin',
-                'phone' => '0705274875',
-                'password' => bcrypt('wanderlust'),
+                'phone' => '0711223344',
+                'password' => bcrypt('bbssvvdd'),
                 'created_at' => date('Y-m-d H:i:s'),
                 'role' => 'admin',
             ],
             [
                 'name' => 'Staff',
-                'phone' => '0715274875',
-                'password' => bcrypt('wanderlust'),
-                'created_at' => date('Y-m-d H:i:s'),
-                'role' => 'staff',
-            ],
-            [
-                'name' => 'Julius Ndegwa',
-                'phone' => '0711274875',
-                'password' => bcrypt('wanderlust'),
+                'phone' => '0722334455',
+                'password' => bcrypt('ppxxwwdd'),
                 'created_at' => date('Y-m-d H:i:s'),
                 'role' => 'staff',
             ],
