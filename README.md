@@ -37,6 +37,7 @@ There are three different user levels for this product: admin, staff, and clerk.
 
 ### Setting up and running the application:
 Assuming you have already set up the Laravel environment (if not, please refer to the documentation at laravel.com for guidance), follow these steps:
+
     - Clone this repository using Git.
     - Create the .env file and configure the database settings.
     - Run 'composer install' to download the required packages and libraries.
