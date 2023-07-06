@@ -2,6 +2,7 @@
 # STOCK MANAGEMENT SYSTEM
 ## About the project
 This is a project I developed for a warehousing client. It consists of two interfaces:
+
     1. Admin interface
     2. Mobile app
 
