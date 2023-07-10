@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExportStock;
 use App\Exports\ExportReports;
+use App\Exports\ReconcileStockExport;
 use App\Garden;
 use App\Grade;
 use App\Owner;
@@ -113,139 +114,185 @@ class StockController extends Controller
     
         return $monthlyReports;
     }
-    
-// public function reconcileStock()
-// {
-//     // Find missing invoices
-//     $missingInvoices = DB::select("
-//         SELECT id, invoice, 'legacies' AS missing_from_table
-//         FROM legacies
-//         WHERE invoice NOT IN (
-//             SELECT invoice
-//             FROM stocks
-//         )
-//         UNION
-//         SELECT id, invoice, 'stocks' AS missing_from_table
-//         FROM stocks
-//         WHERE invoice NOT IN (
-//             SELECT invoice
-//             FROM legacies
-//         )
-//     ");
-
-//     // Update mismatch and comment columns for missing invoices
-//     foreach ($missingInvoices as $missingInvoice) {
-//         $tableToUpdate = ($missingInvoice->missing_from_table === 'legacies') ? 'legacies' : 'stocks';
-
-//         DB::table($tableToUpdate)
-//             ->where('id', $missingInvoice->id)
-//             ->update([
-//                 'mismatch' => true,
-//                 'comment' => 'Invoice not in ' . $missingInvoice->missing_from_table . ' stock records',
-//             ]);
-//     }
-
-//     // Find quantity mismatches
-//     $quantityMismatches = DB::select("
-//         SELECT l.id, l.invoice, l.qty AS current_qty, s.qty AS physical_qty
-//         FROM legacies AS l
-//         INNER JOIN stocks AS s ON l.invoice = s.invoice
-//         WHERE l.qty != s.qty
-//     ");
-
-//     // Update mismatch and comment columns for quantity mismatches
-//     foreach ($quantityMismatches as $mismatch) {
-//         DB::table('legacies')
-//             ->where('id', $mismatch->id)
-//             ->update([
-//                 'mismatch' => true,
-//                 'comment' => 'Mismatch: Current quantity is ' . $mismatch->current_qty . ', Physical quantity is ' . $mismatch->physical_qty,
-//             ]);
-
-//         DB::table('stocks')
-//             ->where('id', $mismatch->id)
-//             ->update([
-//                 'mismatch' => true,
-//                 'comment' => 'Mismatch: Current quantity is ' . $mismatch->physical_qty . ', Legacy quantity is ' . $mismatch->current_qty,
-//             ]);
-//     }
-
-//     // Retrieve the data for the view
-//     $missingInvoices = DB::select("SELECT id, invoice, 'legacies' AS missing_from_table FROM legacies WHERE invoice NOT IN (SELECT invoice FROM stocks) UNION SELECT id, invoice, 'stocks' AS missing_from_table FROM stocks WHERE invoice NOT IN (SELECT invoice FROM legacies)");
-
-//     $quantityMismatches = DB::select("SELECT l.id, l.invoice, l.qty AS current_qty, s.qty AS physical_qty FROM legacies AS l INNER JOIN stocks AS s ON l.invoice = s.invoice WHERE l.qty != s.qty");
-    
-//     // Return the reconciliation view with the data
-//     return view('reconciliation.index', compact('missingInvoices', 'quantityMismatches'));
-// }
 
 public function reconcileStock()
 {
-    // Find missing invoices
-    $missingInvoices = DB::select("
-        SELECT id, invoice, 'legacies' AS missing_from_table, comment
-        FROM legacies
-        WHERE MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())
-        AND invoice NOT IN (
-            SELECT invoice
-            FROM stocks
-            WHERE MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())
-        )
-        UNION
-        SELECT id, invoice, 'stocks' AS missing_from_table, comment
-        FROM stocks
-        WHERE MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())
-        AND invoice NOT IN (
-            SELECT invoice
-            FROM legacies
-            WHERE MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())
-        )
-    ");
-
-    // Update mismatch and comment columns for missing invoices
-    foreach ($missingInvoices as $missingInvoice) {
-        $tableToUpdate = ($missingInvoice->missing_from_table === 'legacies') ? 'legacies' : 'stocks';
-
-        DB::table($tableToUpdate)
-            ->where('id', $missingInvoice->id)
-            ->update([
-                'mismatch' => true,
-                'comment' => 'Invoice not in ' . $missingInvoice->missing_from_table . ' stock records',
-            ]);
+    // Logic to extractSysInvoice
+    function extractSysInvoice($sysInvoice)
+    {
+        if (strpos($sysInvoice, '.') !== false) {
+            return strtok($sysInvoice, '.');
+        } elseif (strpos($sysInvoice, '/') !== false) {
+            return strtok($sysInvoice, '/');
+        } elseif (strpos($sysInvoice, '-') !== false) {
+            return strtok($sysInvoice, '-');
+        } else {
+            return $sysInvoice;
+        }
     }
 
-    // Find quantity mismatches
-    $quantityMismatches = DB::select("
-        SELECT l.id, l.invoice, l.qty AS current_qty, s.qty AS physical_qty, l.comment
-        FROM legacies AS l
-        INNER JOIN stocks AS s ON l.invoice = s.invoice
-        WHERE MONTH(l.created_at) = MONTH(NOW()) AND YEAR(l.created_at) = YEAR(NOW())
-        AND l.qty != s.qty
-    ");
+    // SQL query to fetch data from legacies table
+    $legaciesQuery = "SELECT invoice, qty, garden, grade FROM legacies";
+    $legaciesResult = DB::select($legaciesQuery);
 
-    // Update mismatch and comment columns for quantity mismatches
-    foreach ($quantityMismatches as $mismatch) {
-        DB::table('legacies')
-            ->where('id', $mismatch->id)
-            ->update([
-                'mismatch' => true,
-                'comment' => 'System Stock quantity is ' . $mismatch->current_qty . ', Physical Stock quantity is ' . $mismatch->physical_qty,
-            ]);
+    // SQL query to fetch data from stocks table
+    $stocksQuery = "SELECT s.invoice AS stock_invoice, s.qty AS stock_qty, g.name AS garden_name, gd.name AS grade_name
+                    FROM stocks s
+                    JOIN gardens g ON s.garden_id = g.id
+                    JOIN grades gd ON s.grade_id = gd.id";
+    $stocksResult = DB::select($stocksQuery);
 
-        DB::table('stocks')
-            ->where('id', $mismatch->id)
-            ->update([
-                'mismatch' => true,
-                'comment' => 'System Stock quantity is ' . $mismatch->physical_qty . ', Physical Stock quantity is ' . $mismatch->current_qty,
-            ]);
+    // Create an array to store the legacies data
+    $legaciesData = [];
+    foreach ($legaciesResult as $row) {
+        $legaciesData[] = (array) $row;
     }
-    
-    return view('reconciliation.index', compact('missingInvoices', 'quantityMismatches'));
+
+    // Create an array to store the stocks data
+    $stocksData = [];
+    foreach ($stocksResult as $row) {
+        $stocksData[] = (array) $row;
+    }
+
+    // Group the legacies data by sys invoice, garden, and grade
+    $groupedLegaciesData = [];
+    foreach ($legaciesData as $legacy) {
+        $sysInvoice = extractSysInvoice($legacy['invoice']);
+        $garden = $legacy['garden'];
+        $grade = $legacy['grade'];
+
+        $key = $sysInvoice . '_' . $garden . '_' . $grade;
+        if (!isset($groupedLegaciesData[$key])) {
+            $groupedLegaciesData[$key] = [
+                'invoice' => $sysInvoice,
+                'qty' => $legacy['qty'],
+                'garden' => $garden,
+                'grade' => $grade
+            ];
+        } else {
+            $groupedLegaciesData[$key]['qty'] += $legacy['qty'];
+        }
+    }
+
+    // Group the stocks data by sys invoice, garden, and grade
+    $groupedStocksData = [];
+    foreach ($stocksData as $stock) {
+        $sysInvoice = extractSysInvoice($stock['stock_invoice']);
+        $garden = $stock['garden_name'];
+        $grade = $stock['grade_name'];
+
+        $key = $sysInvoice . '_' . $garden . '_' . $grade;
+        if (!isset($groupedStocksData[$key])) {
+            $groupedStocksData[$key] = [
+                'stock_invoice' => $sysInvoice,
+                'stock_qty' => $stock['stock_qty'],
+                'garden_name' => $garden,
+                'grade_name' => $grade
+            ];
+        } else {
+            $groupedStocksData[$key]['stock_qty'] += $stock['stock_qty'];
+        }
+    }
+
+    // Perform matching and prepare data for the DataTable
+    $matchedData = [];
+    $count = 1;
+    foreach ($groupedLegaciesData as $legacy) {
+        $legacyInvoice = $legacy['invoice'];
+        $legacyQty = $legacy['qty'];
+        $legacyGarden = $legacy['garden'];
+        $legacyGrade = $legacy['grade'];
+
+        $matched = false;
+
+        foreach ($groupedStocksData as $stock) {
+            $stockInvoice = $stock['stock_invoice'];
+            $stockQty = $stock['stock_qty'];
+            $stockGarden = $stock['garden_name'];
+            $stockGrade = $stock['grade_name'];
+
+            $sysInvoice = extractSysInvoice($legacyInvoice);
+
+            if ($sysInvoice == $stockInvoice && $legacyGarden == $stockGarden && $legacyGrade == $stockGrade) {
+                $matchedData[] = [
+                    '#' => $count,
+                    'sys' => $legacyInvoice,
+                    'phys' => $stockInvoice,
+                    'sys_Qty' => $legacyQty,
+                    'phys_Qty' => $stockQty,
+                    'Garden' => $stockGarden,
+                    'Grade' => $stockGrade,
+                    'Status' => ($legacyQty == $stockQty) ? 'match' : 'mismatch'
+                ];
+
+                $matched = true;
+            }
+        }
+
+        if (!$matched) {
+            $matchedData[] = [
+                '#' => $count,
+                'sys' => $legacyInvoice,
+                'phys' => '',
+                'sys_Qty' => $legacyQty,
+                'phys_Qty' => 0,
+                'Garden' => $legacyGarden,
+                'Grade' => $legacyGrade,
+                'Status' => 'mismatch'
+            ];
+        }
+
+        $count++;
+    }
+
+    // Iterate over $groupedStocksData and add unmatched entries to $matchedData
+    foreach ($groupedStocksData as $stock) {
+        $stockInvoice = $stock['stock_invoice'];
+        $stockQty = $stock['stock_qty'];
+        $stockGarden = $stock['garden_name'];
+        $stockGrade = $stock['grade_name'];
+
+        // Check if stock invoice exists in $matchedData
+        if (!in_array($stockInvoice, array_column($matchedData, 'phys'))) {
+            $matchedData[] = [
+                '#' => $count,
+                'sys' => '',
+                'phys' => $stockInvoice,
+                'sys_Qty' => 0,
+                'phys_Qty' => $stockQty,
+                'Garden' => $stockGarden,
+                'Grade' => $stockGrade,
+                'Status' => 'unmatched'
+            ];
+            $count++;
+        }
+    }
+
+    // Calculate totalSysQty and totalPhysQty
+    $totalSysQty = array_sum(array_column($legaciesData, 'qty'));
+    $totalPhysQty = array_sum(array_column($stocksData, 'stock_qty'));
+
+    // Calculate missingBagsQty
+    $missingBagsQty = $totalSysQty - $totalPhysQty;
+
+    // Prepare the response data
+    $response = [
+        'data' => $matchedData,
+        'stats' => [
+            'totalSysQty' => $totalSysQty,
+            'totalPhysQty' => $totalPhysQty,
+            'totalMismatchInvoices' => count(array_filter($matchedData, function ($item) {
+                return $item['Status'] == 'mismatch';
+            })),
+            'missingBagsQty' => $missingBagsQty
+        ]
+    ];
+
+    // return view('reconciliation.index', $response);
+    $responseJson = json_encode($response);
+    return view('reconciliation.index', ['jsonData' => $responseJson, 'data' => $response]);
 }
 
-
-
-    
     public function index()
     {
         $totalBags = $this->countTotalBags();
@@ -453,5 +500,17 @@ public function reconcileStock()
     public function exportExcel()
     {
         return (new ExportStock())->download('stock.xlsx');
+    }
+    
+    // public function reconcileExcel()
+    // {
+    //     return (new ReconcileStockExport())->download('reconcile_stock.xlsx');
+    // }
+    
+    public function reconcileStockExport()
+    {
+        $data = $this->reconcileStock()['data'];
+    
+        return Excel::download(new ReconcileStockExport($data), 'reconciliation.xlsx');
     }
 }

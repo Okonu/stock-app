@@ -250,12 +250,14 @@ class API
      
     public function get_entry_count($uid)
     {  
-        
-        
-        $query = $this->conn->prepare('SELECT count(DISTINCT garden_id) as gardens, count(id) as entries, sum(qty) as bags, created_at as timestamp FROM stocks WHERE user_id=:user_id');
+        $query = $this->conn->prepare(' SELECT count(DISTINCT garden_id) as gardens, count(id) as entries, sum(qty) as bags, created_at as timestamp 
+                                            FROM stocks 
+                                        WHERE user_id = :user_id 
+                                            AND created_at >= DATE_FORMAT(NOW(), "%Y-%m-01")'
+                                    );
         $query->bindParam(':user_id', $uid);
         $query->execute();
-
+    
         return $query->fetch(PDO::FETCH_OBJ);
   
     }
@@ -265,7 +267,18 @@ class API
     public function get_recent_entries($uid)
     {
         // $query = $this->conn->prepare('SELECT * FROM stocks WHERE user_id = :user_id AND created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)');
-        $query = $this->conn->prepare('SELECT * FROM stocks WHERE user_id = :user_id AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)');
+        
+        
+        $query = $this->conn->prepare(' SELECT s.*, g.name as garden_id 
+                                           FROM stocks s 
+                                        INNER JOIN gardens g ON s.garden_id = g.id 
+                                           WHERE s.user_id = :user_id 
+                                        AND s.created_at >= DATE_FORMAT(NOW(), "%Y-%m-01")'
+                                    );
+        $query->bindParam(':user_id', $uid);
+        
+        
+        
         $query->bindParam(':user_id', $uid);
         $query->execute();
     
