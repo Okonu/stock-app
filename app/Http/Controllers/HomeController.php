@@ -1,39 +1,93 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Job;
+use App\Models\JobApplication;
+use Illuminate\Http\Request;
 
-use App\Warehouse;
-use App\ImportedData;
 class HomeController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void<>?
+     * Display a listing of the resource.
      */
-    public function __construct()
+    // public function index()
+    // {
+
+        
+        
+    //     return view('dashboard');
+    // }
+
+
+    public function index()
+{
+        $userId = auth()->id();
+    
+        $jobCount = Job::where('user_id', $userId)->count();
+    
+        $jobApplicationCount = JobApplication::whereHas('job', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->count();
+    
+        // $activeJobCount = Job::where('user_id', $userId)->count();
+        $activeJobCount = Job::where('user_id', $userId)->where('status', 1)->count();
+    
+        $acceptedApplicationCount = JobApplication::whereHas('job', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->where('status', 'accepted')->count();
+    
+        $jobApplications = JobApplication::whereHas('job', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->get();
+
+    return view('dashboard', compact('jobCount', 'jobApplicationCount', 'activeJobCount', 'acceptedApplicationCount', 'jobApplications'));
+}
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
-        $this->middleware('auth');
+        //
     }
 
     /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * Store a newly created resource in storage.
      */
-    public function index()
+    public function store(Request $request)
     {
-        $stockController = new StockController();
+        //
+    }
 
-        $totalBags = $stockController->countTotalBags();
-        $bagsPerWarehouse = $stockController->calculateBagsPerWarehouse();
-        $importedData = new ImportedData();
-        // $totalMismatchQty= $stockController->calculateTotalMismatchQty($importedData);
-    
-        $warehouse = Warehouse::pluck('name', 'id');
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
 
-        return view('home', compact('totalBags', 'bagsPerWarehouse', 'warehouse'));
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }
-
-

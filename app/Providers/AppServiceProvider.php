@@ -2,10 +2,9 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\StockController;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
+use libphonenumber\PhoneNumberUtil;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,23 +15,33 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Schema::defaultStringLength(191);
+        Validator::extend('phone', function ($attribute, $value, $parameters, $validator) {
+            $phoneNumberUtil = PhoneNumberUtil::getInstance();
+            try {
+                $phoneNumber = $phoneNumberUtil->parse($value, 'KE');
 
-        View::composer(['home', 'warehouse', 'bags', 'layouts', 'sidebar', 'stocks'], function ($view) {
-            $stockController = app(StockController::class);
-            $totalBags = $stockController->countTotalBags();
-            $bagsPerWarehouse = $stockController->calculateBagsPerWarehouse();
-
-            $view->with('totalBags', $totalBags)->with('bagsPerWarehouse', $bagsPerWarehouse);
+                return $phoneNumberUtil->isValidNumber($phoneNumber) && $this->isMobileNumber($phoneNumberUtil, $phoneNumber);
+            } catch (\libphonenumber\NumberParseException $e) {
+                return false;
+            }
         });
+
+        
     }
 
     /**
-     * Register any application services.
+     * Check if the given phone number is a mobile number.
      *
-     * @return void
+     * @param \libphonenumber\PhoneNumberUtil $phoneNumberUtil
+     * @param \libphonenumber\PhoneNumber     $phoneNumber
+     *
+     * @return bool
      */
-    public function register()
+    private function isMobileNumber($phoneNumberUtil, $phoneNumber)
     {
+        $type = $phoneNumberUtil->getNumberType($phoneNumber);
+
+        return $type === \libphonenumber\PhoneNumberType::MOBILE || $type === \libphonenumber\PhoneNumberType::FIXED_LINE_OR_MOBILE;
     }
+    
 }
