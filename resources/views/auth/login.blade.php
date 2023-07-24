@@ -1,81 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="fullscreen-bg">
+
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <title>Fursa - Login</title>
-  <!-- Custom fonts for this template-->
-  <link href="{{ asset('front/Authcssjs/all.min.css') }}" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
- 
-  <!-- Custom styles for this template-->
-  <link href="{{ asset('front/Authcssjs/sb-admin-2.min.css') }}" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f5fefd;
-    }
-    .container {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  </style>
+    <title>Login | UEA</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/vendor/font-awesome/css/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/vendor/linearicons/style.css')}}">
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="{{asset('assets/css/main.css')}}">
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+    <!-- ICONS -->
+    <link rel="apple-touch-icon" sizes="76x76" href="{{asset('assets/img/apple-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{asset('assets/img/favicon.png')}}">
 </head>
+
 <body>
-  <div class="container">
-    <div class="col-xl-6 col-lg-7 col-md-9">
-      <div class="card o-hidden border-0 shadow-lg my-5">
-        <div class="card-body p-0">
-          <div class="p-5">
-            <div class="text-center">
-              <img src="{{ asset('front/images/fursa.png') }}" alt="Logo" height="100" class="mb-4">
-              <hr>
-              <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
-            </div>
-            <form action="{{ route('login.action') }}" method="POST" class="user">
-              @csrf
-              @if ($errors->any())
-              <div class="alert alert-danger">
-                <ul>
-                  @foreach ($errors->all() as $error)
-                  <li>{{ $error }}</li>
-                  @endforeach
-                </ul>
-              </div>
-              @endif
-              <div class="form-group">
-                <input name="email" type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
-              </div>
-              <div class="form-group">
-                <input name="password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
-              </div>
-              <div class="form-group">
-                <div class="custom-control custom-checkbox small">
-                  <input name="remember" type="checkbox" class="custom-control-input" id="customCheck">
-                  <label class="custom-control-label" for="customCheck">Remember Me</label>
+    <!-- WRAPPER -->
+    <div id="wrapper">
+    <div class="vertical-align-wrap">
+        <div class="vertical-align-middle">
+            <div class="auth-box ">
+                <div class="left">
+                    <div class="content">
+                        <div class="header">
+                            <p class="lead">Login to your account</p>
+                        </div>
+                        <form class="form-auth-small" method="POST" action="{{ route('login') }}">
+                            @csrf
+                            <div class="form-group">
+                                <label for="signin-email" class="control-label sr-only">Phone</label>
+                                <input type="text" name="phone" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }}" id="signin-email" value="{{ old('phone') }}" required placeholder="Phone">
+                                @if ($errors->has('phone'))
+                                <br>
+                                <div class="alert alert-danger alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <strong><i class="icon fa fa-ban"></i> Alert!</strong> &nbsp; {{ $errors->first('phone') }}
+                                </div>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <label for="signin-password" class="control-label sr-only">Password</label>
+                                <input type="password" class="form-control" name="password" id="signin-password" value="{{ old('password') }}" placeholder="Password">
+                                @if ($errors->has('password'))
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $errors->first('password') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group clearfix">
+                                <label class="fancy-checkbox element-left">
+                                    <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                                    <span>Remember me</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-lg btn-block">LOGIN</button>
+                        </form>
+                    </div>
                 </div>
-              </div>
-              <button type="submit" class="btn btn-primary btn-block btn-user">Login</button>
-            </form>
-            <hr>
-            <div class="text-center">
-              <a class="small" href="{{ route('register') }}">Create an Account!</a>
+                <div class="right">
+                    <div class="overlay"></div>
+                    <div class="content text">
+                    <img src="https://uea.brancetech.com/uea-logo.png" alt="UEA Logo" width="200px" height="200px" >
+                        <h1 class="heading">Stock Management System</h1>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <!-- Bootstrap core JavaScript-->
-  <script src="{{ asset('front/Authcssjs/jquery.min.js') }}"></script>
-  <script src="{{ asset('front/Authcssjs/bootstrap.bundle.min.js') }}"></script>
-  <!-- Core plugin JavaScript-->
-  <script src="{{ asset('front/Authcssjs/jquery.easing.min.js') }}"></script>
-  <!-- Custom scripts for all pages-->
-  <script src="{{ asset('front/Authcssjs/sb-admin-2.min.js') }}"></script>
+</div>
+<!-- END WRAPPER -->
 </body>
+<script type="text/javascript">
+   $(function () {
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%' /* optional */
+        });
+    });
+</script>
+
 </html>
