@@ -14,7 +14,7 @@
                     <div class="inner">
                         <h3>{{ \App\Stock::count() }}<sup style="font-size: 20px"></sup></h3>
 
-                        <p>Stock Taken</p>
+                        <p>Physical Entries</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-list"></i>
@@ -22,14 +22,45 @@
                     <a href="{{ route('stocks.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
-            <!-- ./col -->
+
             <div class="col-lg-3 col-xs-6">
                 <!-- small box -->
                 <div class="small-box bg-green">
                     <div class="inner">
-                        <h3>{{ \App\Warehouse::count() }}<sup style="font-size: 20px"></sup></h3>
+                        <h3>{{ \App\Legacy::count() }}<sup style="font-size: 20px"></sup></h3>
 
-                        <p>Warehouse</p>
+                        <p>System Entries</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-list"></i>
+                    </div>
+                    <a href="{{ route('stocks.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <!-- ./col -->
+
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-green">
+                    <div class="inner">
+                        <h3>{{ \App\Owner::count() }}<sup style="font-size: 20px"></sup></h3>
+
+                        <p>Producers</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-list"></i>
+                    </div>
+                    <a href="{{ route('owners.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-green">
+                    <div class="inner">
+                        <h3>{{ $totalBags }}<sup style="font-size: 20px"></sup></h3>
+
+                        <p>Total Bags</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-list"></i>
@@ -37,29 +68,12 @@
                     <a href="{{ route('warehouses.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
-
             <!-- ./col -->
-            <div class="col-md-3">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3>Total Bags</h3>
-                            <!-- small box -->
-                        <div class="small-box bg-red">
-                            <div class="inner">
-                                <p>Total Bags: {{ $totalBags }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 </div>
 
 @include('stocks.tableu')
 
 @include('stocks.bags', ['warehouse' => $warehouse, 'bagsPerWarehouse' => $bagsPerWarehouse])
-
-
-
 
 @endsection
 

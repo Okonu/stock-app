@@ -57,6 +57,20 @@
                         <label for="signup-password" class="control-label sr-only">Confirm Password</label>
                         <input id="password-confirm" type="password" class="form-control" placeholder="Confirm ID Number" name="password_confirmation" required>
                     </div>
+                    <div class="form-group">
+                        <label for="signup-role" class="control-label sr-only">Role</label>
+                        <select class="form-control{{ $errors->has('role') ? ' is-invalid' : '' }}" id="signup-role" name="role" required>
+                            <option value="" disabled selected>Select Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="staff">Staff</option>
+                            <option value="clerk">Clerk</option>
+                        </select>
+                        @if ($errors->has('role'))
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->first('role') }}</strong>
+                            </span>
+                        @endif
+                    </div>
                     <br>
                     <button type="submit" class="btn btn-primary btn-md btn-block">REGISTER</button>
                 </form>

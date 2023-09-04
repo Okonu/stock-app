@@ -14,4 +14,9 @@ class Garden extends Model
     {
         return $this->belongsTo(Owner::class);
     }
+
+    public function stock()
+    {
+        return $this->hasMany(Stock::class);
+    }
 }

@@ -20,6 +20,8 @@ class CreateLegaciesTable extends Migration
             $table->integer('qty');
             $table->string('grade');
             $table->string('package');
+            $table->string('mismatch')->nullable();
+            $table->string('comment')->nullable();
             $table->timestamps();
         });
     }

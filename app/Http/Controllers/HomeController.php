@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ImportedData;
 use App\Warehouse;
 
 class HomeController extends Controller
@@ -27,6 +28,9 @@ class HomeController extends Controller
 
         $totalBags = $stockController->countTotalBags();
         $bagsPerWarehouse = $stockController->calculateBagsPerWarehouse();
+        $importedData = new ImportedData();
+        // $totalMismatchQty= $stockController->calculateTotalMismatchQty($importedData);
+
         $warehouse = Warehouse::pluck('name', 'id');
 
         return view('home', compact('totalBags', 'bagsPerWarehouse', 'warehouse'));

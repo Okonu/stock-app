@@ -66,6 +66,8 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route('api.grades') }}",
+             lengthMenu: [50, 100, 200, 500],
+            pageLength: 50, 
             columns: [
                 {
                     data: 'null', name: 'null', orderable: false, searchable: false,

@@ -11,55 +11,43 @@
 @endsection
 
 @section('content')
-    <div class="box box-success">
-        <div class="box-header">
-            <h3 class="box-title"><strong>Stock Taken</strong></h3>
-        </div>
+<div class="box box-success">
+<div class="box-header">
+    <h3 class="box-title"><strong>Physical Stock</strong></h3>
+</div>
+
+    <div class="box-header" style="display:none">
+    <a href="" id="generate-report-btn" class="btn btn-primary"><i class="fa fa-file"></i> Monthly Stock Report</a>
+      @include('stocks.reports')
+    <input type="hidden" id="csrf-token" value="{{ csrf_token() }}">
+    </div>
 
         <div class="box-header">
             <a href="{{ route('exportExcel.stockAll') }}" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Export Excel</a>
         </div>
 
-        <div class="box-body">
+        <div class="box-body table-responsive">
             <table id="stocks-table" class="table table-bordered table-hover table-striped">
                 <thead>
                     <tr>
                         <th>#</th> 
+                        <th>User</th>
                         <th>Warehouse</th>
                         <th>Bays</th>
-                        <th>Farm Owner</th>
+                        <th>Producer</th>
                         <th>Garden</th>
                         <th>Grade</th>
-                        <th>Package Type</th>
+                        <th>Pkg Type</th>
                         <th>Invoice</th>
-                        <th>Package No.</th>
-                        <th>Production Year</th>
+                        <th>Pkg No.</th>
+                        <th>Year</th>
+                        <th>Status</th>
                         <th>Remarks</th>
-                        <th>Status</th> <!-- 'mismatch' column -->
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-        </div>
-
-    </div>
-    @include('stocks.bags')
-
-    <!-- Import Form -->
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Import Stock Data</h3>
-        </div>
-        <div class="panel-body">
-            <form id="import-form" method="POST" action="{{ route('api.import') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="form-group">
-                    <label for="import-file">Select Excel File:</label>
-                    <input type="file" id="import-file" name="file">
-                </div>
-                <button type="submit" class="btn btn-primary">Import</button>
-            </form>
         </div>
     </div>
 
@@ -74,7 +62,7 @@
                     <h4 class="modal-title" id="stock-modal-label">Stock Details</h4>
                 </div>
                 <div class="modal-body">
-                    <!-- Stock details will be populated here -->
+                    <!-- Stock details -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -82,6 +70,24 @@
             </div>
         </div>
     </div>
+
+    <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Monthly Report</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Table content -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 @endsection
 
 @section('bot')
@@ -93,14 +99,23 @@
     <script src="{{ asset('assets/validator/validator.min.js') }}"></script>
 
     <script type="text/javascript">
+    
+        function initializeTooltips() {
+          $('[data-toggle="tooltip"]').tooltip();
+        }
+        
+        
         $(document).ready(function () {
+            
             var table = $('#stocks-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: "{{ route('api.stocks') }}"
                 },
-                columns: [
+                lengthMenu: [50, 100, 200, 500], 
+        pageLength: 50, 
+        columns: [
                     {
                         data: null,
                         name: 'null',
@@ -111,74 +126,200 @@
                             return rowNumber;
                         }
                     },
-                    { data: 'warehouse.name', name: 'warehouse.name' },
-                    { data: 'bay.name', name: 'bay.name' },
-                    { data: 'owner.name', name: 'owner.name' },
-                    { data: 'garden.name', name: 'garden.name' },
-                    { data: 'grade.name', name: 'grade.name' },
-                    { data: 'package.name', name: 'package.name' },
-                    { data: 'invoice', name: 'invoice' },
-                    { data: 'qty', name: 'qty' },
-                    { data: 'year', name: 'year' },
-                    { data: 'remark', name: 'remark' },
-                    {
+                    { 
+                        data: 'user_name',
+                        name: 'user.name',
+                        render: function (data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    { 
+                        data: 'warehouse_name',
+                        name: 'warehouse.name',
+                        render: function (data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    { 
+                       data: 'warehouse_bay_name', 
+                       name: 'warehouse_bay_name',
+                        render: function (data) {
+                            return data ? data : 'N/A';
+                        }
+                    },
+                    { 
+                        data: 'owner_name',
+                        name: 'owner.name',
+                        render: function (data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    { 
+                        data: 'garden_name',
+                        name: 'garden.name',
+                        render: function (data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    { 
+                        data: 'grade_name',
+                        name: 'grade.name',
+                        render: function (data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    { 
+                        data: 'package_name',
+                        name: 'package.name',
+                        render: function (data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    { 
+                        data: 'invoice',
+                        name: 'invoice',
+                        render: function (data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    { 
+                        data: 'qty',
+                        name: 'qty',
+                        render: function (data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    { 
+                        data: 'year',
+                        name: 'year',
+                        render: function (data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    { 
                         data: 'mismatch',
                         name: 'mismatch',
-                        render: function (data, type, row) { 
+                        render: function (data) {
                             if (data) {
-                                return '<span class="text-danger">Mismatched</span>';
+                                return '<span class="label label-danger" data-toggle="tooltip"  data-placement="top" title="some comment here...">Mismatch</span>';
                             } else {
-                                return '<span class="text-success">Matched</span>';
+                                return '<span class="label label-success" data-toggle="tooltip"  data-placement="top" title="All good!">Match</span>';
                             }
                         }
                     },
-                    { data: 'action', name: 'action', orderable: false, searchable: false }
-                ],
-                createdRow: function (row, data, dataIndex) {
-                    $(row).on('click', function () {
-                        var modal = $('#stock-modal');
-                        modal.find('.modal-body').html('Stock details: ' + data.stock_taken);
-                        modal.modal('show');
-                    });
-                }
+                    { 
+                        data: 'remark',
+                        name: 'remark',
+                        render: function (data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    
+                    // { 
+                    //     data: 'comment',
+                    //     name: 'comment',
+                    //     render: function (data) {
+                    //         if (data) {
+                    //             return '<span class="label label-danger">Comment</span>';
+                    //         } else {
+                    //             return '<span class="label label-success">Comment Here</span>';
+                    //         }
+                    //     }
+                    // },
+                    {
+                        data: 'actions',
+                        name: 'actions',
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row, meta) {
+                            var viewButton = '<button class="btn btn-info btn-xs view-stock" data-id="' + row.id + '">View</button>';
+                            return viewButton;
+                        }
+                    }
+                ]
             });
+           
+            $('#generate-report-btn').on('click', function () {
+                console.log('Button clicked'); 
+                var month = $('#month').val();
+                var warehouseId = "{{ $warehouse_id }}"; 
+                var url = "{{ route('stocks.reports', ['warehouse_id' => ':warehouse_id', 'month' => ':month']) }}";
+                url = url.replace(':warehouse_id', warehouseId).replace(':month', month);
 
-            // Export PDF button click
-            $('#export-pdf-btn').on('click', function () {
-                var selectedStock = table.row('.selected').data();
-                if (selectedStock) {
-                    var stockId = selectedStock.id;
-                    // Replace 'id' with the appropriate property name for the stock ID
-                    // Perform the export PDF operation using the stock ID
-                    // Example: window.location.href = '/export-pdf/' + stockId;
-                }
-            });
-
-            // Import Form Submission
-            $('#import-form').on('submit', function (e) {
-                e.preventDefault();
-
-                var formData = new FormData(this);
+                var csrfToken = $('#csrf-token').val();
 
                 $.ajax({
-                    url: $(this).attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
+                    url: url,
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     success: function (response) {
-                        // Handle successful import
-                        alert('Import successful!');
-                        // Reload the DataTable
-                        table.ajax.reload();
+                        console.log(response);
+                        
+                        var tableData = response.data; 
+  
+                        var tableHtml = '<table id="report-table" class="table table-bordered">';
+                        tableHtml += '<thead><tr><th>Column 1</th><th>Column 2</th></tr></thead>';
+                        tableHtml += '<tbody>';
+
+                        for (var i = 0; i < tableData.length; i++) {
+                            tableHtml += '<tr>';
+                            tableHtml += '<td>' + tableData[i].column1 + '</td>';
+                            tableHtml += '<td>' + tableData[i].column2 + '</td>';
+                            tableHtml += '</tr>';
+                        }
+
+                        tableHtml += '</tbody></table>';
+
+                        var modalBody = $('#myModal .modal-body');
+                        modalBody.html(tableHtml);
+                        $('#myModal').modal('show');
+
+                        $('#report-table').DataTable();
                     },
                     error: function (xhr, status, error) {
-                        // Handle import error
-                        alert('Import failed: ' + xhr.responseText);
+                        
+                        console.log(error);
                     }
                 });
             });
+            // View stock details
+            $('#stocks-table tbody').on('click', '.view-stock', function () {
+                var stockId = $(this).data('id');
+                $.ajax({
+                    url: "{{ route('api.stocks') }}",
+                    data: { id: stock_id },
+                    success: function (response) {
+                        if (response.success) {
+                            var stock = response.stock;
+                            var modalBody = '<table class="table table-bordered">' +
+                                '<tr><th>Field</th><th>Value</th></tr>' +
+                                '<tr><td>User</td><td>' + stock.user_name + '</td></tr>' +
+                                '<tr><td>Warehouse</td><td>' + stock.warehouse_name + '</td></tr>' +
+                                '<tr><td>Bays</td><td>' + stock.bays + '</td></tr>' +
+                                '<tr><td>Producer</td><td>' + stock.owner_name + '</td></tr>' +
+                                '<tr><td>Garden</td><td>' + stock.garden_name + '</td></tr>' +
+                                '<tr><td>Grade</td><td>' + stock.garden_name + '</td></tr>' +
+                                '<tr><td>Package Type</td><td>' + stock.package_name + '</td></tr>' +
+                                '<tr><td>Invoice</td><td>' + stock.invoice + '</td></tr>' +
+                                '<tr><td>Package No.</td><td>' + stock.qty + '</td></tr>' +
+                                '<tr><td>Production Year</td><td>' + stock.year + '</td></tr>' +
+                                '<tr><td>Remarks</td><td>' + stock.remark + '</td></tr>' +
+                                '<tr><td>Status</td><td>' + (stock.mismatch ? '<span class="label label-danger">Mismatch</span>' : '<span class="label label-success">Match</span>') + '</td></tr>' +
+                                '</table>';
+                            $('#stock-modal .modal-body').html(modalBody);
+                            $('#stock-modal').modal('show');
+                        } else {
+                            alert('Failed to fetch stock details. Please try again.');
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching stock details. Please try again.');
+                    }
+                });
+            });
+      
         });
     </script>
 @endsection

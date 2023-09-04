@@ -14,4 +14,9 @@ class WarehouseBay extends Model
     {
         return $this->belongsTo(Warehouse::class);
     }
+
+    public function stock()
+    {
+        return $this->hasMany(Stock::class);
+    }
 }

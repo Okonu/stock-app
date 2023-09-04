@@ -2,111 +2,57 @@
 
 namespace App\Imports;
 
-use App\Stock;
+use App\ImportedData;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Validators\ValidationException;
-use Throwable;
+use Maatwebsite\Excel\Concerns\OnEachRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Row;
 
-class StockImport implements ToCollection, WithHeadingRow
+class StockImport implements OnEachRow, WithStartRow, WithChunkReading, ShouldQueue
 {
-    /**
-     * @param Collection $rows
-     *
-     * @throws ValidationException
-     */
-    public function collection(Collection $rows)
+    private $importedData;
+    private $rowData = [];
+
+    public function __construct()
     {
-        $failures = [];
-        $headerRow = null;
-
-        foreach ($rows as $row) {
-            try {
-                // Validate the row data
-                $this->validateRow($row, $headerRow);
-
-                // Process the row data and create/update the stock entry
-                $this->processRow($row);
-            } catch (Throwable $e) {
-                // Catch any exceptions or validation errors that occurred during processing
-                $failures[] = [
-                    'row' => $row->toArray(),
-                    'errors' => $e instanceof ValidationException ? $e->errors() : [$e->getMessage()],
-                ];
-            }
-
-            // Store the header row to use it for subsequent row validations
-            if ($headerRow === null) {
-                $headerRow = $row->keys()->toArray();
-            }
-        }
-
-        // Throw a validation exception if any failures occurred
-        if (!empty($failures)) {
-            throw ValidationException::withMessages($failures);
-        }
+        $this->importedData = new ImportedData();
     }
 
-    /**
-     * Validate the row data.
-     *
-     * @param Collection $row
-     * @param array|null $headerRow
-     *
-     * @throws Throwable
-     */
-    private function validateRow(Collection $row, ?array $headerRow)
+    public function onRow(Row $row)
     {
-        // Perform your validation logic here
-        // You can use Laravel's Validator class or custom validation rules
+        $row = $row->toArray();
 
-        // Example validation:
-        $validator = validator($row->toArray(), [
-            'warehouse_id' => 'required',
-            'bay_id' => 'required',
-            'owner_id' => 'required',
-            'garden_id' => 'required',
-            'grade_id' => 'required',
-            'package_id' => 'required',
-            'invoice' => 'required|string',
-            'qty' => 'required|string',
-            'year' => 'required|string',
-            'remark' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            throw ValidationException::withMessages([
-                $row->toArray() => $validator->errors()->all(),
-            ]);
-        }
+        $this->rowData[] = [
+            'garden' => $row[0],
+            'invoice' => $row[1],
+            'qty' => $row[2],
+            'grade' => $row[3],
+            'package' => $row[4],
+        ];
     }
 
-    /**
-     * Process the row data and create/update the stock entry.
-     *
-     * @param Collection $row
-     *
-     * @throws Throwable
-     */
-    private function processRow(Collection $row)
+    public function startRow(): int
     {
-        // Process the row data and create/update the stock entry
-        // You can access the row data using $row['column_name']
+        return 2;
+    }
 
-        // Example:
-        Stock::updateOrCreate([
-            'warehouse_id' => $row['warehouse_id'],
-            'bay_id' => $row['bay_id'],
-            'owner_id' => $row['owner_id'],
-            'garden_id' => $row['garden_id'],
-            'grade_id' => $row['grade_id'],
-            'package_id' => $row['package_id'],
-            'invoice' => $row['invoice'],
-            'year' => $row['year'],
-        ], [
-            'qty' => $row['qty'],
-            'remark' => $row['remark'],
-        ]);
+    public function batchSize(): int
+    {
+        return 100;
+    }
+
+    public function chunkSize(): int
+    {
+        return 100;
+    }
+
+    public function __destruct()
+    {
+        $this->importedData->rows = $this->rowData;
+        $this->importedData->save();
     }
 }
+
+

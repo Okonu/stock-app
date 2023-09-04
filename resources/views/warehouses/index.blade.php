@@ -89,10 +89,9 @@
         //     return html;
         // }
         function formatBays(bays) {
-            var bayArray = bays;//.split(","); // Split the bays string into an array
+            var bayArray = bays;//.split(","); 
             var html = '<ul>';
-            var bayArray = bays.split(","); // Split the bays string into an array
-            // Save each bay name in the database individually
+            var bayArray = bays.split(","); 
            // bayArray.forEach(function (bay) {
 
            /// alert("HELLO");
@@ -107,7 +106,7 @@
 
                             //alert(JSON.stringify(response));
                             var bayId = response.data.id;
-                            html += '<li>' + bay.trim() + ' (ID: ' + bayId + ')</li>'; // Create <li> element for each bay with ID
+                            html += '<li>' + bay.trim() + ' (ID: ' + bayId + ')</li>';
                         },
                         error: function (error) {
                             //alert(JSON.stringify(response));

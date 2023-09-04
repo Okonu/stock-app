@@ -8,7 +8,7 @@ class Stock extends Model
 {
     protected $table = 'stocks';
 
-    protected $fillable = ['user_id', 'warehouse_id', 'warehouse_bay_id', 'owner_id', 'grade_id', 'package_id', 'invoice', 'qty', 'year', 'remark', 'mismatch'];
+    protected $fillable = ['user_id', 'warehouse_id', 'warehouse_bay_id', 'owner_id', 'grade_id', 'package_id', 'invoice', 'qty', 'year', 'remark', 'mismatch', 'comment'];
 
     protected $hidden = ['created_at', 'updated_at'];
 
@@ -22,9 +22,9 @@ class Stock extends Model
         return $this->belongsTo(Warehouse::class);
     }
 
-    public function bay()
+    public function bays()
     {
-        return $this->belongsTo(WarehouseBay::class);
+        return $this->belongsTo(WarehouseBay::class, 'warehouse_bay_id');
     }
 
     public function owner()

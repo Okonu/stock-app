@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Stock details will be displayed here -->
+                <!-- Stock details -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id="export-pdf-btn">Export PDF</button>

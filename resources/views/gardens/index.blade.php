@@ -11,9 +11,11 @@
 
         <div class="box-header">
             <h3 class="box-title">List of Gardens</h3>
-
-            <a onclick="addForm()" class="btn btn-success pull-right" style="margin-top: -8px;"><i class="fa fa-plus"></i> Add Garden</a>
         </div>
+
+        <div class="box-header">
+            <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add Garden</a>
+          </div>
 
 
         <!-- /.box-header -->
@@ -21,7 +23,7 @@
             <table id="gardens-table" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>#</th>
+                <th>#</th>
                     <th>Name</th>
                     <th>Farm Owners</th>
                     <th>Actions</th>
@@ -65,6 +67,8 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route('api.gardens') }}",
+             lengthMenu: [50, 100, 200, 500],
+            pageLength: 50, 
             columns: [
                 {
                     data: 'null', name: 'null', orderable: false, searchable: false,
@@ -97,7 +101,7 @@
                 dataType: "JSON",
                 success: function(data) {
                     $('#modal-form').modal('show');
-                    $('.modal-title').text('Edit Garden');
+                    $('.modal-title').text('Edit Tea Grade');
 
                     $('#id').val(data.id);
                     $('#name').val(data.name);
@@ -155,7 +159,6 @@
                     $.ajax({
                         url : url,
                         type : "POST",
-                        //hanya untuk input data tanpa dokumen
 //                      data : $('#modal-form form').serialize(),
                         data: new FormData($("#modal-form form")[0]),
                         contentType: false,
