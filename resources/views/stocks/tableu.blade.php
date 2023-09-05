@@ -10,9 +10,6 @@
         <!--    <a href="{{ route('exportExcel.stockAll') }}" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Export Excel</a>-->
         <!--</div>-->
 
-
-
-
         <!-- /.box-header -->
         <div class="box-body">
             <table id="stocks-table" class="table table-bordered table-hover table-striped">
@@ -55,8 +52,8 @@
                 ajax: {
                     url: "{{ route('api.stocks') }}"
                 },
-                lengthMenu: [50, 100, 200, 500], // Set the available page lengths
-                pageLength: 50, // Set the default page length
+                lengthMenu: [50, 100, 200, 500],
+                pageLength: 50, 
                 columns: [
                     {
                         data: null,
@@ -152,27 +149,6 @@
                             return data ? data : '-';
                         }
                     },
-                    // { 
-                    //     data: 'mismatch',
-                    //     name: 'mismatch',
-                    //     render: function (data) {
-                    //         if (data) {
-                    //             return '<span class="label label-danger">Mismatch</span>';
-                    //         } else {
-                    //             return '<span class="label label-success">Match</span>';
-                    //         }
-                    //     }
-                    // },
-                    // {
-                    //     data: 'actions',
-                    //     name: 'actions',
-                    //     orderable: false,
-                    //     searchable: false,
-                    //     render: function (data, type, row, meta) {
-                    //         var viewButton = '<button class="btn btn-info btn-xs view-stock" data-id="' + row.id + '">View</button>';
-                    //         return viewButton;
-                    //     }
-                    // }
                 ]
             });
         });

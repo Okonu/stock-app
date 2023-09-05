@@ -1,4 +1,4 @@
-<!-- Add a search form to select the warehouse and filter the reports -->
+
 <form action="{{ route('stocks.index') }}" method="GET">
     <div class="form-group">
         <label for="warehouse_id">Select Warehouse:</label>
@@ -12,7 +12,6 @@
     <button type="submit" class="btn btn-primary">Filter</button>
 </form>
 
-<!-- Display the monthly reports table -->
 @if($monthlyReports->isNotEmpty())
     <table class="table">
         <thead>

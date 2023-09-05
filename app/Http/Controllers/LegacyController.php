@@ -36,6 +36,7 @@ class LegacyController extends Controller
      */
     public function create()
     {
+        ////
     }
 
      /**
@@ -53,14 +54,13 @@ class LegacyController extends Controller
     
         $file = $request->file('file');
     
-        $import = new LegaciesImport(); // Create an instance of the import class
+        $import = new LegaciesImport();
         // dd($file); 
-        Excel::import($import, $file); // Pass the import instance to the import method
+        Excel::import($import, $file);
     
         return redirect()->back()->with('success', 'Import successful.');
     }
 
-//////
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -71,11 +71,8 @@ class LegacyController extends Controller
             'package' => 'required',
         ]);
 
-        // Check if there are validation errors
         if ($validator->fails()) {
-            // Log or display the validation errors
             Log::error($validator->errors());
-            // Or you can return a response with the errors
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
@@ -83,7 +80,6 @@ class LegacyController extends Controller
             ], 422);
         }
 
-        // Create a new Legacy instance and assign the validated data
         $legacy = new Legacy();
         $legacy->garden = $request->input('garden');
         $legacy->invoice = $request->input('invoice');
@@ -91,7 +87,6 @@ class LegacyController extends Controller
         $legacy->grade = $request->input('grade');
         $legacy->package = $request->input('package');
 
-        // Save the legacy to the database
         $legacy->save();
 
         return response()->json([
@@ -110,6 +105,7 @@ class LegacyController extends Controller
      */
     public function show($id)
     {
+        ////
     }
 
     /**
@@ -121,6 +117,7 @@ class LegacyController extends Controller
      */
     public function edit($id)
     {
+        ////
     }
 
     /**
@@ -132,6 +129,7 @@ class LegacyController extends Controller
      */
     public function update(Request $request, $id)
     {
+        ////
     }
 
     /**

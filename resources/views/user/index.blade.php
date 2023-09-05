@@ -84,22 +84,19 @@
             checkboxes.trigger('change');
             });
 
-        // Store selected user IDs
         var selectedUsers = [];
 
-        // Add or remove user IDs from the selectedUsers array
         function toggleUserSelection(user_id) {
             var index = selectedUsers.indexOf(user_id);
             if (index === -1) {
-                // User not selected, add to the array
+
                 selectedUsers.push(user_id);
             } else {
-                // User already selected, remove from the array
+
                 selectedUsers.splice(index, 1);
             }
         }
 
-        // Generate tokens for selected users
         function generateTokens() {
             if (selectedUsers.length > 0) {
                 $.ajax({
@@ -108,7 +105,7 @@
                     data: {selectedUsers: selectedUsers},
                     success: function (data) {
                         table.ajax.reload();
-                        selectedUsers = []; // Clear selected users after generating tokens
+                        selectedUsers = []; 
                         swal({
                             title: 'Success!',
                             text: data.message,
@@ -135,7 +132,6 @@
             }
         }
 
-        // Activate or deactivate tokens for selected users
         function toggleTokenActivation() {
             if (selectedUsers.length > 0) {
                 $.ajax({
@@ -144,7 +140,7 @@
                     data: {selectedUsers: selectedUsers},
                     success: function (data) {
                         table.ajax.reload();
-                        selectedUsers = []; // Clear selected users after toggling token activation
+                        selectedUsers = []; 
                         swal({
                             title: 'Success!',
                             text: data.message,
@@ -171,7 +167,6 @@
             }
         }
 
-        // Delete selected users
         function deleteData(id) {
             swal({
                 title: 'Are you sure?',
@@ -205,8 +200,6 @@
                 }
             });
         }
-
-
 
         $(document).on('change', '.user-checkbox', function () {
             var user_id = $(this).val();

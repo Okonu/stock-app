@@ -15,8 +15,7 @@ class LegaciesImport implements OnEachRow, WithStartRow, WithChunkReading, Shoul
    public function onRow(Row $row)
 {
     $row = $row->toArray();
-
-    // Validate that the required fields are not empty
+    
     if (!empty($row[0]) && !empty($row[1]) && !empty($row[2]) && !empty($row[3]) && !empty($row[4])) {
         $legacy = new Legacy();
         $legacy->garden = $row[0];
@@ -27,7 +26,6 @@ class LegaciesImport implements OnEachRow, WithStartRow, WithChunkReading, Shoul
 
         $legacy->save();
     } else {
-        // Log or handle the validation error accordingly
         Log::error('One or more required fields are empty in the row: '.json_encode($row));
     }
 }

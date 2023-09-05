@@ -63,40 +63,13 @@
             ]
         });
 
-        // function formatBays(bays) {
-        //     console.log(bays); // Log the bays array to the console
-        //     var html = '<ul>';
-        //     $data = (bays, function (index, bay) {
-        //         console.log(bay); // Log each individual bay to the console
-        //         console.log(typeof bay); // Log the type of bay
-        //         if (bay && bay.name) {
-        //             html += '<li>' + bay.name + '</li>';
-        //         }
-        //     });
-        //     html += '</ul>';
-        //     return html;
-        // }
-
-        // function formatBays(bays) {
-        //     var bayArray = bays.split(","); // Split the bays string into an array
-        //     var html = '<ul>';
-        //     bayArray.forEach(function (bay) {
-        //         if (bay.trim() !== "") { // Ignore empty bays
-        //             html += '<li>' + bay.trim() + '</li>'; // Create <li> element for each bay
-        //         }
-        //     });
-        //     html += '</ul>';
-        //     return html;
-        // }
         function formatBays(bays) {
-            var bayArray = bays;//.split(","); // Split the bays string into an array
+            var bayArray = bays;
             var html = '<ul>';
-            var bayArray = bays.split(","); // Split the bays string into an array
-            // Save each bay name in the database individually
-           // bayArray.forEach(function (bay) {
+            var bayArray = bays.split(","); 
 
            /// alert("HELLO");
-                if (bay.trim() !== "") { // Ignore empty bays
+                if (bay.trim() !== "") { 
                     $.ajax({
                         url: "{{ route('api.bays') }}", 
                         type: "POST",
@@ -104,10 +77,8 @@
                         async: false,
                         success: function (response) {
 
-
-                            //alert(JSON.stringify(response));
                             var bayId = response.data.id;
-                            html += '<li>' + bay.trim() + ' (ID: ' + bayId + ')</li>'; // Create <li> element for each bay with ID
+                            html += '<li>' + bay.trim() + ' (ID: ' + bayId + ')</li>'; 
                         },
                         error: function (error) {
                             //alert(JSON.stringify(response));
@@ -229,14 +200,6 @@
                 }
             });
 
-            // table.on('draw.dt', function () {
-            //     table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-            //         var data = this.data();
-            //         var bays = data.bays;
-            //         //var baysHtml = formatBays(bays);
-            //         $('td', this.node()).eq(2).html(baysHtml);
-            //     });
-            // });
         });
     </script>
 @endsection

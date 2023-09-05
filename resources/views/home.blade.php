@@ -3,7 +3,6 @@
 @section('top')
 @endsection
 
-
 @section('content')
 <!--(Stat box) -->
 <div class="row">
@@ -71,13 +70,9 @@
             <!-- ./col -->
 </div>
 
-
 @include('stocks.tableu')
 
 @include('stocks.bags', ['warehouse' => $warehouse, 'bagsPerWarehouse' => $bagsPerWarehouse])
-
-
-
 
 @endsection
 

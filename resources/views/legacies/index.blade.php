@@ -2,7 +2,7 @@
 
 
 @section('top')
-    <!-- DataTables --><!-- Log on to codeastro.com for more projects! -->
+
     <link rel="stylesheet" href="{{ asset('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
     {{--<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">--}}
     @include('sweet::alert')
@@ -14,11 +14,6 @@
 <div class="box-header">
     <h3 class="box-title">System Stock</h3>
 </div>
-
-<!-- <div class="box-header">
-    <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add Customers</a>
-</div> -->
-
 
 <!-- /.box-header -->
 <div class="box-body">
@@ -212,4 +207,3 @@
     </script>
 
 @endsection
-

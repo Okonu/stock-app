@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\DB;
 
 function reconcileStock()
 {
-    // Find missing invoices
     $missingInvoices = DB::select("
         SELECT id, invoice_number, 'current_stock' AS missing_from_table
         FROM current_stock
@@ -21,7 +20,6 @@ function reconcileStock()
         )
     ");
 
-    // Update mismatch and comment columns for missing invoices
     foreach ($missingInvoices as $missingInvoice) {
         $tableToUpdate = ($missingInvoice->missing_from_table === 'current_stock') ? 'current_stock' : 'physical_stock';
 
@@ -33,7 +31,6 @@ function reconcileStock()
             ]);
     }
 
-    // Find quantity mismatches
     $quantityMismatches = DB::select("
         SELECT cs.id, cs.invoice_number, cs.quantity AS current_quantity, ps.quantity AS physical_quantity
         FROM current_stock AS cs
@@ -41,7 +38,6 @@ function reconcileStock()
         WHERE cs.quantity != ps.quantity
     ");
 
-    // Update mismatch and comment columns for quantity mismatches
     foreach ($quantityMismatches as $mismatch) {
         DB::table('current_stock')
             ->where('id', $mismatch->id)
@@ -59,5 +55,4 @@ function reconcileStock()
     }
 }
 
-// Call the function to reconcile the stock
 reconcileStock();

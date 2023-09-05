@@ -19,9 +19,7 @@
 
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('assets/dist/css/AdminLTE.min.css')}} ">
-    <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
-          page. However, you can choose any other skin. Make sure you
-          apply the skin class to the body tag so the changes take effect. -->
+    
     <link rel="stylesheet" href="{{ asset('assets/dist/css/skins/skin-green.min.css')}} ">
 
 @yield('top')
@@ -99,7 +97,6 @@
             </div>
         </nav>
     </header>
-    <!-- Left side column. contains the logo and sidebar -->
 @include('layouts.sidebar')
 
     <div class="content-wrapper">

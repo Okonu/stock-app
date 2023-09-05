@@ -194,16 +194,6 @@
                             render: function (data) {
                                 return data ? data : '-';
                             }
-                        // },
-                        // {
-                        //     data: 'actions',
-                        //     name: 'actions',
-                        //     orderable: false,
-                        //     searchable: false,
-                        //     render: function (data, type, row, meta) {
-                        //         var viewButton = '<button class="btn btn-info btn-xs view-stock" data-id="' + row.id + '">View</button>';
-                        //         return viewButton;
-                        //     }
                         }
                     ]
                 });
@@ -211,26 +201,24 @@
             
             initializeTable(null, null);
 
-            // Handle the click event of the export button
             $('#exportButton').click(function () {
                 var selectedMonth = $('#selectMonth').val();
                 var selectedYear = $('#selectYear').val();
                 if (selectedMonth) {
-                    // Redirect to the export route with the selected month and year as query parameters
+
                     window.location.href = "{{ route('exportExcel.stockAll') }}?month=" + selectedMonth + "&year=" + selectedYear;
                 }
             });
             
-            // Handle the change event of the month and year selection dropdowns
             $('#selectMonth, #selectYear').change(function () {
                 var selectedMonth = $('#selectMonth').val();
                 var selectedYear = $('#selectYear').val();
                 if (selectedMonth || selectedYear) {
-                    // Reload the DataTable with the selected month and year filters
+
                     table.destroy();
                     initializeTable(selectedMonth, selectedYear);
                 } else {
-                    // Clear the table if neither month nor year is selected
+                    
                     table.clear().draw();
                 }
             });

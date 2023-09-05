@@ -30,13 +30,11 @@ class PhoneValidationRule implements Rule
         $phoneUtil = PhoneNumberUtil::getInstance();
 
         try {
-            // parsing the phone number
             $phoneNumber = $phoneUtil->parse($value, 'KE');
 
-            // check if the parsed phone number is valid
             return $phoneUtil->isValidNumber($phoneNumber);
         } catch (NumberParseException $e) {
-            // Invalid number format,
+            
             return false;
         }
     }
