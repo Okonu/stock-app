@@ -77,12 +77,17 @@
             ]
         });
 
+<<<<<<< HEAD
+=======
+        // Select/Deselect all checkboxes
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
         $('#select-all').change(function () {
             var checkboxes = $('.user-checkbox');
             checkboxes.prop('checked', $(this).prop('checked'));
             checkboxes.trigger('change');
             });
 
+<<<<<<< HEAD
         var selectedUsers = [];
 
         function toggleUserSelection(user_id) {
@@ -90,6 +95,19 @@
             if (index === -1) {
                 selectedUsers.push(user_id);
             } else {
+=======
+        // Store selected user IDs
+        var selectedUsers = [];
+
+        // Add or remove user IDs from the selectedUsers array
+        function toggleUserSelection(user_id) {
+            var index = selectedUsers.indexOf(user_id);
+            if (index === -1) {
+                // User not selected, add to the array
+                selectedUsers.push(user_id);
+            } else {
+                // User already selected, remove from the array
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
                 selectedUsers.splice(index, 1);
             }
         }
@@ -103,7 +121,11 @@
                     data: {selectedUsers: selectedUsers},
                     success: function (data) {
                         table.ajax.reload();
+<<<<<<< HEAD
                         selectedUsers = []; 
+=======
+                        selectedUsers = []; // Clear selected users after generating tokens
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
                         swal({
                             title: 'Success!',
                             text: data.message,
@@ -139,7 +161,11 @@
                     data: {selectedUsers: selectedUsers},
                     success: function (data) {
                         table.ajax.reload();
+<<<<<<< HEAD
                         selectedUsers = [];
+=======
+                        selectedUsers = []; // Clear selected users after toggling token activation
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
                         swal({
                             title: 'Success!',
                             text: data.message,
@@ -201,6 +227,11 @@
             });
         }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
         $(document).on('change', '.user-checkbox', function () {
             var user_id = $(this).val();
             toggleUserSelection(user_id);

@@ -4,21 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExportReports;
 use App\Exports\ExportStock;
+<<<<<<< HEAD
 use App\Exports\ReconcileStockExport;
+=======
+use App\Exports\ExportReports;
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
 use App\Garden;
 use App\Grade;
 use App\Owner;
 use App\Package;
+use App\Imports\StockImport;
 use App\Stock;
 use App\Warehouse;
 use App\WarehouseBay;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+=======
+use App\ImportedData;
+use Illuminate\Support\Facades\Storage;
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
-
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 class StockController extends Controller
 {
     public function __construct()
@@ -34,12 +46,156 @@ class StockController extends Controller
     }
 
     public function calculateBagsPerWarehouse()
-    {
-        $bagsPerWarehouse = Stock::select('warehouse_id', DB::raw('SUM(qty) as total_qty'))
-            ->groupBy('warehouse_id')
-            ->pluck('total_qty', 'warehouse_id');
+{
+    $bagsPerWarehouse = Stock::select('warehouse_id', DB::raw('SUM(qty) as total_qty'))
+        ->groupBy('warehouse_id')
+        ->pluck('total_qty', 'warehouse_id');
 
-        return $bagsPerWarehouse;
+    return $bagsPerWarehouse;
+}
+
+private function calculateBagsPerBay()
+{
+    $bagsPerBay = [];
+
+    $bays = WarehouseBay::all();
+
+    foreach ($bays as $bay) {
+        $bagsCount = Stock::where('warehouse_bay_id', $bay->id)->sum('qty');
+        $bagsPerBay[$bay->id] = $bagsCount;
+    }
+
+    // Initialize default values for all possible indexes
+    $warehouseIds = Stock::distinct('warehouse_id')->pluck('warehouse_id');
+    foreach ($warehouseIds as $warehouseId) {
+        if (!isset($bagsPerBay[$warehouseId])) {
+            $bagsPerBay[$warehouseId] = 0;
+        }
+    }
+
+    return $bagsPerBay;
+}
+
+    public function getFarmOwnersCountPerWarehouse()
+    {
+        $ownersCountPerWarehouse = Stock::select('warehouse_id')
+            ->selectRaw('COUNT(DISTINCT stocks.owner_id) as owners_count')
+            ->selectRaw('GROUP_CONCAT(DISTINCT owners.name) as owners')
+            ->selectRaw('GROUP_CONCAT(DISTINCT gardens.name) as gardens')
+            ->groupBy('warehouse_id')
+            ->leftJoin('owners', 'stocks.owner_id', '=', 'owners.id')
+            ->leftJoin('gardens', 'stocks.garden_id', '=', 'gardens.id')
+            ->get();
+
+        $bagsPerBay = $this->calculateBagsPerBay();
+
+        $stockDates = Stock::select('warehouse_id')
+            ->selectRaw('GROUP_CONCAT(DISTINCT DATE_FORMAT(created_at, "%Y-%m-%d")) as stock_dates')
+            ->groupBy('warehouse_id')
+            ->pluck('stock_dates', 'warehouse_id')
+            ->toArray();
+
+        return $ownersCountPerWarehouse;
+    }
+
+    public function generateMonthlyReports()
+    {
+        $warehouse_id = request()->input('warehouse_id');
+        $monthlyReports = new Collection();
+    
+        // Get distinct months for the given warehouse
+        $distinctMonths = DB::table('stocks')
+            ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month')
+            ->where('warehouse_id', $warehouse_id)
+            ->distinct()
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
+            ->get();
+    
+        foreach ($distinctMonths as $month) {
+            $monthName = Carbon::createFromDate($month->year, $month->month)->format('F');
+    
+            // Get the monthly data for the given warehouse, farms, and bags count
+            $monthlyData = DB::table('stocks')
+                ->select('owner_id', 'garden_id', DB::raw('SUM(qty) as total_bags'))
+                ->where('warehouse_id', $warehouse_id)
+                ->whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->groupBy('owner_id', 'garden_id')
+                ->get();
+    
+            $monthlyReports->push([
+                'month' => $monthName,
+                'data' => $monthlyData,
+            ]);
+        }
+    
+        return $monthlyReports;
+    }
+    
+
+    
+    
+    public function calculateTotalMismatchQty($importedData)
+    {
+        $rows = $importedData->rows;
+
+        if (!is_iterable($rows)) {
+            return 0;
+        }
+
+        $totalMismatchQty = 0;
+
+        foreach ($rows as $row) {
+            $qty = $row->qty;
+            $gardenName = $row->garden;
+            $invoice = $row->invoice;
+            $gradeName = $row->grade;
+            $packageType = $row->package;
+
+            $garden = Garden::where('name', $gardenName)->first();
+            $grade = Grade::where('name', $gradeName)->first();
+            $package = Package::where('name', $packageType)->first();
+
+            if (!$garden || !$grade || !$package) {
+                continue;
+            }
+
+            $invoicedQty = Stock::where('garden_id', $garden->id)
+                ->where('invoice', $invoice)
+                ->where('grade_id', $grade->id)
+                ->where('package_id', $package->id)
+                ->sum('qty');
+
+            if ($qty != $invoicedQty) {
+                $totalMismatchQty += abs($qty - $invoicedQty);
+            }
+        }
+
+        return $totalMismatchQty;
+    }
+
+    public function apiImport(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = $file->getClientOriginalName();
+            Excel::import(new StockImport(), $file);
+
+            $importedData = new ImportedData();
+            $importedData->file_name = $fileName;
+            $importedData->save();
+
+            $totalMismatchQty = $this->calculateTotalMismatchQty($importedData);
+
+            return $this->index($totalMismatchQty);
+        }
+
+        return redirect()->back()->with(['error' => 'No file uploaded.']);
     }
 
     private function calculateBagsPerBay()
@@ -298,6 +454,12 @@ class StockController extends Controller
         $bagsPerBay = $this->calculateBagsPerBay();
         $ownersCountPerWarehouse = $this->getFarmOwnersCountPerWarehouse();
 
+<<<<<<< HEAD
+=======
+        $importedData = new ImportedData();
+        [$mismatches, $totalMismatchQty] = $this->fetchMismatches($importedData);
+
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
         $warehouse_id = 'warehouse_id';
         // $monthlyReports = $this->generateMonthlyReports($warehouse_id);
         $monthlyReports = $this->generateMonthlyReports($warehouse_id);
@@ -315,8 +477,12 @@ class StockController extends Controller
             ->groupBy('warehouse_id')
             ->pluck('stock_dates', 'warehouse_id')
             ->toArray();
+<<<<<<< HEAD
         $filter = request('filter');
 
+=======
+        $filter = request('filter'); 
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
         return view('stocks.index', compact(
             'warehouse',
             'warehouse_id',
@@ -330,10 +496,69 @@ class StockController extends Controller
             'ownersCountPerWarehouse',
             'bagsPerBay',
             'stockDates',
+<<<<<<< HEAD
+=======
+            'mismatches',
+            'totalMismatchQty',
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
             'monthlyReports',
             'filter'
         ));
     }
+<<<<<<< HEAD
+=======
+
+    private function fetchMismatches($importedData)
+    {
+        $rows = $importedData->rows;
+
+        if (!is_iterable($rows)) {
+            return [[], 0]; // Return empty arrays if $rows is not iterable
+        }
+
+        $mismatches = [];
+        $totalMismatchQty = 0;
+
+        foreach ($rows as $row) {
+            $gardenName = $row->garden;
+            $invoice = $row->invoice;
+            $qty = $row->qty;
+            $gradeName = $row->grade;
+            $packageType = $row->package;
+
+            // Get the garden, grade, and package by their names
+            $garden = Garden::where('name', $gardenName)->first();
+            $grade = Grade::where('name', $gradeName)->first();
+            $package = Package::where('name', $packageType)->first();
+
+            // If any of the required data is missing, skip the row
+            if (!$garden || !$grade || !$package) {
+                continue;
+            }
+
+            // Compare the imported data with the invoiced stock
+            $invoicedQty = Stock::where('garden_id', $garden->id)
+                ->where('invoice', $invoice)
+                ->where('grade_id', $grade->id)
+                ->where('package_id', $package->id)
+                ->sum('qty');
+
+            if ($qty != $invoicedQty) {
+                $mismatches[] = [
+                    'garden' => $gardenName,
+                    'invoice' => $invoice,
+                    'qty' => $qty,
+                    'grade' => $gradeName,
+                    'package' => $packageType,
+                ];
+                $totalMismatchQty += abs($qty - $invoicedQty);
+            }
+        }
+
+        return [$mismatches, $totalMismatchQty];
+    }
+
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
 
     public function create()
     {
@@ -379,6 +604,10 @@ class StockController extends Controller
             'remark' => 'required|string',
             // 'file' => 'required|mimes:xlsx,xls',
         ]);
+<<<<<<< HEAD
+=======
+
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
     }
 
     public function show($id)
@@ -423,6 +652,10 @@ class StockController extends Controller
 
         $data = [];
 
+<<<<<<< HEAD
+=======
+        // Prepare the data for export
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
         foreach ($monthlyReports as $monthlyReport) {
             $month = $monthlyReport['month'];
             $reportData = $monthlyReport['data'];
@@ -441,9 +674,17 @@ class StockController extends Controller
             }
         }
 
+<<<<<<< HEAD
         return Excel::download(new ExportReports($data), 'monthly_reports.xlsx');
     }
 
+=======
+        // Generate the Excel file using Maatwebsite\Excel package
+        return Excel::download(new ExportReports($data), 'monthly_reports.xlsx');
+}
+
+    
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
     public function apiStocks()
     {
         $stocks = Stock::with(['user', 'warehouse', 'bays', 'owner', 'garden', 'grade', 'package'])

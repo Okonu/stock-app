@@ -158,7 +158,11 @@
 
                     $.ajax({
                         url : url,
+<<<<<<< HEAD
                         type : "POST",
+=======
+                        type : "POST",+
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
 //                      data : $('#modal-form form').serialize(),
                         data: new FormData($("#modal-form form")[0]),
                         contentType: false,

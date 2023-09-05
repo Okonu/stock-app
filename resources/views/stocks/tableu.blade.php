@@ -54,8 +54,11 @@
                 ajax: {
                     url: "{{ route('api.stocks') }}"
                 },
+<<<<<<< HEAD
                 lengthMenu: [50, 100, 200, 500], 
                 pageLength: 50, 
+=======
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
                 columns: [
                     {
                         data: null,

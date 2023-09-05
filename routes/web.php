@@ -74,6 +74,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/stock/export/{warehouse_id}', [StockController::class, 'exportToExcel'])->name('stock.export');
 
+    Route::get('/stock/reports', 'StockController@generateMonthlyReports')->name('stocks.reports');
+
+    Route::get('/stock/export/{warehouse_id}', [StockController::class, 'exportToExcel'])->name('stock.export');
+
     Route::get('stocks/total-bags', 'StockController@countTotalBags');
 
     // Route::get('reports', [StockController::class, 'index'])->name('stocks.reports');

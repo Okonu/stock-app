@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Row;
 
 class LegaciesImport implements OnEachRow, WithStartRow, WithChunkReading, ShouldQueue
 {
+<<<<<<< HEAD
     public function onRow(Row $row)
     {
         $row = $row->toArray();
@@ -29,6 +30,26 @@ class LegaciesImport implements OnEachRow, WithStartRow, WithChunkReading, Shoul
         } else {
             Log::error('One or more required fields are empty in the row: '.json_encode($row));
         }
+=======
+    /**
+     * @return Legacy|null
+     */
+    public function model(array $row)
+    {
+        // dd($row);
+        // Check if all the required columns have values
+        if (empty($row[0]) || empty($row[1]) || empty($row[2]) || empty($row[3]) || empty($row[4])) {
+            return null;
+        }
+
+        return new Legacy([
+            'garden' => $row[0],
+            'invoice' => $row[1],
+            'qty' => $row[2],
+            'grade' => $row[3],
+            'package' => $row[4],
+        ]);
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
     }
 
      public function startRow(): int

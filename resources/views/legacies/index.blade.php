@@ -12,9 +12,20 @@
 <div class="box box-success">
 
 <div class="box-header">
+<<<<<<< HEAD
     <h3 class="box-title">System Stock</h3>
 </div>
 
+=======
+    <h3 class="box-title">Imported Stock</h3>
+</div>
+
+<!-- <div class="box-header">
+    <a onclick="addForm()" class="btn btn-success" ><i class="fa fa-plus"></i> Add Customers</a>
+</div> -->
+
+
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
 <!-- /.box-header -->
 <div class="box-body">
     <table id="legacy-table" class="table table-bordered table-hover table-striped">
@@ -26,7 +37,11 @@
             <th>Package Number</th>
             <th>Grade</th>
             <th>Package Type</th>
+<<<<<<< HEAD
             <!--<th>Actions</th>-->
+=======
+            <th>Actions</th>
+>>>>>>> db5dfd542f7844059e5c01268826fe8f09812183
         </tr>
         </thead>
         <tbody></tbody>
