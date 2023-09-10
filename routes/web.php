@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('dashboard', function () {
     return view('layouts.master');
 });
+
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('warehouses', 'WarehouseController');
@@ -61,15 +64,15 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('stocks', 'StockController');
     Route::get('/apiStocks', 'StockController@apiStocks')->name('api.stocks');
-    Route::match(['get', 'post'],'/exportExcel', 'StockController@exportExcel')->name('exportExcel.stockAll');
+    Route::match(['get', 'post'], '/exportExcel', 'StockController@exportExcel')->name('exportExcel.stockAll');
 
     Route::post('/apiImport', 'StockController@apiImport')->name('api.import');
     Route::post('/stocks/import', 'StockController@import')->name('stocks.import');
-    
+
     Route::get('/stock/reports', 'StockController@generateMonthlyReports')->name('stocks.reports');
-    
+
     Route::get('/reconcileStockExport', 'StockController@reconcileStockExport')->name('reconcileStockExport');
-    
+
     Route::get('/reconcileStock', 'StockController@reconcileStock')->name('reconcileStock');
     Route::get('/reconcileStock', 'StockController@reconcileStock')->name('reconciliation.index');
 

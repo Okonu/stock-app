@@ -32,7 +32,7 @@ class PackageController extends Controller
      */
     public function create()
     {
-        ////
+        // //
     }
 
     /**
@@ -63,7 +63,7 @@ class PackageController extends Controller
      */
     public function show($id)
     {
-        ////
+        // //
     }
 
     /**

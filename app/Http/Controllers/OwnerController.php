@@ -32,7 +32,7 @@ class OwnerController extends Controller
      */
     public function create()
     {
-        ////
+        // //
     }
 
     /**
@@ -66,7 +66,7 @@ class OwnerController extends Controller
      */
     public function show($id)
     {
-        ////
+        // //
     }
 
     /**

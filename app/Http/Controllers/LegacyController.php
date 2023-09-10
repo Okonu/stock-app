@@ -36,28 +36,26 @@ class LegacyController extends Controller
      */
     public function create()
     {
-        ////
+        // //
     }
 
-     /**
-      * Store a newly created resource in storage.
-      *
-      * @return \Illuminate\Http\Response
-      */
-
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function apiImports(Request $request)
     {
         $request->validate([
             'file' => 'required|mimes:xls,xlsx',
-            
         ]);
-    
+
         $file = $request->file('file');
-    
+
         $import = new LegaciesImport();
-        // dd($file); 
+        // dd($file);
         Excel::import($import, $file);
-    
+
         return redirect()->back()->with('success', 'Import successful.');
     }
 
@@ -73,6 +71,7 @@ class LegacyController extends Controller
 
         if ($validator->fails()) {
             Log::error($validator->errors());
+
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
@@ -105,7 +104,7 @@ class LegacyController extends Controller
      */
     public function show($id)
     {
-        ////
+        // //
     }
 
     /**
@@ -117,7 +116,7 @@ class LegacyController extends Controller
      */
     public function edit($id)
     {
-        ////
+        // //
     }
 
     /**
@@ -129,7 +128,7 @@ class LegacyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        ////
+        // //
     }
 
     /**

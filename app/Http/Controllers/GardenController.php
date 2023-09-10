@@ -37,7 +37,7 @@ class GardenController extends Controller
      */
     public function create()
     {
-        ////
+        // //
     }
 
     /**
@@ -75,7 +75,7 @@ class GardenController extends Controller
      */
     public function show($id)
     {
-        ////
+        // //
     }
 
     /**

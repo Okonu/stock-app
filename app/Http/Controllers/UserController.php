@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
-use App\Http\Controllers\Auth\LoginController;
 
 class UserController extends Controller
 {
@@ -33,7 +32,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -65,7 +63,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        ////
+        // //
     }
 
     /**
