@@ -22,12 +22,12 @@ class StockController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin,staff');
+        // $this->middleware('role:admin,staff');
     }
 
     public function countTotalBags()
     {
-        $totalBags = Stock::sum('qty');
+        $totalBags = Stock::whereMonth('created_at', '=', now()->month)->sum('qty');
 
         return $totalBags;
     }

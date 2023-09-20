@@ -11,7 +11,7 @@
                 <!-- small box -->
                 <div class="small-box bg-green">
                     <div class="inner">
-                        <h3>{{ \App\Stock::count() }}<sup style="font-size: 20px"></sup></h3>
+                        <h3>{{ \App\Stock::whereMonth('created_at', '=', now()->month)->count() }}<sup style="font-size: 20px"></sup></h3>
 
                         <p>Physical Entries</p>
                     </div>
@@ -26,7 +26,7 @@
                 <!-- small box -->
                 <div class="small-box bg-green">
                     <div class="inner">
-                        <h3>{{ \App\Legacy::count() }}<sup style="font-size: 20px"></sup></h3>
+                        <h3>{{ \App\Legacy::whereMonth('created_at', '=', now()->month)->count() }}<sup style="font-size: 20px"></sup></h3>
 
                         <p>System Entries</p>
                     </div>
@@ -43,7 +43,7 @@
                 <!-- small box -->
                 <div class="small-box bg-green">
                     <div class="inner">
-                        <h3>{{ \App\Owner::count() }}<sup style="font-size: 20px"></sup></h3>
+                        <h3>{{\App\Owner::count() }}<sup style="font-size: 20px"></sup></h3>
 
                         <p>Producers</p>
                     </div>

@@ -14,7 +14,7 @@ class LegacyController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin,staff');
+        // $this->middleware('role:admin,staff');
     }
 
     /**
