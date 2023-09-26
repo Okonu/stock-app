@@ -11,7 +11,7 @@ class GardenController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin,staff');
+        // $this->middleware('role:admin,staff');
     }
 
     /**
@@ -37,7 +37,7 @@ class GardenController extends Controller
      */
     public function create()
     {
-        ////
+        // //
     }
 
     /**
@@ -75,7 +75,7 @@ class GardenController extends Controller
      */
     public function show($id)
     {
-        ////
+        // //
     }
 
     /**

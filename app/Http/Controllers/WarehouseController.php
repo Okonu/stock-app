@@ -11,7 +11,7 @@ class WarehouseController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin,staff');
+        // $this->middleware('role:admin,staff');
     }
 
     /**
@@ -39,7 +39,6 @@ class WarehouseController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -52,7 +51,7 @@ class WarehouseController extends Controller
         $name = $request->input('name');
         $bays = $request->input('bays')[0];
 
-        $baysArray = explode(", ", $bays);
+        $baysArray = explode(', ', $bays);
 
         $warehouse = Warehouse::create([
             'name' => $name,
@@ -71,18 +70,19 @@ class WarehouseController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Warehouse $warehouse)
@@ -95,19 +95,19 @@ class WarehouseController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -127,6 +127,7 @@ class WarehouseController extends Controller
         return Datatables::of($warehouses)
             ->addColumn('bays', function ($warehouse) {
                 $bays = $warehouse->bays->pluck('name')->implode(', ');
+
                 return $bays;
             })
             ->addColumn('action', function ($warehouse) {

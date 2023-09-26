@@ -10,7 +10,7 @@ class OwnerController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin,staff');
+        // $this->middleware('role:admin,staff');
     }
 
     /**
@@ -32,7 +32,7 @@ class OwnerController extends Controller
      */
     public function create()
     {
-        ////
+        // //
     }
 
     /**
@@ -66,7 +66,7 @@ class OwnerController extends Controller
      */
     public function show($id)
     {
-        ////
+        // //
     }
 
     /**
