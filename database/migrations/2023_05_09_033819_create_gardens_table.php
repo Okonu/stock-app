@@ -14,13 +14,11 @@ class CreateGardensTable extends Migration
     public function up()
     {
         Schema::create('gardens', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('owner_id')->unsigned();
-
+            $table->id();
+            $table->foreignId('owner_id');
             $table->string('name');
             $table->timestamps();
 
-            $table->foreign('owner_id')->references('id')->on('owners')->onDelete('cascade');
         });
     }
 

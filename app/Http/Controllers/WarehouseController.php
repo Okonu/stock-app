@@ -13,11 +13,6 @@ use Yajra\DataTables\Datatables;
 
 class WarehouseController extends Controller
 {
-    public function __construct()
-    {
-        // $this->middleware('role:admin,staff');
-    }
-
     /**
      * Display a listing of the resource.
      *

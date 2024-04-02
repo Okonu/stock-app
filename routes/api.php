@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GardenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,3 +97,13 @@ Route::middleware('api')->group(function () use ($api) {
         return response()->json($result);
     });
 });
+
+//for testing purposes only
+Route::middleware('auth:api')->group(function () {
+    Route::get('/gardens', [GardenController::class, 'index']);
+    Route::post('/gardens', [GardenController::class, 'store']);
+    Route::get('/gardens/{garden}', [GardenController::class, 'show']);
+    Route::put('/gardens/{garden}', [GardenController::class, 'update']);
+    Route::delete('/gardens/{garden}', [GardenController::class, 'destroy']);
+});
+

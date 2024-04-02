@@ -21,11 +21,6 @@ use Yajra\DataTables\DataTables;
 
 class StockController extends Controller
 {
-    public function __construct()
-    {
-        // $this->middleware('role:admin,staff');
-    }
-
     public function countTotalBags()
     {
         $totalBags = Stock::whereMonth('created_at', '=', now()->month)->sum('qty');

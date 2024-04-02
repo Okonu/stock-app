@@ -39,16 +39,6 @@
                         <span class="help-block with-errors"></span>
                     </div>
 
-                    <div class="form-group">
-                        <label>Role</label>
-                        <select class="form-control" id="role" name="role" required>
-                            <option value="">Select Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="staff">Staff</option>
-                            <option value="clerk">Clerk</option>
-                        </select>
-                        <span class="help-block with-errors"></span>
-                    </div>
                 </div>
 
                 <div class="modal-footer">

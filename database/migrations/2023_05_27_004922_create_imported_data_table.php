@@ -9,7 +9,7 @@ class CreateImportedDataTable extends Migration
     public function up()
     {
         Schema::create('imported_data', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->json('rows')->nullable();
             $table->timestamps();
         });

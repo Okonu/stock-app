@@ -7,19 +7,13 @@
 
 @section('content')
     <div class="box box-success">
-
         <div class="box-header">
             <h3 class="box-title">List of System Users</h3>
         </div>
-
         <div class="box-header">
             <a href="/register" class="btn btn-success"><i class="fa fa-plus"></i> Add User</a>
-            <button onclick="generateTokens()" class="btn btn-primary"><i class="fa fa-key"></i> Generate Tokens</button>
-            <button onclick="toggleTokenActivation()" class="btn btn-warning"><i class="fa fa-toggle-on"></i> Toggle Token Activation</button>
             <button onclick="deleteData()" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</button>
         </div>
-
-        <!-- /.box-header -->
         <div class="box-body">
             <table id="user-table" class="table table-bordered table-hover table-striped">
                 <thead>
@@ -28,17 +22,13 @@
                     <th>#</th>
                     <th>Name</th>
                     <th>Phone</th>
-                    <th>Role</th>
-                    <th>Token</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
-        <!-- /.box-body -->
     </div>
-
 @endsection
 
 @section('bot')
@@ -71,100 +61,30 @@
                 },
                 {data: 'name', name: 'name'},
                 {data: 'phone', name: 'phone'},
-                {data: 'role', name: 'role'},
-                {data: 'token', name: 'token'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });
 
-        // Select/Deselect all checkboxes
-        $('#select-all').change(function () {
-            var checkboxes = $('.user-checkbox');
-            checkboxes.prop('checked', $(this).prop('checked'));
-            checkboxes.trigger('change');
+        function editForm(id) {
+            save_method = 'edit';
+            $('input[name=_method]').val('PATCH');
+            $('#modal-form form')[0].reset();
+            $.ajax({
+                url: "{{ url('user') }}" + '/' + id + "/edit",
+                type: "GET",
+                dataType: "JSON",
+                success: function(data) {
+                    $('#modal-form').modal('show');
+                    $('.modal-title').text('Edit User');
+
+                    $('#id').val(data.id);
+                    $('#name').val(data.name);
+                    $('#phone').val(data.phone);
+                },
+                error : function() {
+                    alert("Nothing Data");
+                }
             });
-
-        var selectedUsers = [];
-
-        function toggleUserSelection(user_id) {
-            var index = selectedUsers.indexOf(user_id);
-            if (index === -1) {
-
-                selectedUsers.push(user_id);
-            } else {
-
-                selectedUsers.splice(index, 1);
-            }
-        }
-
-        function generateTokens() {
-            if (selectedUsers.length > 0) {
-                $.ajax({
-                    url: "{{ route('admin.generateTokens') }}",
-                    type: "POST",
-                    data: {selectedUsers: selectedUsers},
-                    success: function (data) {
-                        table.ajax.reload();
-                        selectedUsers = []; 
-                        swal({
-                            title: 'Success!',
-                            text: data.message,
-                            type: 'success',
-                            timer: '1500'
-                        });
-                    },
-                    error: function (data) {
-                        swal({
-                            title: 'Oops...',
-                            text: data.message,
-                            type: 'error',
-                            timer: '1500'
-                        });
-                    }
-                });
-            } else {
-                swal({
-                    title: 'Error',
-                    text: 'No users selected',
-                    type: 'error',
-                    timer: '1500'
-                });
-            }
-        }
-
-        function toggleTokenActivation() {
-            if (selectedUsers.length > 0) {
-                $.ajax({
-                    url: "{{ route('admin.toggleTokenActivation') }}",
-                    type: "POST",
-                    data: {selectedUsers: selectedUsers},
-                    success: function (data) {
-                        table.ajax.reload();
-                        selectedUsers = []; 
-                        swal({
-                            title: 'Success!',
-                            text: data.message,
-                            type: 'success',
-                            timer: '1500'
-                        });
-                    },
-                    error: function (data) {
-                        swal({
-                            title: 'Oops...',
-                            text: data.message,
-                            type: 'error',
-                            timer: '1500'
-                        });
-                    }
-                });
-            } else {
-                swal({
-                    title: 'Error',
-                    text: 'No users selected',
-                    type: 'error',
-                    timer: '1500'
-                });
-            }
         }
 
         function deleteData(id) {

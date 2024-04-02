@@ -9,7 +9,7 @@ class AddUserIdToStocksTable extends Migration
     public function up()
     {
         Schema::table('stocks', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->nullable()->after('id');
+            $table->foreignId('user_id')->nullable()->after('id');
         });
     }
 
@@ -20,4 +20,3 @@ class AddUserIdToStocksTable extends Migration
         });
     }
 }
-

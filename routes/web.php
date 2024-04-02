@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-// uncomment from here
-
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -29,9 +27,9 @@ Route::get('dashboard', function () {
     return view('layouts.master');
 });
 
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+// Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
-// Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth'], function () {
     Route::resource('warehouses', 'WarehouseController');
     Route::get('/apiWarehouses', 'WarehouseController@apiWarehouses')->name('api.warehouses');
     Route::get('/warehouses/create', 'WarehouseController@create')->name('warehouses.create');
@@ -89,4 +87,4 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::resource('user', 'UserController');
     Route::get('/apiUser', 'UserController@apiUsers')->name('api.users');
     Route::delete('/user/{id}', 'UserController@destroy')->name('user.destroy');
-// });
+});

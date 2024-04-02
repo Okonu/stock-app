@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Stock extends Model
 {
+    use HasFactory;
+    
     protected $table = 'stocks';
 
     protected $fillable = ['user_id', 'warehouse_id', 'warehouse_bay_id', 'owner_id', 'grade_id', 'package_id', 'invoice', 'qty', 'year', 'remark', 'mismatch', 'comment'];

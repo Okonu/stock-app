@@ -10,11 +10,6 @@ use Yajra\DataTables\Datatables;
 
 class GradeController extends Controller
 {
-    public function __construct()
-    {
-        // $this->middleware('role:admin,staff');
-    }
-
     /**
      * Display a listing of the resource.
      *

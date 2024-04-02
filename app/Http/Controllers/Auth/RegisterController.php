@@ -16,18 +16,13 @@ class RegisterController extends Controller
 
     protected $redirectTo = '/user';
 
-    public function __construct()
-    {
-        $this->middleware('role:admin');
-    }
-
     protected function validator(array $data)
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'max:255', 'unique:users'],
             'phone' => ['required', 'string', new PhoneValidationRule(), 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'role' => ['required', 'in:admin,staff,clerk'],
         ]);
     }
 
@@ -38,18 +33,13 @@ class RegisterController extends Controller
         $user = User::create([
             'name' => $data['name'],
             'phone' => $data['phone'],
+            'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role' => $data['role'],
         ]);
-
-        if ($user->isClerk()) {
-            $user->generateToken();
-        }
 
         return $this->registered($request, $user)
             ?: redirect($this->redirectPath())->with('success', 'User created successfully.');
     }
-
 
     protected function registered(Request $request, $user)
     {
