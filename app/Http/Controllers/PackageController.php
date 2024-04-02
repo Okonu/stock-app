@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Package;
+use App\Models\Package;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Yajra\DataTables\Datatables;
 
 class PackageController extends Controller
@@ -18,21 +19,11 @@ class PackageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $packages = Package::all();
 
         return view('packages.index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        // //
     }
 
     /**
@@ -52,18 +43,6 @@ class PackageController extends Controller
            'success' => true,
            'message' => 'Package Type Created',
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        // //
     }
 
     /**

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Garden;
-use App\Owner;
+use App\Http\Requests\Garden\StoreGardenRequest;
+use App\Models\Garden;
+use App\Models\Owner;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class GardenController extends Controller
@@ -19,7 +21,7 @@ class GardenController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $owner = Owner::orderBy('name', 'ASC')
             ->get()
@@ -31,51 +33,29 @@ class GardenController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        // //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreGardenRequest $request)
     {
-        $owner = Owner::orderBy('name', 'ASC')
-            ->get()
-            ->pluck('name', 'id');
+        // $owner = Owner::orderBy('name', 'ASC')
+        //     ->get()
+        //     ->pluck('name', 'id');
 
-        $this->validate($request, [
-            'name' => 'required|string',
-            'owner_id' => 'required',
-        ]);
+        // $this->validate($request, [
+        //     'name' => 'required|string',
+        //     'owner_id' => 'required',
+        // ]);
 
-        $input = $request->all();
+        // $input = $request->all();
 
-        Garden::create($input);
+        $garden = Garden::create($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Garden Created',
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        // //
     }
 
     /**

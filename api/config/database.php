@@ -17,8 +17,9 @@ class Database
     {
         if (!isset($conn)) {
             try {
-                $ini = parse_ini_file('app.ini');
-                self::$conn = new PDO('mysql:host='.$ini['host'].';dbname='.$ini['db_name'], $ini['db_user'], $ini['db_password']);
+                $dbConfig = config('database.connections.mysql');
+
+                self::$conn = new PDO("mysql:host={$dbConfig['host']};dbname={$dbConfig['database']};charset=utf8", $dbConfig['username'], $dbConfig['password']);
                 self::$conn->exec('set names utf8');
             } catch (PDOException $e) {
                 echo 'Connection error: '.$e->getMessage()." in file '".$e->getFile()."' on line ".$e->getLine();

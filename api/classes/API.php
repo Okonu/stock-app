@@ -121,7 +121,7 @@ class API
             return $query->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        $statement = 'SELECT * FROM gardens'; // RIGHT JOIN owners ON gardens.owner_id = owners.id ';
+        $statement = 'SELECT * FROM gardens';
 
         // 'SELECT id, owner_id, name FROM gardens '
         $query = $this->conn->prepare($statement);

@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -73,7 +74,7 @@ class LoginController extends Controller
 
         // Update token activation for selected users
         User::whereIn('id', $selectedUsers)->update([
-            'token_activated' => \DB::raw('NOT token_activated')
+            'token_activated' => DB::raw('NOT token_activated')
         ]);
 
         return response()->json(['message' => 'Token activation toggled successfully']);

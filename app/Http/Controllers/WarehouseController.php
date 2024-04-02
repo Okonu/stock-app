@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Warehouse;
-use App\WarehouseBay;
+use App\Models\Warehouse;
+use App\Models\WarehouseBay;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Yajra\DataTables\Datatables;
 
 class WarehouseController extends Controller
@@ -19,7 +20,7 @@ class WarehouseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $warehouses = Warehouse::all();
 
@@ -31,7 +32,7 @@ class WarehouseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         return view('warehouses.create');
     }
@@ -68,17 +69,6 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param int $id
@@ -90,17 +80,6 @@ class WarehouseController extends Controller
         $warehouse->load('bays');
 
         return response()->json($warehouse);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
     }
 
     /**

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Owner;
+use App\Models\Owner;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class OwnerController extends Controller
@@ -18,7 +20,7 @@ class OwnerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $owners = Owner::all();
 
@@ -26,21 +28,11 @@ class OwnerController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        // //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $this->validate($request, [
             'name' => 'required',
@@ -55,18 +47,6 @@ class OwnerController extends Controller
             'success' => true,
             'message' => 'Owner Created',
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        // //
     }
 
     /**

@@ -1,19 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Garden extends Model
+class Owner extends Model
 {
-    protected $fillable = ['owner_id', 'name'];
+    protected $fillable = ['name', 'address', 'email', 'telephone'];
 
     protected $hidden = ['created_at', 'updated_at'];
-
-    public function owner()
-    {
-        return $this->belongsTo(Owner::class);
-    }
 
     public function stock()
     {

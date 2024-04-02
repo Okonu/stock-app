@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Grade;
+use App\Models\Grade;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Yajra\DataTables\Datatables;
 
 class GradeController extends Controller
@@ -18,21 +19,11 @@ class GradeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $grades = Grade::all();
 
         return view('grades.index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        // //
     }
 
     /**
@@ -54,16 +45,6 @@ class GradeController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-    }
 
     /**
      * Show the form for editing the specified resource.

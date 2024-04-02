@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExportStock;
 use App\Exports\ReconcileStockExport;
-use App\Garden;
-use App\Grade;
-use App\Owner;
-use App\Package;
-use App\Stock;
-use App\Warehouse;
-use App\WarehouseBay;
+use App\Models\Garden;
+use App\Models\Grade;
+use App\Models\Owner;
+use App\Models\Package;
+use App\Models\Stock;
+use App\Models\Warehouse;
+use App\Models\WarehouseBay;
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -109,7 +110,6 @@ class StockController extends Controller
 
         return $monthlyReports;
     }
-
     public function reconcileStock()
     {
         function extractSysInvoice($sysInvoice)
@@ -349,11 +349,6 @@ class StockController extends Controller
         ));
     }
 
-    public function create()
-    {
-        // Create
-    }
-
     public function store(Request $request)
     {
         $warehouse = Warehouse::orderBy('name', 'ASC')
@@ -393,10 +388,6 @@ class StockController extends Controller
             'remark' => 'required|string',
             // 'file' => 'required|mimes:xlsx,xls',
         ]);
-    }
-
-    public function show($id)
-    {
     }
 
     public function edit($id)
@@ -478,7 +469,7 @@ class StockController extends Controller
     public function exportStockAll()
     {
         $stock = Stock::all();
-        $pdf = \PDF::loadView('stocks.stockAllPDF', compact('stock'));
+        $pdf = PDF::loadView('stocks.stockAllPDF', compact('stock'));
 
         return $pdf->download('stock.pdf');
     }
@@ -486,7 +477,7 @@ class StockController extends Controller
     public function exportStock($id)
     {
         $stock = Stock::findOrFail($id);
-        $pdf = \PDF::loadView('stocks.exportStockPDF', compact('stock'));
+        $pdf = PDF::loadView('stocks.exportStockPDF', compact('stock'));
 
         return $pdf->download($stock->id.'_stock.pdf');
     }

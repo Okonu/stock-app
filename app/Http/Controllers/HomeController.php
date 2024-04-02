@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\ImportedData;
-use App\Warehouse;
+use App\Models\ImportedData;
+use App\Models\Warehouse;
 
 class HomeController extends Controller
 {

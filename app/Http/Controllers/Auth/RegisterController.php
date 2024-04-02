@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Rules\PhoneValidationRule;
-use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -43,7 +43,6 @@ class RegisterController extends Controller
         ]);
 
         if ($user->isClerk()) {
-            // Generate token for clerk user
             $user->generateToken();
         }
 
@@ -54,6 +53,6 @@ class RegisterController extends Controller
 
     protected function registered(Request $request, $user)
     {
-        // Custom logic after user registration, if needed
+        //
     }
 }
