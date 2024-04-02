@@ -17,7 +17,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "*",
         "laravelcollective/html": "^6.0",
-        "maatwebsite/excel": "^3.1",
+        "maatwebsite/excel": "*",
         "uxweb/sweet-alert": "^2.0",
         "yajra/laravel-datatables-oracle": "^9.0"
     },
