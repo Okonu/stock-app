@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Stock;
+namespace App\Http\Requests\Legacy;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateStockRequest extends FormRequest
+class ImportLegacyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class UpdateStockRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class UpdateStockRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'file' => 'required|mimes:xls,xlsx',
         ];
     }
 }

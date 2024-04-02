@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Warehouse\StoreWarehouseRequest;
+use App\Http\Requests\Warehouse\UpdateWarehouseRequest;
 use App\Models\Warehouse;
 use App\Models\WarehouseBay;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\Datatables;
@@ -42,27 +45,14 @@ class WarehouseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreWarehouseRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-            'bays' => 'required',
-        ]);
-
-        $name = $request->input('name');
-        $bays = $request->input('bays')[0];
-
-        $baysArray = explode(', ', $bays);
-
         $warehouse = Warehouse::create([
-            'name' => $name,
+            'name' => $request->input('name'),
         ]);
 
-        foreach ($baysArray as $bayName) {
-            WarehouseBay::create([
-                'name' => $bayName,
-                'warehouse_id' => $warehouse->id,
-            ]);
+        foreach ($request->input('bays') as $bayName) {
+            $warehouse->bays()->create(['name' => $bayName]);
         }
 
         return redirect()->route('warehouses.index')->with('success', 'Warehouse created successfully.');
@@ -79,7 +69,28 @@ class WarehouseController extends Controller
     {
         $warehouse->load('bays');
 
-        return response()->json($warehouse);
+        $bays = $warehouse->bays->pluck('name')->toArray();
+
+        return response()->json([
+            'id' => $warehouse->id,
+            'name' => $warehouse->name,
+            'bays' => $bays,
+        ]);
+    }
+
+    public function update(UpdateWarehouseRequest $request, Warehouse $warehouse): RedirectResponse
+    {
+        $warehouse->update([
+            'name' => $request->input('name'),
+        ]);
+
+        $warehouse->bays()->delete();
+
+        foreach ($request->input('bays') as $bayName) {
+            $warehouse->bays()->create(['name' => $bayName]);
+        }
+
+        return redirect()->route('warehouses.index')->with('success', 'Warehouse updated successfully.');
     }
 
     /**

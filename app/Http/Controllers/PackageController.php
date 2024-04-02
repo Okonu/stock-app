@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Package\StorePackageRequest;
+use App\Http\Requests\Package\UpdatePackageRequest;
 use App\Models\Package;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\Datatables;
 
@@ -31,13 +32,9 @@ class PackageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePackageRequest $request)
     {
-        $this->validate($request, [
-           'name' => 'required|string|min:2',
-        ]);
-
-        Package::create($request->all());
+        Package::create($request->validated());
 
         return response()->json([
            'success' => true,
@@ -56,7 +53,11 @@ class PackageController extends Controller
     {
         $package = Package::find($id);
 
-        return $package;
+        if ($package) {
+            return response()->json($package, 200);
+        } else {
+            return response()->json(['error' => 'Package not found'], 404);
+        }
     }
 
     /**
@@ -66,15 +67,11 @@ class PackageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdatePackageRequest $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|string|min:2',
-        ]);
-
         $package = Package::findOrFail($id);
 
-        $package->update($request->all());
+        $package->update($request->validated());
 
         return response()->json([
             'success' => true,

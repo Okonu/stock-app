@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Legacy;
+use App\Models\Legacy;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;

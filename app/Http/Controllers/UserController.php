@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -31,14 +33,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'phone' => 'required|unique:users',
-        ]);
 
-        User::create($request->all());
+        User::create($request->validated());
 
         return response()->json([
             'success' => true,
@@ -55,9 +53,13 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $users = User::find($id);
+        $user = User::find($id);
 
-        return $users;
+        if ($user) {
+            return response()->json($user, 200);
+        } else {
+            return response()->json(['error' => 'User not found'], 404);
+        }
     }
 
     /**
@@ -67,20 +69,15 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|string|min:2',
-            'phone' => 'required|string|max:255|unique:users,phone'.$id,
-        ]);
-
         $users = User::findOrFail($id);
 
-        $users->update($request->all());
+        $users->update($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'users Updated',
+            'message' => 'user Updated',
         ]);
     }
 

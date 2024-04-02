@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Grade\StoreGradeRequest;
+use App\Http\Requests\Grade\UpdateGradeRequest;
 use App\Models\Grade;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\Datatables;
 
@@ -31,13 +32,9 @@ class GradeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreGradeRequest $request)
     {
-        $this->validate($request, [
-           'name' => 'required|string|min:2',
-        ]);
-
-        Grade::create($request->all());
+        Grade::create($request->validated());
 
         return response()->json([
            'success' => true,
@@ -57,7 +54,11 @@ class GradeController extends Controller
     {
         $grade = Grade::find($id);
 
-        return $grade;
+        if($grade) {
+            return response()->json($grade, 200);
+        } else {
+            return response()->json(['error' => 'Grade Not Found'], 404);
+        }
     }
 
     /**
@@ -67,19 +68,16 @@ class GradeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateGradeRequest $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|string|min:2',
-        ]);
 
         $grade = Grade::findOrFail($id);
 
-        $grade->update($request->all());
+        $grade->update($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Grades Updated',
+            'message' => 'Grade Updated',
         ]);
     }
 

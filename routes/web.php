@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\StockController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,7 +45,7 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::get('/apiLegacies', 'LegacyController@apiLegacies')->name('api.legacies');
 
     // Import route for legacies
-    Route::post('/apiImports', 'LegacyController@apiImports')->name('api.imports');
+    Route::post('/store', 'LegacyController@store')->name('api.imports');
 
     Route::resource('owners', 'OwnerController');
     Route::get('/apiOwners', 'OwnerController@apiOwners')->name('api.owners');

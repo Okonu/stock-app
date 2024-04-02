@@ -64,30 +64,15 @@
         });
 
         function formatBays(bays) {
-            var bayArray = bays;
+            var bayArray = bays.split(",");
             var html = '<ul>';
-            var bayArray = bays.split(","); 
 
-           /// alert("HELLO");
-                if (bay.trim() !== "") { 
-                    $.ajax({
-                        url: "{{ route('api.bays') }}", 
-                        type: "POST",
-                        data: { name:name ,bays: bayArray },
-                        async: false,
-                        success: function (response) {
-
-                            var bayId = response.data.id;
-                            html += '<li>' + bay.trim() + ' (ID: ' + bayId + ')</li>'; 
-                        },
-                        error: function (error) {
-                            //alert(JSON.stringify(response));
-                            console.log(error);
-                        }
-                    });
+            bayArray.forEach(function(bay) {
+                if (bay.trim() !== "") {
+                    html += '<li>' + bay.trim() + '</li>';
                 }
-           // });
-            
+            });
+
             html += '</ul>';
             return html;
         }
@@ -102,25 +87,30 @@
         }
 
         function editForm(id) {
-            save_method = 'edit';
-            warehouseID = id;
-            $('input[name=_method]').val('PATCH');
-            $('#modal-form form')[0].reset();
-            $.ajax({
-                url: "{{ url('warehouses') }}" + '/' + id + "/edit",
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    $('#modal-form').modal('show');
-                    $('.modal-title').text('Edit Warehouse');
-                    $('#name').val(data.name);
-                    $('#bays').val(data.bays);
-                },
-                error: function () {
-                    alert("No Data Found");
-                }
-            });
-        }
+                save_method = 'edit';
+                warehouseID = id;
+                $('input[name=_method]').val('PATCH');
+                $('#modal-form form')[0].reset();
+                $.ajax({
+                    url: "{{ url('warehouses') }}" + '/' + id + "/edit",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        $('#modal-form').modal('show');
+                        $('.modal-title').text('Edit Warehouse');
+                        $('#name').val(data.name);
+                        // Clear existing bays
+                        $('#bay-container').empty();
+                        // Populate bays
+                        data.bays.forEach(function(bay) {
+                            addBayInput(bay);
+                        });
+                    },
+                    error: function () {
+                        alert("No Data Found");
+                    }
+                });
+            }
 
         function deleteData(id) {
             var csrf_token = $('meta[name="csrf-token"]').attr('content');

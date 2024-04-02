@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\ImportedData;
+use App\Models\ImportedData;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\OnEachRow;

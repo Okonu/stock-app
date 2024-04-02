@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Garden\StoreGardenRequest;
+use App\Http\Requests\Garden\UpdateGardenRequest;
 use App\Models\Garden;
 use App\Models\Owner;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
@@ -39,16 +39,6 @@ class GardenController extends Controller
      */
     public function store(StoreGardenRequest $request)
     {
-        // $owner = Owner::orderBy('name', 'ASC')
-        //     ->get()
-        //     ->pluck('name', 'id');
-
-        // $this->validate($request, [
-        //     'name' => 'required|string',
-        //     'owner_id' => 'required',
-        // ]);
-
-        // $input = $request->all();
 
         $garden = Garden::create($request->validated());
 
@@ -67,12 +57,14 @@ class GardenController extends Controller
      */
     public function edit($id)
     {
-        $owner = Owner::orderBy('name', 'ASC')
-            ->get()
-            ->pluck('name', 'id');
+        $owners = Owner::orderBy('name', 'ASC')->pluck('name', 'id');
         $garden = Garden::find($id);
 
-        return $garden;
+        if($garden) {
+            return response()->json($garden, 200);
+        } else {
+            return response()->json(['error' => 'Garden Not Found'], 404);
+        }
     }
 
     /**
@@ -82,24 +74,15 @@ class GardenController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateGardenRequest $request, $id)
     {
-        $owner = Owner::orderBy('name', 'ASC')
-            ->get()
-            ->pluck('name', 'id');
-
-        $this->validate($request, [
-            'name' => 'required|string',
-            'owner_id' => 'required',
-        ]);
-
         $garden = Garden::findOrFail($id);
 
-        $garden->update($request->all());
+        $garden->update($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Gardens Updated',
+            'message' => 'Garden Updated',
         ]);
     }
 

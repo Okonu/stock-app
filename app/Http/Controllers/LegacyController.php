@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Legacy\ImportLegacyRequest;
 use App\Imports\LegaciesImport;
 use App\Models\Legacy;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
@@ -35,57 +35,23 @@ class LegacyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function apiImports(Request $request)
+    public function store(ImportLegacyRequest $request): RedirectResponse
     {
-        $request->validate([
-            'file' => 'required|mimes:xls,xlsx',
-        ]);
-
         $file = $request->file('file');
-
+    
         $import = new LegaciesImport();
-        // dd($file);
-        Excel::import($import, $file);
-
-        return redirect()->back()->with('success', 'Import successful.');
-    }
-
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'garden' => 'required',
-            'invoice' => 'required',
-            'qty' => 'required',
-            'grade' => 'required',
-            'package' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            Log::error($validator->errors());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
+    
+        try {
+            Excel::import($import, $file);
+    
+            return redirect()->back()->with('success', 'Import successful.');
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+    
+            return redirect()->back()->with('error', 'Failed to import data.');
         }
-
-        $legacy = new Legacy();
-        $legacy->garden = $request->input('garden');
-        $legacy->invoice = $request->input('invoice');
-        $legacy->qty = $request->input('qty');
-        $legacy->grade = $request->input('grade');
-        $legacy->package = $request->input('package');
-
-        $legacy->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Legacy created successfully',
-            'data' => $legacy,
-        ]);
     }
-
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -102,7 +68,6 @@ class LegacyController extends Controller
             'message' => 'Successfully deleted',
         ]);
     }
-
     public function apiLegacies()
     {
         $legacy = Legacy::query();

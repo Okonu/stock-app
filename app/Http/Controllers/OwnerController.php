@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Owner\StoreOwnerRequest;
+use App\Http\Requests\Owner\UpdateOwnerRequest;
 use App\Models\Owner;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
@@ -32,16 +33,10 @@ class OwnerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreOwnerRequest $request): JsonResponse
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'address' => 'required',
-            'email' => 'required|unique:owners',
-            'telephone' => 'required',
-        ]);
 
-        Owner::create($request->all());
+        Owner::create($request->validated());
 
         return response()->json([
             'success' => true,
@@ -60,7 +55,11 @@ class OwnerController extends Controller
     {
         $owner = Owner::find($id);
 
-        return $owner;
+        if($owner) {
+            return response()->json($owner, 200);
+        } else {
+            return response()->json(['error' => 'Owner Not Found'], 404);
+        }
     }
 
     /**
@@ -70,18 +69,11 @@ class OwnerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateOwnerRequest $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|string|min:2',
-            'address' => 'required|string|min:2',
-            'email' => 'required|string|email|max:255|unique:owner',
-            'telephone' => 'required|string|min:2',
-        ]);
-
         $owner = Owner::findOrFail($id);
 
-        $owner->update($request->all());
+        $owner->update($request->validated());
 
         return response()->json([
             'success' => true,
