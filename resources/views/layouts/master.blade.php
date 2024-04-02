@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>UEA</title>
+    <title>STOCK-APP</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('assets/bower_components/bootstrap/dist/css/bootstrap.min.css ')}}">
@@ -36,7 +36,7 @@
         <!-- Logo -->
         <a href="index2.html" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>UEA</b></span>
+            <span class="logo-mini"><b>STOCK-APP</b></span>
             <!-- logo for regular state and mobile devices -->
             <span class="logo-lg"><b>Stock</b> System</span>
         </a>
@@ -72,7 +72,7 @@
         </div>
         <!-- Default to the left -->
         <?php $date = date('Y'); ?>
-        <strong>&copy; {{$date}} - UEA</strong>
+        <strong>&copy; {{$date}} - STOCK-APP</strong>
     </footer>
 
     <!-- Control Sidebar -->

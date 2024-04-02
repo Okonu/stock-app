@@ -2,7 +2,7 @@
 <html lang="en" class="fullscreen-bg">
 
 <head>
-    <title>Login | UEA</title>
+    <title>Login | STOCK-APP</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -65,7 +65,7 @@
                 <div class="right">
                     <div class="overlay"></div>
                     <div class="content text">
-                    <img src="https://uea.brancetech.com/uea-logo.png" alt="UEA Logo" width="200px" height="200px" >
+                    <img src="" alt="STOCK-APP Logo" width="200px" height="200px" >
                         <h1 class="heading">Stock Management System</h1>
                     </div>
                 </div>
